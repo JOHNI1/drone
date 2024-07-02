@@ -1,18 +1,14 @@
-<?xml version="1.0"?>
+<!-- <?xml version="1.0"?>
 <robot name="copterPIX" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 
 
 
-  <!-- Base link -->
   <link name="base_link">
-    <!-- You can leave this link empty if you don't need a specific geometry or inertial properties for the base -->
   </link>
 
 
 
-
-  <!-- Drone Core link -->
   <link name="core_link">
 
     <visual>
@@ -37,7 +33,6 @@
   </link>
 
 
-  <!-- Joint (fixed) -->
   <joint name="fixed_joint" type="fixed">
     <parent link="base_link"/>
     <child link="core_link"/>
@@ -49,6 +44,147 @@
     <material> Gazebo/Red</material>
   </gazebo>
 </robot>
+
+
+
+
+
+
+ -->
+
+
+
+
+
+
+<!-- 
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"  name="robot">
+    <gazebo>
+        <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
+            <left_joint>left_wheel_joint</left_joint>
+            <right_joint>right_wheel_joint</right_joint>
+            <wheel_separation>0.35</wheel_separation>
+            <wheel_diameter>0.1</wheel_diameter>
+
+            <max_wheel_torque>200</max_wheel_torque>
+            <max_wheel_acceleration>10.0</max_wheel_acceleration>
+
+            <odometry_frame>odom</odometry_frame>
+            <robot_base_frame>base_link</robot_base_frame>
+
+            <publish_odom>true</publish_odom>
+            <publish_odom_tf>true</publish_odom_tf>
+            <publish_wheel_tf>true</publish_wheel_tf>
+
+        </plugin>
+    </gazebo>
+</robot> -->
+
+
+
+
+
+
+
+
+
+
+
+
+<?xml version="1.0" ?>
+<robot name="copterPIX" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+
+   <!-- Base link -->
+  <link name="base_link">
+    <!-- You can leave this link empty if you don't need a specific geometry or inertial properties for the base -->
+  </link>
+
+  <!-- Joint (fixed) -->
+  <joint name="fixed_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="core_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+
+
+
+  <!-- Other definitions like base link, sensors, etc. -->
+
+  <!-- Define the drone arms using the macro -->
+  <xacro:drone_arm name="arm_1" joint_name="rotor_0_joint" propeller_link="prop_0_link" control_channel="0" multiplier="838" />
+  <xacro:drone_arm name="arm_2" joint_name="rotor_1_joint" propeller_link="prop_1_link" control_channel="1" multiplier="838" />
+  <xacro:drone_arm name="arm_3" joint_name="rotor_2_joint" propeller_link="prop_2_link" control_channel="2" multiplier="-838" />
+  <xacro:drone_arm name="arm_4" joint_name="rotor_3_joint" propeller_link="prop_3_link" control_channel="3" multiplier="-838" />
+
+
+
+
+  <!-- Plugin encapsulating all control channels -->
+  <gazebo>
+    <plugin name="arducopter_plugin" filename="libArduPilotPlugin.so">
+        <fdm_addr>127.0.0.1</fdm_addr>
+        <fdm_port_in>9002</fdm_port_in>
+        <fdm_port_out>9003</fdm_port_out>
+        <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+        <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+        <imuName>iris_demo::iris::iris/imu_link::imu_sensor</imuName>
+        <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+
+        <!-- Control channels -->
+        <xacro:control_channel channel="0" joint_name="rotor_0_joint" multiplier="-838" />         <!--cw-->
+        <xacro:control_channel channel="1" joint_name="rotor_1_joint" multiplier="838" />         <!--cw-->
+        <xacro:control_channel channel="2" joint_name="rotor_2_joint" multiplier="-838" />         <!--cw-->
+        <xacro:control_channel channel="3" joint_name="rotor_3_joint" multiplier="838" />         <!--cw-->
+        <xacro:control_channel channel="4" joint_name="rotor_4_joint" multiplier="-838" />
+        <xacro:control_channel channel="5" joint_name="rotor_5_joint" multiplier="838" />
+    </plugin>
+  </gazebo>
+
+  
+  <xacro:macro name="control_channel" params="channel joint_name multiplier">
+    <control channel="${channel}">
+      <type>VELOCITY</type>
+      <offset>0</offset>
+      <p_gain>0.20</p_gain>
+      <i_gain>0</i_gain>
+      <d_gain>0</d_gain>
+      <i_max>0</i_max>
+      <i_min>0</i_min>
+      <cmd_max>2.5</cmd_max>
+      <cmd_min>-2.5</cmd_min>
+      <jointName>${joint_name}</jointName>
+      <multiplier>${multiplier}</multiplier>
+      <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+    </control>
+  </xacro:macro>
+
+</robot>
+
+
+
+
+<!-- 
+https://ardupilot.org/copter/docs/connect-escs-and-motors.html
+
+              cw (3)           ccw (5)
+                \               /
+                 \             /
+                   \         /
+                    \       /
+                      \   /
+      ccw(2) ~~~~~~~~~~~~~~~~~~~~~~~~ cw(1)
+                      /   \
+                    /       \
+                   /         \
+                 /             \
+                /               \
+              cw (6)           ccw (4)
+
+ -->
+
 
 
 
