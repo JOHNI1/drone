@@ -1,101 +1,7 @@
-<!-- <?xml version="1.0"?>
-<robot name="copterPIX" xmlns:xacro="http://www.ros.org/wiki/xacro">
-
-
-
-
-  <link name="base_link">
-  </link>
-
-
-
-  <link name="core_link">
-
-    <visual>
-      <geometry>
-        <box size="1 1 1"/>
-      </geometry>
-      <material name="red">
-        <color rgba="0.8 0.1 0.1 1.0"/>
-      </material>
-    </visual>
-
-    <collision>
-      <geometry>
-        <box size="1 1 1"/>
-      </geometry>
-    </collision>
-
-    <inertial>
-      <mass value="1.0"/>
-      <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
-    </inertial>
-  </link>
-
-
-  <joint name="fixed_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="core_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-  </joint>
-
-
-  <gazebo reference="core_link">
-    <material> Gazebo/Red</material>
-  </gazebo>
-</robot>
-
-
-
-
-
-
- -->
-
-
-
-
-
-
-<!-- 
-<?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robot">
-    <gazebo>
-        <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
-            <left_joint>left_wheel_joint</left_joint>
-            <right_joint>right_wheel_joint</right_joint>
-            <wheel_separation>0.35</wheel_separation>
-            <wheel_diameter>0.1</wheel_diameter>
-
-            <max_wheel_torque>200</max_wheel_torque>
-            <max_wheel_acceleration>10.0</max_wheel_acceleration>
-
-            <odometry_frame>odom</odometry_frame>
-            <robot_base_frame>base_link</robot_base_frame>
-
-            <publish_odom>true</publish_odom>
-            <publish_odom_tf>true</publish_odom_tf>
-            <publish_wheel_tf>true</publish_wheel_tf>
-
-        </plugin>
-    </gazebo>
-</robot> -->
-
-
-
-
-
-
-
-
-
-
-
-
 <?xml version="1.0" ?>
 <robot name="copterPIX" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:include filename="./../../STLs/macro.xacro"/>
+  <xacro:include filename="$(find drone)/xacros/macro.xacro"/>
 
 
   <!-- Base link -->
@@ -107,35 +13,89 @@
   <joint name="fixed_joint" type="fixed">
     <parent link="base_link"/>
     <child link="core_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0 0 0.6" rpy="0 0 0"/>
   </joint>
 
 
+  <xacro:link_creator link_name="core_link" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.4 0.4 0.04" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+  
+
+
+
+  <joint name="leg_0_link_joint" type="fixed">
+    <parent link="core_link"/>
+    <child link="leg_0_link"/>
+  </joint>
+
+  <xacro:link_creator link_name="leg_0_link" pose_xyz="0.1 0.145 -0.3" pose_rpy="0.185 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.6" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+  
+
+  <joint name="leg_1_link_joint" type="fixed">
+    <parent link="core_link"/>
+    <child link="leg_1_link"/>
+  </joint>
+
+  <xacro:link_creator link_name="leg_1_link" pose_xyz="0.1 -0.145 -0.3" pose_rpy="-0.185 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.6" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+  
+
+  <joint name="leg_2_link_joint" type="fixed">
+    <parent link="core_link"/>
+    <child link="leg_2_link"/>
+  </joint>
+
+  <xacro:link_creator link_name="leg_2_link" pose_xyz="-0.1 -0.145 -0.3" pose_rpy="-0.185 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.6" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+  
+
+  <joint name="leg_3_link_joint" type="fixed">
+    <parent link="core_link"/>
+    <child link="leg_3_link"/>
+  </joint>
+
+  <xacro:link_creator link_name="leg_3_link" pose_xyz="-0.1 0.145 -0.3" pose_rpy="0.185 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.6" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+
+
+
+
+
+
+  <joint name="feet_0_link_joint" type="fixed">
+    <parent link="core_link"/>
+    <child link="feet_0_link"/>
+  </joint>
+
+  <xacro:link_creator link_name="feet_0_link" pose_xyz="0 0.2 -0.6" pose_rpy="0 1.57079633 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.6" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+  
+
+  <joint name="feet_1_link_joint" type="fixed">
+    <parent link="core_link"/>
+    <child link="feet_1_link"/>
+  </joint>
+
+  <xacro:link_creator link_name="feet_1_link" pose_xyz="0 -0.2 -0.6" pose_rpy="0 1.57079633 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.6" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+  
   <!-- <link name="core_link">
+      <visual>
+          <geometry>
+              <mesh filename="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale="1 1 1"/>
+          </geometry>
+          <material name="red">
+              <color rgba="0.8 0.1 0.1 1.0"/>
+          </material>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+      </visual>
 
-    <visual>
-      <geometry>
-        <box size="1 1 1"/>
-      </geometry>
-      <material name="red">
-        <color rgba="0.8 0.1 0.1 1.0"/>
-      </material>
-    </visual>
+      <collision>
+          <geometry>
+              <mesh filename="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale="1 1 1"/>
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+      </collision>
 
-    <collision>
-      <geometry>
-        <box size="1 1 1"/>
-      </geometry>
-    </collision>
-
-    <inertial>
-      <mass value="1.0"/>
-      <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
-    </inertial>
+      <inertial>
+          <mass value="1"/>
+          <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+      </inertial>
   </link> -->
-
-  <xacro:link_creator name="core_link" pose_xyz="0 0 60" pose_rpy="0 0 0" mesh_path="./../../STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.4 0.4 0.04" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
-
 
 
 
@@ -147,54 +107,18 @@
   <xacro:property name="angle_in_radians" value="0.628319" />   <!--60 degrees in radians-->
 
 
-  <xacro:drone_arm arm_link="arm_link_0" rotor_joint="rotor_joint_0" propeller_link="prop_link_0" parent_link="core_link" angle="${angle_in_radians * 3 + angle_in_radians / 2}"/>
+  <!-- <xacro:drone_arm arm_link="arm_link_0" rotor_joint="rotor_joint_0" propeller_link="prop_link_0" parent_link="core_link" angle="${angle_in_radians * 3 + angle_in_radians / 2}"/>
   <xacro:drone_arm arm_link="arm_link_1" rotor_joint="rotor_joint_1" propeller_link="prop_link_1" parent_link="core_link" angle="${angle_in_radians * 3 + angle_in_radians / 2}"/>
   <xacro:drone_arm arm_link="arm_link_2" rotor_joint="rotor_joint_2" propeller_link="prop_link_2" parent_link="core_link" angle="${angle_in_radians * 3 + angle_in_radians / 2}"/>
   <xacro:drone_arm arm_link="arm_link_3" rotor_joint="rotor_joint_3" propeller_link="prop_link_3" parent_link="core_link" angle="${angle_in_radians * 3 + angle_in_radians / 2}"/>
   <xacro:drone_arm arm_link="arm_link_4" rotor_joint="rotor_joint_4" propeller_link="prop_link_4" parent_link="core_link" angle="${angle_in_radians * 3 + angle_in_radians / 2}"/>
-  <xacro:drone_arm arm_link="arm_link_5" rotor_joint="rotor_joint_5" propeller_link="prop_link_5" parent_link="core_link" angle="${angle_in_radians * 3 + angle_in_radians / 2}"/>
+  <xacro:drone_arm arm_link="arm_link_5" rotor_joint="rotor_joint_5" propeller_link="prop_link_5" parent_link="core_link" angle="${angle_in_radians * 3 + angle_in_radians / 2}"/> -->
 
 
 
 
-  <!-- Plugin encapsulating all control channels -->
-  <gazebo>
-    <plugin name="arducopter_plugin" filename="libArduPilotPlugin.so">
-      <fdm_addr>127.0.0.1</fdm_addr>
-      <fdm_port_in>9002</fdm_port_in>
-      <fdm_port_out>9003</fdm_port_out>
-      <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
-      <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
-      <imuName>iris_demo::iris::iris/imu_link::imu_sensor</imuName>
-      <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
-
-      <!-- Control channels -->
-      <xacro:control_channel channel="0" rotor_joint="rotor_joint_0" multiplier="-838" /> <!--cw-->
-      <xacro:control_channel channel="1" rotor_joint="rotor_joint_1" multiplier="838" /> <!--ccw-->
-      <xacro:control_channel channel="2" rotor_joint="rotor_joint_2" multiplier="-838" /> <!--cw-->
-      <xacro:control_channel channel="3" rotor_joint="rotor_joint_3" multiplier="838" /> <!--ccw-->
-      <xacro:control_channel channel="4" rotor_joint="rotor_joint_4" multiplier="-838" /> <!--cw-->
-      <xacro:control_channel channel="5" rotor_joint="rotor_joint_5" multiplier="838" /> <!--ccw-->
-    </plugin>
-  </gazebo>
 
 
-  <xacro:macro name="control_channel" params="channel rotor_joint multiplier">
-    <control channel="${channel}">
-      <type>VELOCITY</type>
-      <offset>0</offset>
-      <p_gain>0.20</p_gain>
-      <i_gain>0</i_gain>
-      <d_gain>0</d_gain>
-      <i_max>0</i_max>
-      <i_min>0</i_min>
-      <cmd_max>2.5</cmd_max>
-      <cmd_min>-2.5</cmd_min>
-      <jointName>${rotor_joint}</jointName>
-      <multiplier>${multiplier}</multiplier>
-      <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
-    </control>
-  </xacro:macro>
 
 </robot>
 
@@ -223,24 +147,3 @@ https://ardupilot.org/copter/docs/connect-escs-and-motors.html
               cw (5)           ccw (3)
 
  -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <?xml version="1.0"?>
-<robot name="drone" xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <xacro:include filename="robot_core.xacro" />
-    <xacro:include filename="../../xacros/ardupilot_plugin.xacro" />
-    <xacro:include filename="../../xacros/arms.xacro"/>
-</robot> -->
