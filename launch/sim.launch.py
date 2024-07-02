@@ -4,9 +4,9 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution, TextSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, TextSubstitution
 from launch_ros.actions import Node
-# import xacro
+import xacro
 
 def generate_launch_description():
 
@@ -17,31 +17,20 @@ def generate_launch_description():
     pkg_path = get_package_share_directory(pkg_name)
 
     # Path to the xacro file example: drone/models/copterPIX/robot.urdf.xacro
-    xacro_file = PathJoinSubstitution([
+    xacro_file_path = PathJoinSubstitution([
         TextSubstitution(text=pkg_path),
         TextSubstitution(text='models'),
         model,
         TextSubstitution(text='robot.urdf.xacro')
     ])
-    print("using the model:", end="")
-    print(model)
 
-    # Command to process xacro file
-    robot_description_command = Command(['xacro ', xacro_file])
+    xacro_file_path = os.path.join(pkg_path, 'models', 'iris', 'robot.urdf.xacro')
 
-    # # Debug prints
-    # print('Package path:', pkg_path)
-    # print('Model:', model)
-    # print('xacro file:', xacro_file)
-    # print('robot_description_command:', robot_description_command)
+    xacro_file = xacro.process_file(xacro_file_path)
+    robot_description_xml = xacro_file.toxml()
 
-    # # Generate URDF for debugging
-    # xacro_file_path = os.path.join(pkg_path, 'models', 'copterPIX', 'robot.urdf.xacro')
-    # doc = xacro.process_file(xacro_file_path)
-    # robot_desc = doc.toprettyxml(indent='  ')
-    # print('Generated URDF:\n', robot_desc)
 
-    params = {'robot_description': robot_description_command, 'use_sim_time': use_sim_time}
+    params = {'robot_description': robot_description_xml, 'use_sim_time': use_sim_time}
 
 
     return LaunchDescription([

@@ -24,10 +24,75 @@
         <plugin name="lift_drag_plugin" filename="libLiftDragPlugin.so">
             <!-- Define the lift drag plugin properties here -->
         </plugin>
+    </xacro:macro>
+
+
+
+
+    <xacro:macro name="link_creator" params="link_name pose_xyz pose_rpy mesh_path scale_xyz mass ixx ixy ixz iyy iyz izz">
+
+        <link name="${link_name}">
+            <visual>
+                <geometry>
+                    <mesh filename="${mesh_path}" scale="${scale_xyz}"/>
+                </geometry>
+                <material name="red">
+                    <color rgba="0.8 0.1 0.1 1.0"/>
+                </material>
+                <origin xyz="${pose_xyz }" rpy="${pose_rpy}"/>
+            </visual>
+
+            <collision>
+                <geometry>
+                    <mesh filename="${mesh_path}" scale="${scale_xyz}"/>
+                </geometry>
+                <origin xyz="${pose_xyz }" rpy="${pose_rpy}"/>
+            </collision>
+
+            <inertial>
+                <mass value="${mass}"/>
+                <inertia ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}"/>
+            </inertial>
+        </link>
 
     </xacro:macro>
 
 
+
+
+    <xacro:macro name="temp" params="link_name">
+
+        <link name="${link_name}">
+            <visual>
+                <geometry>
+                    <box size="1 1 1"/>
+                </geometry>
+                <material name="red">
+                    <color rgba="0.8 0.1 0.1 1.0"/>
+                </material>
+            </visual>
+
+            <collision>
+                <geometry>
+                    <box size="1 1 1"/>
+                </geometry>
+            </collision>
+
+            <inertial>
+                <mass value="1.0"/>
+                <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+            </inertial>
+        </link>
+
+        <gazebo reference="${link_name}">
+            <material> Gazebo/Red</material>
+        </gazebo>
+
+    </xacro:macro>
+
+
+
+</robot>
 
 
 
@@ -73,5 +138,4 @@
     </xacro:macro> -->
 
 
-</robot>
 

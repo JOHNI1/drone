@@ -10,7 +10,9 @@ in one terminal:
 
 
 in another terminal:
-# ros2 launch drone sim.launch.py model:=copterPIX
+if you cloned drone to ~/drone_ws/src, do:
+# cd ~/drone_ws
+# ros2 launch drone sim.launch.py model:=simple_box world:=./src/drone/config/default.world 
 
 
 

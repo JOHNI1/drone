@@ -94,7 +94,8 @@
 
 <?xml version="1.0" ?>
 <robot name="copterPIX" xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <xacro:include filename="inertial_macros.xacro"/>
+
+  <xacro:include filename="./../../STLs/macro.xacro"/>
 
 
   <!-- Base link -->
@@ -110,7 +111,7 @@
   </joint>
 
 
-  <link name="core_link">
+  <!-- <link name="core_link">
 
     <visual>
       <geometry>
@@ -131,7 +132,9 @@
       <mass value="1.0"/>
       <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
-  </link>
+  </link> -->
+
+  <xacro:link_creator name="core_link" pose_xyz="0 0 60" pose_rpy="0 0 0" mesh_path="./../../STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.4 0.4 0.04" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
 
 
 
