@@ -2,6 +2,7 @@
 <robot name="copterPIX" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:include filename="$(find drone)/xacros/macro.xacro"/>
+  <xacro:include filename="ardupilot_plugin.xacro"/>
 
 
   <!-- Base link -->
@@ -17,57 +18,31 @@
     <origin xyz="0 0 0.6" rpy="0 0 0"/>
   </joint>
   <xacro:link_creator link_name="core_link" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.4 0.4 0.04" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
-  
-
-
 
 
   <joint name="leg_0_link_joint" type="fixed">
     <parent link="core_link"/>
     <child link="leg_0_link"/>
   </joint>
-  <xacro:link_creator link_name="leg_0_link" pose_xyz="0.1 0.145 -0.3" pose_rpy="0.185 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.6" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
-  
-
+  <xacro:link_creator link_name="leg_0_link" pose_xyz="0 0.198 -0.305" pose_rpy="0.305 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.61" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
   <joint name="leg_1_link_joint" type="fixed">
     <parent link="core_link"/>
     <child link="leg_1_link"/>
   </joint>
-  <xacro:link_creator link_name="leg_1_link" pose_xyz="0.1 -0.145 -0.3" pose_rpy="-0.185 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.6" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
-  
-
-  <joint name="leg_2_link_joint" type="fixed">
-    <parent link="core_link"/>
-    <child link="leg_2_link"/>
-  </joint>
-  <xacro:link_creator link_name="leg_2_link" pose_xyz="-0.1 -0.145 -0.3" pose_rpy="-0.185 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.6" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
-  
-
-  <joint name="leg_3_link_joint" type="fixed">
-    <parent link="core_link"/>
-    <child link="leg_3_link"/>
-  </joint>
-  <xacro:link_creator link_name="leg_3_link" pose_xyz="-0.1 0.145 -0.3" pose_rpy="0.185 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.6" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
-
-
-
-
+  <xacro:link_creator link_name="leg_1_link" pose_xyz="0 -0.198 -0.305" pose_rpy="-0.305 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.61" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
 
 
   <joint name="feet_0_link_joint" type="fixed">
     <parent link="core_link"/>
     <child link="feet_0_link"/>
   </joint>
-  <xacro:link_creator link_name="feet_0_link" pose_xyz="0 0.2 -0.6" pose_rpy="0 1.57079633 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.6" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
-  
-
+  <xacro:link_creator link_name="feet_0_link" pose_xyz="0 0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.58" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
   <joint name="feet_1_link_joint" type="fixed">
     <parent link="core_link"/>
     <child link="feet_1_link"/>
   </joint>
-  <xacro:link_creator link_name="feet_1_link" pose_xyz="0 -0.2 -0.6" pose_rpy="0 1.57079633 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.6" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+  <xacro:link_creator link_name="feet_1_link" pose_xyz="0 -0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.58" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
   
-
 
 
 
@@ -76,19 +51,57 @@
 
   <xacro:property name="deg_to_rad" value="0.0174533" />   <!--60 degrees in radians-->
 
+  <xacro:drone_arm num="0" parent_link="core_link" dis_from_center="0.175" length="0.56" diameter="0.025" arm_incline_angle="${10 * deg_to_rad}" prop_size_multiplier="2.04" cw="true" angle="${0}"/>
+  <xacro:drone_arm num="1" parent_link="core_link" dis_from_center="0.175" length="0.56" diameter="0.025" arm_incline_angle="${10 * deg_to_rad}" prop_size_multiplier="2.04" cw="false" angle="${180 * deg_to_rad}"/>
+  <xacro:drone_arm num="2" parent_link="core_link" dis_from_center="0.175" length="0.56" diameter="0.025" arm_incline_angle="${10 * deg_to_rad}" prop_size_multiplier="2.04" cw="true" angle="${120 * deg_to_rad}"/>
+  <xacro:drone_arm num="3" parent_link="core_link" dis_from_center="0.175" length="0.56" diameter="0.025" arm_incline_angle="${10 * deg_to_rad}" prop_size_multiplier="2.04" cw="false" angle="${300 * deg_to_rad}"/>
+  <xacro:drone_arm num="4" parent_link="core_link" dis_from_center="0.175" length="0.56" diameter="0.025" arm_incline_angle="${10 * deg_to_rad}" prop_size_multiplier="2.04" cw="true" angle="${60 * deg_to_rad}"/>
+  <xacro:drone_arm num="5" parent_link="core_link" dis_from_center="0.175" length="0.56" diameter="0.025" arm_incline_angle="${10 * deg_to_rad}" prop_size_multiplier="2.04" cw="false" angle="${240 * deg_to_rad}"/>
 
-  <xacro:drone_arm arm_link_name="arm_link_0" rotor_joint_name="rotor_joint_0" propeller_link_name="prop_link_0" parent_link="core_link" dis_from_center="17.5" length="56" angle="${0 * deg_to_rad}"/>
-  <xacro:drone_arm arm_link_name="arm_link_1" rotor_joint_name="rotor_joint_1" propeller_link_name="prop_link_1" parent_link="core_link" dis_from_center="17.5" length="56" angle="${180 * deg_to_rad}"/>
-  <xacro:drone_arm arm_link_name="arm_link_2" rotor_joint_name="rotor_joint_2" propeller_link_name="prop_link_2" parent_link="core_link" dis_from_center="17.5" length="56" angle="${120 * deg_to_rad}"/>
-  <xacro:drone_arm arm_link_name="arm_link_3" rotor_joint_name="rotor_joint_3" propeller_link_name="prop_link_3" parent_link="core_link" dis_from_center="17.5" length="56" angle="${300 * deg_to_rad}"/>
-  <xacro:drone_arm arm_link_name="arm_link_4" rotor_joint_name="rotor_joint_4" propeller_link_name="prop_link_4" parent_link="core_link" dis_from_center="17.5" length="56" angle="${90 * deg_to_rad}"/>
-  <xacro:drone_arm arm_link_name="arm_link_5" rotor_joint_name="rotor_joint_5" propeller_link_name="prop_link_5" parent_link="core_link" dis_from_center="17.5" length="56" angle="${240 * deg_to_rad}"/>
+  <gazebo>
+    <link name='imu_link'>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>0.15</mass>
+        <inertia>
+          <ixx>0.00001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.00002</iyy>
+          <iyz>0</iyz>
+          <izz>0.00002</izz>
+        </inertia>
+      </inertial>
+      <sensor name="imu_sensor" type="imu">
+        <pose>0 0 0 3.141593 0 0</pose>
+        <always_on>1</always_on>
+        <update_rate>1000.0</update_rate>
+      </sensor>
+    </link>
 
-
-
-
-
-
+    <joint name='imu_joint' type='fixed'>
+      <child>imu_link</child>
+      <parent>core_link</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>0</upper>
+          <effort>0</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <damping>1.0</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+  </gazebo>
 
 </robot>
 
