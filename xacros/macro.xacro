@@ -2,26 +2,56 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 
-    <xacro:macro name="drone_arm" params="arm_link rotor_joint propeller_link parent_link length diameter angle">
+    <xacro:macro name="drone_arm" params="arm_link_name rotor_joint_name propeller_link_name parent_link dis_from_center length diameter angle arm_incline_angle">
         <joint name="fixed_joint" type="fixed">
             <parent link="${parent_link}"/>
-            <child link="${arm_link}"/>
+            <child link="${arm_link_name}"/>
             <origin xyz="0 0 0" rpy="0 0 ${angle}"/>
         </joint>
 
-        <xacro:link_creator link_name="${arm_link}" pose_xyz="0 0 60" pose_rpy="0 0 0" mesh_path="./../../STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.4 0.4 0.04" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+        <xacro:link_creator link_name="${arm_link_name}" pose_xyz="0 ${length / 2 + dis_from_center} 0" pose_rpy="${arm_incline_angle} 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="${diameter} ${diameter} ${length}" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
 
 
-        <joint name="${rotor_joint}" type="fixed">
+        <joint name="${rotor_joint_name}" type="fixed">
             <!-- Define the joint properties here -->
         </joint>
 
-        <link name="${propeller_link}">
+        <link name="${propeller_link_name}">
             <!-- Define the propeller properties here -->
         </link>
 
-        <plugin name="lift_drag_plugin" filename="libLiftDragPlugin.so">
-            <!-- Define the lift drag plugin properties here -->
+        <plugin name="rotor_3_blade_1" filename="libLiftDragPlugin.so"> change name later
+        <a0>0.3</a0>
+        <alpha_stall>1.4</alpha_stall>
+        <cla>4.2500</cla>
+        <cda>0.10</cda>
+        <cma>0.00</cma>
+        <cla_stall>-0.025</cla_stall>
+        <cda_stall>0.0</cda_stall>
+        <cma_stall>0.0</cma_stall>
+        <area>0.002</area>
+        <air_density>1.2041</air_density>
+        <cp>0.084 0 0</cp>
+        <forward>0 -1 0</forward>
+        <upward>0 0 1</upward>
+        <link_name>iris::rotor_3</link_name>
+        </plugin>
+
+        <plugin name="rotor_3_blade_2" filename="libLiftDragPlugin.so"> change name later
+        <a0>0.3</a0>
+        <alpha_stall>1.4</alpha_stall>
+        <cla>4.2500</cla>
+        <cda>0.10</cda>
+        <cma>0.00</cma>
+        <cla_stall>-0.025</cla_stall>
+        <cda_stall>0.0</cda_stall>
+        <cma_stall>0.0</cma_stall>
+        <area>0.002</area>
+        <air_density>1.2041</air_density>
+        <cp>-0.084 0 0</cp>
+        <forward>0 1 0</forward>
+        <upward>0 0 1</upward>
+        <link_name>iris::rotor_3</link_name>
         </plugin>
     </xacro:macro>
 
@@ -38,14 +68,14 @@
                 <material name="red">
                     <color rgba="0.8 0.1 0.1 1.0"/>
                 </material>
-                <origin xyz="${pose_xyz }" rpy="${pose_rpy}"/>
+                <origin xyz="${pose_xyz}" rpy="${pose_rpy}"/>
             </visual>
 
             <collision>
                 <geometry>
                     <mesh filename="${mesh_path}" scale="${scale_xyz}"/>
                 </geometry>
-                <origin xyz="${pose_xyz }" rpy="${pose_rpy}"/>
+                <origin xyz="${pose_xyz}" rpy="${pose_rpy}"/>
             </collision>
 
             <inertial>
@@ -53,7 +83,6 @@
                 <inertia ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}"/>
             </inertial>
         </link>
-
     </xacro:macro>
 
 
