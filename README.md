@@ -33,6 +33,7 @@ AND COPY PASTE:
         RNGFND1_PIN 0
         RNGFND1_MAX_CM 5000
 
+↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑THE FRAME_CLASS 2 IS FOR HEXA!↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ 
 TO SAVE PRESS:
     control+o
     control+m
@@ -58,7 +59,8 @@ ADD:
                 "external": True,
             },
 SAVE IT!
-
+(basically the sitl parameters are defined by conbining the two files:
+default_params/copter.parm and default_params/gazebo-hexa.parm <- which is the file you created)
 
 
 

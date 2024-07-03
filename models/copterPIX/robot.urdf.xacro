@@ -17,7 +17,7 @@
     <child link="core_link"/>
     <origin xyz="0 0 0.6" rpy="0 0 0"/>
   </joint>
-  <xacro:link_creator link_name="core_link" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.4 0.4 0.04" mass="1.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+  <xacro:link_creator link_name="core_link" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.4 0.4 0.04" mass="20.0" ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
 
 
   <joint name="leg_0_link_joint" type="fixed">
@@ -49,7 +49,7 @@
   <!-- Define the drone arms using the macro -->
 
 
-  <xacro:property name="deg_to_rad" value="0.0174533" />   <!--60 degrees in radians-->
+  <xacro:property name="deg_to_rad" value="0.0174533" />
 
   <xacro:drone_arm num="0" parent_link="core_link" dis_from_center="0.175" length="0.56" diameter="0.025" arm_incline_angle="${4 * deg_to_rad}" prop_size_multiplier="2.04" amass="0.2" aixx="0" aixy="0" aixz="0" aiyy="0" aiyz="0" aizz="0" rmass="0.2" rixx="0.000312" rixy="0" rixz="0" riyy="0.0053345" riyz="0" rizz="0.005363328" cw="true" angle="${0}"/>
   <xacro:drone_arm num="1" parent_link="core_link" dis_from_center="0.175" length="0.56" diameter="0.025" arm_incline_angle="${4 * deg_to_rad}" prop_size_multiplier="2.04" amass="0.2" aixx="0" aixy="0" aixz="0" aiyy="0" aiyz="0" aizz="0" rmass="0.2" rixx="0.000312" rixy="0" rixz="0" riyy="0.0053345" riyz="0" rizz="0.005363328" cw="false" angle="${180 * deg_to_rad}"/>
