@@ -2,7 +2,8 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 
-    <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle prop_size_multiplier amass aixx aixy aixz aiyy aiyz aizz rmass rixx rixy rixz riyy riyz rizz cw angle"> 
+    <!-- <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle arm_mesh prop_mesh prop_size_multiplier amass aixx aixy aixz aiyy aiyz aizz rmass rixx rixy rixz riyy riyz rizz angle">  -->
+    <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle arm_mesh prop_mesh prop_size_multiplier rmass rixx rixy rixz riyy riyz rizz angle"> 
         <xacro:property name="core_arm_joint" value="core_arm_joint_${num}" />
         <xacro:property name="arm_link" value="arm_link_${num}" />
         <xacro:property name="rotor_joint" value="rotor_joint_${num}" />
@@ -16,7 +17,9 @@
             <origin xyz="0 0 0" rpy="0 0 ${angle}"/>
         </joint>
 
-        <xacro:link_creator link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="${diameter} ${diameter} ${length}" mass="${amass}" ixx="${aixx}" ixy="${aixy}" ixz="${aixz}" iyy="${aiyy}" iyz="${aiyz}" izz="${aizz}"/>
+        <!-- <xacro:link_creator link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="${arm_mesh}" scale_xyz="${diameter} ${diameter} ${length}" mass="${amass}" ixx="${aixx}" ixy="${aixy}" ixz="${aixz}" iyy="${aiyy}" iyz="${aiyz}" izz="${aizz}"/> -->
+        <xacro:link_creator link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="${arm_mesh}" scale_xyz="${diameter} ${diameter} ${length}" mass="0.2" ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        <!-- <xacro:link_creator_no_mass link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="${arm_mesh}" scale_xyz="${diameter} ${diameter} ${length}"/> -->
         
         <joint name="${rotor_joint}" type="continuous">
             <parent link="${arm_link}"/>
@@ -32,15 +35,8 @@
         </gazebo>
 
 
-
-        <xacro:if value="${cw}">
-            <xacro:link_creator link_name="${prop_link}" pose_xyz="0 0 0.03" pose_rpy="0 0 0" mesh_path="$(find drone)/STLs/iris_prop_cw.dae" scale_xyz="${prop_size_multiplier} ${prop_size_multiplier} ${prop_size_multiplier}" mass="${rmass}" ixx="${rixx}" ixy="${rixy}" ixz="${rixz}" iyy="${riyy}" iyz="${riyz}" izz="${rizz}"/>
-        </xacro:if>
-
-        <xacro:unless value="${cw}">
-            <xacro:link_creator link_name="${prop_link}" pose_xyz="0 0 0.03" pose_rpy="0 0 0" mesh_path="$(find drone)/STLs/iris_prop_ccw.dae" scale_xyz="${prop_size_multiplier} ${prop_size_multiplier} ${prop_size_multiplier}" mass="${rmass}" ixx="${rixx}" ixy="${rixy}" ixz="${rixz}" iyy="${riyy}" iyz="${riyz}" izz="${rizz}"/>
-        </xacro:unless>
-
+        <xacro:link_creator link_name="${prop_link}" pose_xyz="0 0 0.03" pose_rpy="0 0 0" mesh_path="${prop_mesh}" scale_xyz="${prop_size_multiplier} ${prop_size_multiplier} ${prop_size_multiplier}" mass="${rmass}" ixx="${rixx}" ixy="${rixy}" ixz="${rixz}" iyy="${riyy}" iyz="${riyz}" izz="${rizz}"/>
+        
 
         <gazebo>
             <plugin name="${rotor_blade_0}" filename="libLiftDragPlugin.so">
@@ -109,50 +105,58 @@
         </link>
     </xacro:macro>
 
-</robot>
+    
 
+    <xacro:macro name="link_creator_center_mass" params="link_name pose_xyz pose_rpy mesh_path scale_xyz mass_xyz mass_rpy mass ixx ixy ixz iyy iyz izz">
+        <link name="${link_name}">
+            <visual>
+                <geometry>
+                    <mesh filename="${mesh_path}" scale="${scale_xyz}"/>
+                </geometry>
+                <material name="red">
+                    <color rgba="0.8 0.1 0.1 1.0"/>
+                </material>
+                <origin xyz="${pose_xyz}" rpy="${pose_rpy}"/>
+            </visual>
 
+            <collision>
+                <geometry>
+                    <mesh filename="${mesh_path}" scale="${scale_xyz}"/>
+                </geometry>
+                <origin xyz="${pose_xyz}" rpy="${pose_rpy}"/>
+            </collision>
 
-
-
-
-
-
-
-
-
-
-
-
-
-    <!-- Specify some standard inertial calculations https://en.wikipedia.org/wiki/List_of_moments_of_inertia -->
-    <!-- These make use of xacro's mathematical functionality -->
-
-    <!-- <xacro:macro name="inertial_sphere" params="mass radius *origin">
-        <inertial>
-            <xacro:insert_block name="origin"/>
-            <mass value="${mass}" />
-            <inertia ixx="${(2/5) * mass * (radius*radius)}" ixy="0.0" ixz="0.0" iyy="${(2/5) * mass * (radius*radius)}" iyz="0.0" izz="${(2/5) * mass * (radius*radius)}" />
-        </inertial>
-    </xacro:macro>  
-
-
-    <xacro:macro name="inertial_box" params="mass x y z *origin">
-        <inertial>
-            <xacro:insert_block name="origin"/>
-            <mass value="${mass}" />
-            <inertia ixx="${(1/12) * mass * (y*y+z*z)}" ixy="0.0" ixz="0.0" iyy="${(1/12) * mass * (x*x+z*z)}" iyz="0.0" izz="${(1/12) * mass * (x*x+y*y)}" />
-        </inertial>
+            <inertial>
+                <mass value="${mass}"/>
+                <inertia ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}"/>
+                <origin xyz="${mass_xyz}" rpy="${mass_rpy}"/>
+            </inertial>
+        </link>
     </xacro:macro>
 
 
-    <xacro:macro name="inertial_cylinder" params="mass length radius *origin">
-        <inertial>
-            <xacro:insert_block name="origin"/>
-            <mass value="${mass}" />
-            <inertia ixx="${(1/12) * mass * (3*radius*radius + length*length)}" ixy="0.0" ixz="0.0" iyy="${(1/12) * mass * (3*radius*radius + length*length)}" iyz="0.0" izz="${(1/2) * mass * (radius*radius)}" />
-        </inertial>
-    </xacro:macro> -->
+    <xacro:macro name="link_creator_no_mass" params="link_name pose_xyz pose_rpy mesh_path scale_xyz">
+        <link name="${link_name}">
+            <visual>
+                <geometry>
+                    <mesh filename="${mesh_path}" scale="${scale_xyz}"/>
+                </geometry>
+                <material name="red">
+                    <color rgba="0.8 0.1 0.1 1.0"/>
+                </material>
+                <origin xyz="${pose_xyz}" rpy="${pose_rpy}"/>
+            </visual>
+
+            <collision>
+                <geometry>
+                    <mesh filename="${mesh_path}" scale="${scale_xyz}"/>
+                </geometry>
+                <origin xyz="${pose_xyz}" rpy="${pose_rpy}"/>
+            </collision>
+        </link>
+    </xacro:macro>
+
+</robot>
 
 
 
