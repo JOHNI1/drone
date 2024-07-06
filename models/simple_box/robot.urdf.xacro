@@ -1,97 +1,40 @@
 <?xml version="1.0"?>
 <robot name="simple_box" xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <!-- Base link -->
-  <link name="base_link">
-  </link>
 
-  <link name="base_linkaa">
-    <visual>
-      <geometry>
-        <box size="1 1 1"/>
-      </geometry>
-      <material name="red">
-        <color rgba="0.8 0.1 0.1 1.0"/>
-      </material>
-      <origin xyz="30 0 0" rpy="0 0 0"/>
-    </visual>
+  <!-- Define the macro with an optional block parameter -->
+  <xacro:macro name="my_link" params="name length:=1.0 radius:=0.5 **extra">
+    <!-- Define a default extra block -->
+    <xacro:property name="default_extra">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:property>
 
-    <collision>
-      <geometry>
-        <box size="1 1 1"/>
-      </geometry>
-    </collision>
+    <!-- Use the parameters in the macro -->
+    <link name="${name}">
+      <visual>
+        <geometry>
+          <cylinder length="${length}" radius="${radius}" />
+        </geometry>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder length="${length}" radius="${radius}" />
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="1.0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+      </inertial>
+      <!-- Insert the extra block if provided, else use the default -->
+      <xacro:insert_block name="extra" />
+    </link>
+  </xacro:macro>
 
-    <inertial>
-      <mass value="1.0"/>
-      <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
-    </inertial>
-  </link>
-  
+  <!-- Example usage without extra settings -->
+  <xacro:my_link name="link3">
+    <extra>
+      <!-- This block is intentionally left empty to avoid errors -->
+    </extra>
+  </xacro:my_link>
 
-  <joint name="fixed_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="base_linkaa"/>
-  </joint>
-
-
-  <!-- <link name="base_linkaaa"> -->
-    <!-- <pose>30 0 0 0 0 0</pose> -->
-    <!-- <origin xyz="30 0 0 0" rpy="0 0 0 0"/> -->
-    <!-- You can leave this link empty if you don't need a specific geometry or inertial properties for the base -->
-<!-- 
-     <visual>
-      <geometry>
-        <box size="1 1 1"/>
-      </geometry>
-      <material name="red">
-        <color rgba="0.8 0.1 0.1 1.0"/>
-      </material>
-    </visual>
-
-    <collision>
-      <geometry>
-        <box size="1 1 1"/>
-      </geometry>
-    </collision>
-
-    <inertial>
-      <mass value="1.0"/>
-      <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
-    </inertial>
-  </link> -->
-
-  <!-- Box link -->
-  <!-- <link name="box_link">
-    <visual>
-      <geometry>
-        <box size="1 1 1"/>
-      </geometry>
-      <material name="red">
-        <color rgba="0.8 0.1 0.1 1.0"/>
-      </material>
-    </visual>
-
-    <collision>
-      <geometry>
-        <box size="1 1 1"/>
-      </geometry>
-    </collision>
-
-    <inertial>
-      <mass value="1.0"/>
-      <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
-    </inertial>
-  </link> -->
-
-
-  <!-- Joint (fixed) -->
-  <!-- <joint name="fixed_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="box_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-  </joint> -->
-
-  <!-- <gazebo reference="base_linka">
-    <material> Gazebo/Red</material>
-  </gazebo> -->
 </robot>

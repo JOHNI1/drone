@@ -2,7 +2,6 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 
-    <!-- <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle arm_mesh prop_mesh prop_size_multiplier amass aixx aixy aixz aiyy aiyz aizz rmass rixx rixy rixz riyy riyz rizz angle">  -->
     <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle arm_mesh prop_mesh prop_size_multiplier rmass rixx rixy rixz riyy riyz rizz angle"> 
         <xacro:property name="core_arm_joint" value="core_arm_joint_${num}" />
         <xacro:property name="arm_link" value="arm_link_${num}" />
@@ -17,10 +16,8 @@
             <origin xyz="0 0 0" rpy="0 0 ${angle}"/>
         </joint>
 
-        <!-- <xacro:link_creator link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="${arm_mesh}" scale_xyz="${diameter} ${diameter} ${length}" mass="${amass}" ixx="${aixx}" ixy="${aixy}" ixz="${aixz}" iyy="${aiyy}" iyz="${aiyz}" izz="${aizz}"/> -->
-        <xacro:link_creator link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="${arm_mesh}" scale_xyz="${diameter} ${diameter} ${length}" mass="0.2" ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
-        <!-- <xacro:link_creator_no_mass link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="${arm_mesh}" scale_xyz="${diameter} ${diameter} ${length}"/> -->
-        
+        <xacro:link_creator_i link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="${arm_mesh}" scale_xyz="${diameter} ${diameter} ${length}" mass="0.2" ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+
         <joint name="${rotor_joint}" type="continuous">
             <parent link="${arm_link}"/>
             <child link="${prop_link}"/>
@@ -29,15 +26,15 @@
             <dynamics damping="0.004"/>       
         </joint>
         <gazebo reference="${rotor_joint}">
-            <ode>
-                <implicit_spring_damper>1</implicit_spring_damper>
-            </ode>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
         </gazebo>
 
-
-        <xacro:link_creator link_name="${prop_link}" pose_xyz="0 0 0.03" pose_rpy="0 0 0" mesh_path="${prop_mesh}" scale_xyz="${prop_size_multiplier} ${prop_size_multiplier} ${prop_size_multiplier}" mass="${rmass}" ixx="${rixx}" ixy="${rixy}" ixz="${rixz}" iyy="${riyy}" iyz="${riyz}" izz="${rizz}"/>
+        <xacro:prop_link_creator link_name="${prop_link}" pose_xyz="0 0 0.03" pose_rpy="0 0 0" mesh_path="${prop_mesh}" scale_xyz="${prop_size_multiplier} ${prop_size_multiplier} ${prop_size_multiplier}" mass="${rmass}" ixx="${rixx}" ixy="${rixy}" ixz="${rixz}" iyy="${riyy}" iyz="${riyz}" izz="${rizz}"/>
         
-
         <gazebo>
             <plugin name="${rotor_blade_0}" filename="libLiftDragPlugin.so">
                 <a0>0.3</a0>
@@ -55,7 +52,6 @@
                 <upward>0 0 1</upward>
                 <link_name>${prop_link}</link_name>
             </plugin>
-
             <plugin name="${rotor_blade_1}" filename="libLiftDragPlugin.so">
                 <a0>0.3</a0>
                 <alpha_stall>1.4</alpha_stall>
@@ -78,84 +74,97 @@
 
 
 
-    <xacro:macro name="link_creator" params="link_name pose_xyz pose_rpy mesh_path scale_xyz mass ixx ixy ixz iyy iyz izz">
+    <xacro:macro name="link_creator_foundation" params="link_name pose_xyz pose_rpy mesh_path scale_xyz **extra_collision **seperate_collider **extra_visual **extra_settings">
+
 
         <link name="${link_name}">
             <visual>
                 <geometry>
                     <mesh filename="${mesh_path}" scale="${scale_xyz}"/>
                 </geometry>
-                <material name="red">
-                    <color rgba="0.8 0.1 0.1 1.0"/>
-                </material>
                 <origin xyz="${pose_xyz}" rpy="${pose_rpy}"/>
+                <xacro:insert_block name="extra_visual"/>
             </visual>
-
             <collision>
                 <geometry>
-                    <mesh filename="${mesh_path}" scale="${scale_xyz}"/>
+                    <!-- <xacro:unless value="${seperate_collider}">
+                        <mesh filename="${mesh_path}" scale="${scale_xyz}"/>
+                    </xacro:unless> -->
+                    <xacro:insert_block name="seperate_collider"/>
                 </geometry>
                 <origin xyz="${pose_xyz}" rpy="${pose_rpy}"/>
+                <xacro:insert_block name="extra_collision"/>
             </collision>
 
-            <inertial>
-                <mass value="${mass}"/>
-                <inertia ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}"/>
-            </inertial>
+            <xacro:insert_block name="extra_settings"/>
         </link>
     </xacro:macro>
 
-    
-
-    <xacro:macro name="link_creator_center_mass" params="link_name pose_xyz pose_rpy mesh_path scale_xyz mass_xyz mass_rpy mass ixx ixy ixz iyy iyz izz">
-        <link name="${link_name}">
-            <visual>
-                <geometry>
-                    <mesh filename="${mesh_path}" scale="${scale_xyz}"/>
-                </geometry>
-                <material name="red">
-                    <color rgba="0.8 0.1 0.1 1.0"/>
-                </material>
-                <origin xyz="${pose_xyz}" rpy="${pose_rpy}"/>
-            </visual>
-
-            <collision>
-                <geometry>
-                    <mesh filename="${mesh_path}" scale="${scale_xyz}"/>
-                </geometry>
-                <origin xyz="${pose_xyz}" rpy="${pose_rpy}"/>
-            </collision>
-
-            <inertial>
-                <mass value="${mass}"/>
-                <inertia ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}"/>
-                <origin xyz="${mass_xyz}" rpy="${mass_rpy}"/>
-            </inertial>
-        </link>
+    <xacro:macro name="link_creator" params="link_name pose_xyz pose_rpy mesh_path scale_xyz">
+        <xacro:link_creator_foundation link_name="${link_name}" pose_xyz="${pose_xyz}" pose_rpy="${pose_rpy}" mesh_path="${mesh_path}" scale_xyz="${scale_xyz}">
+            <extra_collision/>
+            <seperate_collider><mesh filename="${mesh_path}" scale="${scale_xyz}"/></seperate_collider>
+            <extra_visual/>
+            <extra_settings/>
+        </xacro:link_creator_foundation>
     </xacro:macro>
 
 
-    <xacro:macro name="link_creator_no_mass" params="link_name pose_xyz pose_rpy mesh_path scale_xyz">
-        <link name="${link_name}">
-            <visual>
-                <geometry>
-                    <mesh filename="${mesh_path}" scale="${scale_xyz}"/>
-                </geometry>
-                <material name="red">
-                    <color rgba="0.8 0.1 0.1 1.0"/>
-                </material>
-                <origin xyz="${pose_xyz}" rpy="${pose_rpy}"/>
-            </visual>
 
-            <collision>
-                <geometry>
-                    <mesh filename="${mesh_path}" scale="${scale_xyz}"/>
-                </geometry>
-                <origin xyz="${pose_xyz}" rpy="${pose_rpy}"/>
-            </collision>
-        </link>
+    <xacro:macro name="link_creator_i_foundation" params="link_name pose_xyz pose_rpy mesh_path scale_xyz center_mass_xyz:='0 0 0' mass ixx ixy ixz iyy iyz izz **extra_collision **seperate_collider **extra_visual **extra_settings">
+        <xacro:link_creator_foundation link_name="${link_name}" pose_xyz="${pose_xyz}" pose_rpy="${pose_rpy}" mesh_path="${mesh_path}" scale_xyz="${scale_xyz}">
+            <extra_collision><xacro:insert_block name="extra_collision"/></extra_collision>
+            <seperate_collider><xacro:insert_block name="seperate_collider"/></seperate_collider>
+            <extra_visual><xacro:insert_block name="extra_visual"/></extra_visual>
+            <extra_settings>
+                <inertial>
+                    <origin xyz="${center_mass_xyz}" rpy="0 0 0"/>
+                    <mass value="${mass}"/>
+                    <inertia ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}"/>
+                </inertial>
+                <xacro:insert_block name="extra_settings"/>
+            </extra_settings>
+        </xacro:link_creator_foundation>
     </xacro:macro>
 
+    <xacro:macro name="link_creator_i" params="link_name pose_xyz pose_rpy mesh_path scale_xyz center_mass_xyz:='0 0 0' mass ixx ixy ixz iyy iyz izz">
+        <xacro:link_creator_i_foundation link_name="${link_name}" pose_xyz="${pose_xyz}" pose_rpy="${pose_rpy}" mesh_path="${mesh_path}" scale_xyz="${scale_xyz}" center_mass_xyz="${center_mass_xyz}" mass="${mass}" ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}">
+            <extra_collision/>
+            <seperate_collider><mesh filename="${mesh_path}" scale="${scale_xyz}"/></seperate_collider>
+            <extra_visual/>
+            <extra_settings/>
+        </xacro:link_creator_i_foundation>
+    </xacro:macro>
+
+
+
+    <xacro:macro name="prop_link_creator" params="link_name pose_xyz pose_rpy mesh_path scale_xyz cyliner_r:='0.25' cylinder_l='0.01' mass ixx ixy ixz iyy iyz izz">
+
+        <xacro:link_creator_i_foundation link_name="${link_name}" pose_xyz="${pose_xyz}" pose_rpy="${pose_rpy}" mesh_path="${mesh_path}" scale_xyz="${scale_xyz}" mass="${mass}"  ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}">
+            <extra_collision>
+                <surface>
+                    <contact>
+                        <ode/>
+                    </contact>
+                    <friction>
+                        <ode/>
+                    </friction>
+                </surface>
+            </extra_collision> 
+            <seperate_collider>
+                <cylinder radius="${cyliner_r}" length="${cylinder_l}"/>
+            </seperate_collider>
+            <extra_visual/>
+            <extra_settings>
+                <velocity_decay/>
+                <gazebo reference="${link_name}">
+                    <material>Gazebo/Red</material>
+                    <gravity>1</gravity>
+                    <self_collide>0</self_collide>
+                </gazebo>
+            </extra_settings>
+        </xacro:link_creator_i_foundation>
+    </xacro:macro>
 </robot>
 
 
