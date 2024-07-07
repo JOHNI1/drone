@@ -2,7 +2,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 
-    <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle arm_mesh prop_mesh cw prop_size_multiplier amass:='0.2' aixx:='0' aixy:='0' aixz:='0' aiyy:='0' aiyz:='0' aizz:='0' rmass rixx rixy rixz riyy riyz rizz angle"> 
+    <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle arm_mesh prop_mesh cw prop_size_multiplier amass:='0.001' aixx:='0' aixy:='0' aixz:='0' aiyy:='0' aiyz:='0' aizz:='0' rmass rixx rixy rixz riyy riyz rizz angle"> 
         <xacro:property name="core_arm_joint" value="core_arm_joint_${num}" />
         <xacro:property name="arm_link" value="arm_link_${num}" />
         <xacro:property name="rotor_joint" value="rotor_joint_${num}" />
@@ -17,6 +17,7 @@
         </joint>
 
         <xacro:link_creator_i link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="${arm_mesh}" scale_xyz="${diameter} ${diameter} ${length}" mass="${amass}" ixx="${aixx}" ixy="${aixy}" ixz="${aixz}" iyy="${aiyy}" iyz="${aiyz}" izz="${aizz}"/>
+        <!-- <xacro:link_creator link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="${arm_mesh}" scale_xyz="${diameter} ${diameter} ${length}"/> -->
 
         <joint name="${rotor_joint}" type="continuous">
             <parent link="${arm_link}"/>
@@ -35,6 +36,10 @@
 
         <xacro:prop_link_creator link_name="${prop_link}" pose_xyz="0 0 0.03" pose_rpy="0 -0 0" mesh_path="${prop_mesh}" scale_xyz="${prop_size_multiplier} ${prop_size_multiplier} ${prop_size_multiplier}" mass="${rmass}" ixx="${rixx}" ixy="${rixy}" ixz="${rixz}" iyy="${riyy}" iyz="${riyz}" izz="${rizz}"/>
         
+        <xacro:property name="cp" value="0.008"/>
+        <xacro:property name="cp_negative" value="${-1 * cp}"/>
+        <xacro:property name="area" value="0.002"/> <!--used to be 0.002-->
+
         <xacro:if value="${cw}">
             <gazebo>
                 <plugin name="${rotor_blade_0}" filename="libLiftDragPlugin.so">
@@ -46,9 +51,9 @@
                     <cla_stall>-0.025</cla_stall>
                     <cda_stall>0.0</cda_stall>
                     <cma_stall>0.0</cma_stall>
-                    <area>0.002</area>
+                    <area>${area}</area>
                     <air_density>1.2041</air_density>
-                    <cp>0.084 0 0</cp>
+                    <cp>${cp} 0 0</cp>
                     <forward>0 -1 0</forward>
                     <upward>0 0 1</upward>
                     <link_name>${prop_link}</link_name>
@@ -62,9 +67,9 @@
                     <cla_stall>-0.025</cla_stall>
                     <cda_stall>0.0</cda_stall>
                     <cma_stall>0.0</cma_stall>
-                    <area>0.002</area>
+                    <area>${area}</area>
                     <air_density>1.2041</air_density>
-                    <cp>-0.084 0 0</cp>
+                    <cp>${cp_negative} 0 0</cp>
                     <forward>0 1 0</forward>
                     <upward>0 0 1</upward>
                     <link_name>${prop_link}</link_name>
@@ -82,9 +87,9 @@
                     <cla_stall>-0.025</cla_stall>
                     <cda_stall>0.0</cda_stall>
                     <cma_stall>0.0</cma_stall>
-                    <area>0.002</area>
+                    <area>${area}</area>
                     <air_density>1.2041</air_density>
-                    <cp>0.084 0 0</cp>
+                    <cp>${cp} 0 0</cp>
                     <forward>0 1 0</forward>
                     <upward>0 0 1</upward>
                     <link_name>${prop_link}</link_name>
@@ -98,9 +103,9 @@
                     <cla_stall>-0.025</cla_stall>
                     <cda_stall>0.0</cda_stall>
                     <cma_stall>0.0</cma_stall>
-                    <area>0.002</area>
+                    <area>${area}</area>
                     <air_density>1.2041</air_density>
-                    <cp>-0.084 0 0</cp>
+                    <cp>${cp_negative} 0 0</cp>
                     <forward>0 -1 0</forward>
                     <upward>0 0 1</upward>
                     <link_name>${prop_link}</link_name>

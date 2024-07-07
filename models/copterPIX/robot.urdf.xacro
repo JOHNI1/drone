@@ -9,19 +9,17 @@
   <xacro:property name="prop_cw_mesh" value="$(find drone)/STLs/iris_prop_cw.dae"/>
   <xacro:property name="prop_ccw_mesh" value="$(find drone)/STLs/iris_prop_ccw.dae"/>
 
-
   <!-- Base link -->
-  <link name="base_link">
+  <!-- <link name="base_link"> -->
     <!-- You can leave this link empty if you don't need a specific geometry or inertial properties for the base -->
-  </link>
-
+  <!-- </link> -->
 
   <!-- Joint (fixed) -->
-  <joint name="fixed_joint" type="fixed">
+  <!-- <joint name="fixed_joint" type="fixed">
     <parent link="base_link"/>
     <child link="core_link"/>
     <origin xyz="0 0 0.6" rpy="0 0 0"/>
-  </joint>
+  </joint> -->
 
   <xacro:property name="g_mms_to_kg_ms" value="1000000000" />
 
@@ -32,43 +30,43 @@
   <xacro:property name="iyy" value="${595713038514.03 / g_mms_to_kg_ms}"/>
   <xacro:property name="iyz" value="${50504029566.32 / g_mms_to_kg_ms}"/>
   <xacro:property name="izz" value="${574188826210.05 / g_mms_to_kg_ms}"/> -->
-  <xacro:property name="mass" value="2.5" />
+  <xacro:property name="mass" value="2.0" />
   <xacro:property name="ixx" value="${0.1}"/>
   <xacro:property name="ixy" value="${0}"/>
   <xacro:property name="ixz" value="${0}"/>
   <xacro:property name="iyy" value="${0.1}"/>
   <xacro:property name="iyz" value="${0}"/>
-  <xacro:property name="izz" value="${0.1}"/>
+  <xacro:property name="izz" value="${0.15}"/>
 
-  <xacro:link_creator_i link_name="core_link" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="${hex_mesh}" scale_xyz="0.4 0.4 0.04" center_mass_xyz="0 0 -0.18" mass="${mass}" ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}"/>
-  
+  <xacro:link_creator_i link_name="core_link" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="${hex_mesh}" scale_xyz="0.4 0.4 0.04" center_mass_xyz="0 0 -0.25" mass="${mass}" ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}"/>
+  <!-- <xacro:link_creator link_name="core_link" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="${hex_mesh}" scale_xyz="0.4 0.4 0.04"/> -->
 
   <joint name="leg_0_link_joint" type="fixed">
     <parent link="core_link"/>
     <child link="leg_0_link"/>
   </joint>
-  <xacro:link_creator_i link_name="leg_0_link" pose_xyz="0 0.198 -0.305" pose_rpy="0.305 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.61" mass="0.2" ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
-  <!-- <xacro:link_creator link_name="leg_0_link" pose_xyz="0 0.198 -0.305" pose_rpy="0.305 0 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.61"/> -->
+  <!-- <xacro:link_creator_i link_name="leg_0_link" pose_xyz="0 0.198 -0.305" pose_rpy="0.305 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.61" mass="0.2" ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/> -->
+  <xacro:link_creator link_name="leg_0_link" pose_xyz="0 0.198 -0.305" pose_rpy="0.305 0 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.61"/>
   <joint name="leg_1_link_joint" type="fixed">
     <parent link="core_link"/>
     <child link="leg_1_link"/>
   </joint>
-  <xacro:link_creator_i link_name="leg_1_link" pose_xyz="0 -0.198 -0.305" pose_rpy="-0.305 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.61" mass="0.2" ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
-  <!-- <xacro:link_creator link_name="leg_1_link" pose_xyz="0 -0.198 -0.305" pose_rpy="-0.305 0 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.61"/> -->
+  <!-- <xacro:link_creator_i link_name="leg_1_link" pose_xyz="0 -0.198 -0.305" pose_rpy="-0.305 0 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.61" mass="0.2" ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/> -->
+  <xacro:link_creator link_name="leg_1_link" pose_xyz="0 -0.198 -0.305" pose_rpy="-0.305 0 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.61"/>
 
 
   <joint name="feet_0_link_joint" type="fixed">
     <parent link="core_link"/>
     <child link="feet_0_link"/>
   </joint>
-  <xacro:link_creator_i link_name="feet_0_link" pose_xyz="0 0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.58" mass="0.2" ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
-  <!-- <xacro:link_creator link_name="feet_0_link" pose_xyz="0 0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.58"/> -->
+  <!-- <xacro:link_creator_i link_name="feet_0_link" pose_xyz="0 0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.58" mass="0.2" ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/> -->
+  <xacro:link_creator link_name="feet_0_link" pose_xyz="0 0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.58"/>
   <joint name="feet_1_link_joint" type="fixed">
     <parent link="core_link"/>
     <child link="feet_1_link"/>
   </joint>
-  <xacro:link_creator_i link_name="feet_1_link" pose_xyz="0 -0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.58" mass="0.2" ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
-  <!-- <xacro:link_creator link_name="feet_1_link" pose_xyz="0 -0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.58"/> -->
+  <!-- <xacro:link_creator_i link_name="feet_1_link" pose_xyz="0 -0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="$(find drone)/STLs/hexagonal_prism_height_1_outer_diameter_1.stl" scale_xyz="0.024 0.024 0.58" mass="0.2" ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/> -->
+  <xacro:link_creator link_name="feet_1_link" pose_xyz="0 -0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.58"/>
   
 
 
