@@ -1,5 +1,8 @@
 <?xml version="1.0" ?>
 <robot name="copterPIX" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:property name="multiplier" value="1000"/>
+    <xacro:property name="multiplier_negative" value="${-1 * multiplier}"/>
     <gazebo>
         <plugin name="arducopter_plugin" filename="libArduPilotPlugin.so">
             <fdm_addr>127.0.0.1</fdm_addr>
@@ -22,7 +25,7 @@
                 <cmd_max>2.5</cmd_max>
                 <cmd_min>-2.5</cmd_min>
                 <jointName>rotor_joint_0</jointName>
-                <multiplier>-838</multiplier>
+                <multiplier>${multiplier_negative}</multiplier>
                 <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
             </control>
             <control channel="1">
@@ -36,7 +39,7 @@
                 <cmd_max>2.5</cmd_max>
                 <cmd_min>-2.5</cmd_min>
                 <jointName>rotor_joint_1</jointName>
-                <multiplier>838</multiplier>
+                <multiplier>${multiplier}</multiplier>
                 <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
             </control>
             <control channel="2">
@@ -50,7 +53,7 @@
                 <cmd_max>2.5</cmd_max>
                 <cmd_min>-2.5</cmd_min>
                 <jointName>rotor_joint_2</jointName>
-                <multiplier>-838</multiplier>
+                <multiplier>${multiplier_negative}</multiplier>
                 <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
             </control>
             <control channel="3">
@@ -64,7 +67,7 @@
                 <cmd_max>2.5</cmd_max>
                 <cmd_min>-2.5</cmd_min>
                 <jointName>rotor_joint_3</jointName>
-                <multiplier>838</multiplier>
+                <multiplier>${multiplier}</multiplier>
                 <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
             </control>
             <control channel="4">
@@ -78,7 +81,7 @@
                 <cmd_max>2.5</cmd_max>
                 <cmd_min>-2.5</cmd_min>
                 <jointName>rotor_joint_4</jointName>
-                <multiplier>838</multiplier>
+                <multiplier>${multiplier}</multiplier>
                 <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
             </control>
             <control channel="5">
@@ -92,7 +95,7 @@
                 <cmd_max>2.5</cmd_max>
                 <cmd_min>-2.5</cmd_min>
                 <jointName>rotor_joint_5</jointName>
-                <multiplier>-838</multiplier>
+                <multiplier>${multiplier_negative}</multiplier>
                 <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
             </control>
         </plugin>
