@@ -26,11 +26,11 @@
             <dynamics damping="0.004"/>       
         </joint>
         <gazebo reference="${rotor_joint}">
-            <physics>
+            <!-- <physics> -->
                 <ode>
                     <implicit_spring_damper>1</implicit_spring_damper>
                 </ode>
-            </physics>
+            <!-- </physics> -->
         </gazebo>
 
         <xacro:prop_link_creator link_name="${prop_link}" pose_xyz="0 0 0.03" pose_rpy="0 0 0" mesh_path="${prop_mesh}" scale_xyz="${prop_size_multiplier} ${prop_size_multiplier} ${prop_size_multiplier}" mass="${rmass}" ixx="${rixx}" ixy="${rixy}" ixz="${rixz}" iyy="${riyy}" iyz="${riyz}" izz="${rizz}"/>
