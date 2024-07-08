@@ -28,7 +28,7 @@
   <xacro:property name="iyz" value="${0 * s}"/>
   <xacro:property name="izz" value="${1.6 * s}"/> -->
 
-  <xacro:property name="mass" value="4.5" />
+  <xacro:property name="mass" value="4" />
   <xacro:property name="s" value="2"/>
   <xacro:property name="ixx" value="${0.5 * s}"/>
   <xacro:property name="ixy" value="${0 * s}"/>
