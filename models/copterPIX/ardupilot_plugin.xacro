@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <robot name="copterPIX" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <xacro:property name="multiplier" value="1000"/>
+    <xacro:property name="multiplier" value="1200"/>
     <xacro:property name="multiplier_negative" value="${-1 * multiplier}"/>
     <gazebo>
         <plugin name="arducopter_plugin" filename="libArduPilotPlugin.so">

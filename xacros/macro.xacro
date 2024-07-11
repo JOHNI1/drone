@@ -2,7 +2,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 
-    <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle arm_mesh prop_mesh cw prop_size_multiplier amass:='0.01' aixx:='0.0001' aixy:='0' aixz:='0' aiyy:='0.0001' aiyz:='0' aizz:='0.0001' rmass rixx rixy rixz riyy riyz rizz angle"> 
+    <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle arm_mesh prop_mesh cw prop_size_multiplier amass:='0.01' aixx:='0.0001' aixy:='0' aixz:='0' aiyy:='0.0001' aiyz:='0' aizz:='0.0001' cla cp area rmass rixx rixy rixz riyy riyz rizz angle"> 
         <xacro:property name="base_arm_joint" value="base_arm_joint_${num}" />
         <xacro:property name="arm_link" value="arm_link_${num}" />
         <xacro:property name="rotor_joint" value="rotor_joint_${num}" />
@@ -36,10 +36,7 @@
 
         <xacro:prop_link_creator link_name="${prop_link}" pose_xyz="0 0 0.03" pose_rpy="0 -0 0" mesh_path="${prop_mesh}" scale_xyz="${prop_size_multiplier} ${prop_size_multiplier} ${prop_size_multiplier}" mass="${rmass}" ixx="${rixx}" ixy="${rixy}" ixz="${rixz}" iyy="${riyy}" iyz="${riyz}" izz="${rizz}"/>
         
-        <xacro:property name="cla" value="4.5"/>
-        <xacro:property name="cp" value="0.084"/>
         <xacro:property name="cp_negative" value="${-1 * cp}"/>
-        <xacro:property name="area" value="0.002"/> <!--used to be 0.002-->
 
         <xacro:if value="${cw}">
             <gazebo>
