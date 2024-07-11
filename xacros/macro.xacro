@@ -2,7 +2,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 
-    <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle arm_mesh prop_mesh cw prop_size_multiplier amass:='0.001' aixx:='0' aixy:='0' aixz:='0' aiyy:='0' aiyz:='0' aizz:='0' rmass rixx rixy rixz riyy riyz rizz angle"> 
+    <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle arm_mesh prop_mesh cw prop_size_multiplier amass:='0.01' aixx:='0.0001' aixy:='0' aixz:='0' aiyy:='0.0001' aiyz:='0' aizz:='0.0001' rmass rixx rixy rixz riyy riyz rizz angle"> 
         <xacro:property name="base_arm_joint" value="base_arm_joint_${num}" />
         <xacro:property name="arm_link" value="arm_link_${num}" />
         <xacro:property name="rotor_joint" value="rotor_joint_${num}" />
@@ -13,7 +13,7 @@
         <joint name="${base_arm_joint}" type="fixed">
             <parent link="${parent_link}"/>
             <child link="${arm_link}"/>
-            <origin xyz="0 0 0" rpy="0 0 ${angle}"/>
+            <origin xyz="0 0 0" rpy="0 0 ${angle + pi}"/>
         </joint>
 
         <xacro:link_creator_i link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="${arm_mesh}" scale_xyz="${diameter} ${diameter} ${length}" mass="${amass}" ixx="${aixx}" ixy="${aixy}" ixz="${aixz}" iyy="${aiyy}" iyz="${aiyz}" izz="${aizz}"/>
@@ -36,7 +36,8 @@
 
         <xacro:prop_link_creator link_name="${prop_link}" pose_xyz="0 0 0.03" pose_rpy="0 -0 0" mesh_path="${prop_mesh}" scale_xyz="${prop_size_multiplier} ${prop_size_multiplier} ${prop_size_multiplier}" mass="${rmass}" ixx="${rixx}" ixy="${rixy}" ixz="${rixz}" iyy="${riyy}" iyz="${riyz}" izz="${rizz}"/>
         
-        <xacro:property name="cp" value="0.07"/>
+        <xacro:property name="cla" value="4.5"/>
+        <xacro:property name="cp" value="0.084"/>
         <xacro:property name="cp_negative" value="${-1 * cp}"/>
         <xacro:property name="area" value="0.002"/> <!--used to be 0.002-->
 
@@ -45,7 +46,7 @@
                 <plugin name="${rotor_blade_0}" filename="libLiftDragPlugin.so">
                     <a0>0.3</a0>
                     <alpha_stall>1.4</alpha_stall>
-                    <cla>4.2500</cla>
+                    <cla>${cla}</cla>
                     <cda>0.10</cda>
                     <cma>0.00</cma>
                     <cla_stall>-0.025</cla_stall>
@@ -61,7 +62,7 @@
                 <plugin name="${rotor_blade_1}" filename="libLiftDragPlugin.so">
                     <a0>0.3</a0>
                     <alpha_stall>1.4</alpha_stall>
-                    <cla>4.2500</cla>
+                    <cla>${cla}</cla>
                     <cda>0.10</cda>
                     <cma>0.00</cma>
                     <cla_stall>-0.025</cla_stall>
@@ -81,7 +82,7 @@
                 <plugin name="${rotor_blade_0}" filename="libLiftDragPlugin.so">
                     <a0>0.3</a0>
                     <alpha_stall>1.4</alpha_stall>
-                    <cla>4.2500</cla>
+                    <cla>${cla}</cla>
                     <cda>0.10</cda>
                     <cma>0.00</cma>
                     <cla_stall>-0.025</cla_stall>
@@ -97,7 +98,7 @@
                 <plugin name="${rotor_blade_1}" filename="libLiftDragPlugin.so">
                     <a0>0.3</a0>
                     <alpha_stall>1.4</alpha_stall>
-                    <cla>4.2500</cla>
+                    <cla>${cla}</cla>
                     <cda>0.10</cda>
                     <cma>0.00</cma>
                     <cla_stall>-0.025</cla_stall>
@@ -199,13 +200,13 @@
             <extra_visual/>
             <extra_settings>
                 <velocity_decay/>
-                <gazebo reference="${link_name}">
-                    <material>Gazebo/Red</material>
-                    <gravity>1</gravity>
-                    <self_collide>0</self_collide>
-                </gazebo>
             </extra_settings>
         </xacro:link_creator_i_foundation>
+        <gazebo reference="${link_name}">
+            <material>Gazebo/Red</material>
+            <gravity>1</gravity>
+            <self_collide>0</self_collide>
+        </gazebo>
     </xacro:macro>
 </robot>
 
