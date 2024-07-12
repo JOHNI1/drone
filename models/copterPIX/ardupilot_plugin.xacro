@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
-<robot name="copterPIX" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <xacro:property name="multiplier" value="1200"/>
+    <xacro:property name="multiplier" value="800"/>
     <xacro:property name="multiplier_negative" value="${-1 * multiplier}"/>
     <gazebo>
         <plugin name="arducopter_plugin" filename="libArduPilotPlugin.so">
@@ -98,6 +98,40 @@
                 <multiplier>${multiplier_negative}</multiplier>
                 <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
             </control>
+            <control channel="6">
+                <type>POSITION</type>
+                <jointName>fire_trigger_servo_joint</jointName>
+                <multiplier>1.5708</multiplier> <!-- Maps PWM range to -90 to 90 degrees -->
+                <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+            </control>
         </plugin>
     </gazebo>
 </robot>
+
+
+
+  <!-- /// \brief Interface ArduPilot from ardupilot stack
+  /// modeled after SITL/SIM_*
+  ///
+  /// The plugin requires the following parameters:
+  /// <control>             control description block
+  ///    <!- inputs from Ardupilot ->
+  ///    channel            attribute, ardupilot control channel
+  ///    multiplier         command multiplier
+  ///    <!- output to Gazebo ->
+  ///    type               type of control, VELOCITY, POSITION or EFFORT
+  ///    <p_gain>           velocity pid p gain
+  ///    <i_gain>           velocity pid i gain
+  ///    <d_gain>           velocity pid d gain
+  ///    <i_max>            velocity pid max integral correction
+  ///    <i_min>            velocity pid min integral correction
+  ///    <cmd_max>          velocity pid max command torque
+  ///    <cmd_min>          velocity pid min command torque
+  ///    <jointName>        motor joint, torque applied here
+  ///    <turningDirection> rotor turning direction, 'cw' or 'ccw'
+  ///    frequencyCutoff    filter incoming joint state
+  ///    samplingRate       sampling rate for filtering incoming joint state
+  ///    <rotorVelocitySlowdownSim> for rotor aliasing problem, experimental
+  /// <imuName>     scoped name for the imu sensor
+  /// <connectionTimeoutMaxCount> timeout before giving up on
+  ///                             controller synchronization -->
