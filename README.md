@@ -1,39 +1,63 @@
-########################################################################################################
 
-## setup:
+# setup:
 
-you must first go to work space folder where src is the sub directory which contains the drone folder.
+### Installation
+open terminal and enter
+
+    cd ~
+    mkdir -p drone_ws/src
+    cd drone_ws/src
+    git clone https://github.com/JOHNI1/drone
+
+you must first go to work space folder where src is the sub directory which contains the drone folder.(like ros_ws or drone_ws)
 there enter the command:
 
-# colcon build --symlink-install
+    cd ~/drone_ws
+    colcon build --symlink-install
+<div style="color: red;">MAKE SURE TO ALWAYS redo the colcon build --symlink-install if you make changes to the src/drone folder like adding file</div>
 
 then make sure in ~/.bashrc you have(in this example, the work space is called drone_ws located in ~/):
-# source ~/drone_ws/install/setup.bash
 
+    source ~/drone_ws/install/setup.bash
+<div style="color: red;">MAKE SURE TO ALWAYS source after doing colcon build --symlink-install</div>
 
+### Sitl configuration
 
 GO TO:
+
     cd ~/ardupilot/Tools/autotest/default_params
 
 DO:
-    nano gazebo-hexa.parm
+
+    gedit gazebo-hexa.parm
+
 AND COPY PASTE:
 
         # Hexa is X frame
         FRAME_CLASS	2
         FRAME_TYPE	1
+
         # IRLOCK FEATURE
         RC8_OPTION 39
         PLND_ENABLED    1
         PLND_TYPE       3
+
         # SONAR FOR IRLOCK
         SIM_SONAR_SCALE 10
         RNGFND1_TYPE 1
         RNGFND1_SCALING 10
         RNGFND1_PIN 0
         RNGFND1_MAX_CM 5000
+        
+        # Servo configuration
+        SERVO7_FUNCTION 1  # Setting SERVO5 to RC passthrough <-- for the gun servo trigger!
+        SERVO7_MIN 1000
+        SERVO7_MAX 2000
+        SERVO7_TRIM 1500
+        SERVO7_REVERSED 0
+        #    ↑ use SERVO 7 for channel 6 cuz ardupilot channels count from 1 but ardupilot plugin for gazebo counts from 0!!!!
 
-↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑THE FRAME_CLASS 2 IS FOR HEXA!↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ 
+↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑THE FRAME_CLASS 2 IS FOR HEXA and FRAME_TYPE 1 IS FOR X FRAME!↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ 
 TO SAVE PRESS:
     control+o
     control+m
@@ -41,30 +65,35 @@ TO SAVE PRESS:
 
 
 OPEN in vscode:
+
     code ~/ardupilot/Tools/autotest/pysim/vehicleinfo.py
-AND SEARCH FOR: 
+
+AND SEARCH: 
+
     gazebo-iris
-UNDER:
+
+Find this:
+
             "gazebo-iris": {
                 "waf_target": "bin/arducopter",
                 "default_params_filename": ["default_params/copter.parm",
                                             "default_params/gazebo-iris.parm"],
                 "external": True,
             },
-ADD:
+So under it add this:
+
             "gazebo-hexa": {
                 "waf_target": "bin/arducopter",
                 "default_params_filename": ["default_params/copter.parm",
                                             "default_params/gazebo-hexa.parm"],
                 "external": True,
             },
-SAVE IT!
+
+**SAVE IT!**
+
 (basically the sitl parameters are defined by conbining the two files:
-default_params/copter.parm and default_params/gazebo-hexa.parm <- which is the file you created)
 
-
-
-########################################################################################################
+*default_params/copter.parm* and *default_params/gazebo-hexa.parm* <- which is the file you created)
 
 
 
@@ -72,15 +101,15 @@ default_params/copter.parm and default_params/gazebo-hexa.parm <- which is the f
 # to launch the simulation:
 
 
-in one terminal:
+**in one terminal:**
 if you cloned drone to ~/drone_ws/src, do:
-# cd ~/drone_ws
-# ros2 launch drone sim.launch.py model:=simple_box world:=./src/drone/config/default.world 
+    cd ~/drone_ws
+    ros2 launch drone sim.launch.py model:=simple_box world:=./src/drone/config/default.world 
 
 
 
-in another terminal:
-# sim_vehicle.py -v ArduCopter -f gazebo-hexa --console --map
+**in another terminal:**
+    sim_vehicle.py -v ArduCopter -f gazebo-hexa --console --map
 
 
 in the terminal, wait till it prints out all of the following logs:
@@ -120,10 +149,42 @@ in the terminal, wait till it prints out all of the following logs:
     AP: EKF3 IMU1 is using GPS
     Flight battery 100 percent
 
+**make sure you see the Flight battery 100 percent, only then you can send commands to the sitl to arm and takeoff.**
 
-commands:
+
+commands for the sitl:
+
     mode guided
     arm throttle
     takeoff 30
     guided 30 30 30
+
+
+
+## making bash sript that can launch everything:
+
+make a file called:
+    run_sim.sh
+
+and copy this into it:
+
+    #!/bin/bash
+
+    # Open the first terminal for ROS simulation
+    gnome-terminal --tab --title="ROS Simulation" -e "bash -c 'ros2 launch drone sim.launch.py model:=copterPIX; exec bash'" &
+
+    # Open the second terminal for ArduPilot vehicle simulation
+    gnome-terminal --tab --title="ArduPilot Vehicle Sim" -e "bash -c 'sim_vehicle.py -v ArduCopter -f gazebo-hexa --console --map; exec bash'" &
+
+    # Open the third terminal for MissionPlanner
+    gnome-terminal --tab --title="ArduPilot Vehicle Sim" -e "bash -c 'mono ~/Downloads/MissionPlanner-latest/MissionPlanner.exe; exec bash'" &
+
+    # Wait for both terminals to close
+    wait
+
+to run it, go to its directory and just enter:
+
+    ./run_sim.sh
+
+
 
