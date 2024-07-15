@@ -221,24 +221,7 @@
 
                 <xacro:if value="${iner == '100000000 0 0 0 0 0'}">
                     <xacro:property name="scale_xyz_list" value="${scale_xyz.split(' ')}" />
-                    <!-- <xacro:inertial_box mass="${mass}" x="${float(scale_xyz_list[0])}" y="${float(scale_xyz_list[1])}" z="${float(scale_xyz_list[2])}" xyz="${center_mass_xyz}" rpy="0 0 0"/> -->
-                    <inertial>
-                        <mass value="${mass}" />
-                        <!-- <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/> -->
-                        <!-- <inertia ixx="${float(mass) * (float(scale_xyz_list[1]) * float(scale_xyz_list[1]) + float(scale_xyz_list[2]) * float(scale_xyz_list[2])) / 12}" ixy="0" ixz="0" iyy="${float(mass) * (float(scale_xyz_list[0])*float(scale_xyz_list[0])+float(scale_xyz_list[2])*float(scale_xyz_list[2])) / 12}" iyz="0" izz="${float(mass) * (float(scale_xyz_list[1]) * float(scale_xyz_list[1]) + float(scale_xyz_list[0]) * float(scale_xyz_list[0])) / 12}" /> -->
-                        <origin xyz="${center_mass_xyz}" rpy="0 0 0"/>
-
-                        <!-- <xacro:property name="scale_x" value="${float(scale_xyz_list[0])}"/>
-                        <xacro:property name="scale_y" value="${float(scale_xyz_list[1])}"/>
-                        <xacro:property name="scale_z" value="${float(scale_xyz_list[2])}"/>
-
-                        <xacro:property name="ixx" value="${mass * (scale_y * scale_y + scale_z * scale_z) / 12}"/>
-                        <xacro:property name="iyy" value="${mass * (scale_x * scale_x + scale_z * scale_z) / 12}"/>
-                        <xacro:property name="izz" value="${mass * (scale_x * scale_x + scale_y * scale_y) / 12}"/>
-
-                        <inertia ixx="${ixx}" ixy="0" ixz="0" iyy="${iyy}" iyz="0" izz="${izz}"/> --> not working kusemek for some reason the line 238 in robot.urdf.xacro file of copterPIX doesn't allow defualt value of inertia cuz this part where we define inertia is broken cuz its a revolute joint...?????why???
-
-                    </inertial>
+                    <xacro:inertial_box mass="${mass}" x="${float(scale_xyz_list[0])}" y="${float(scale_xyz_list[1])}" z="${float(scale_xyz_list[2])}" xyz="${center_mass_xyz}" rpy="0 0 0"/>
                 </xacro:if>
                 <xacro:if value="${iner != '100000000 0 0 0 0 0'}">
                     <xacro:property name="iner_list" value="${iner.split(' ')}" />

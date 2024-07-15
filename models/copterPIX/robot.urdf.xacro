@@ -34,27 +34,6 @@
   <!-- <xacro:link_creator_i link_name="base_link" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="${hex_mesh}" scale_xyz="0.4 0.4 0.04" center_mass_xyz="${center_of_mass}" mass="${mass}" ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}"/> -->
   <xacro:link_creator_i link_name="base_link" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="${hex_mesh}" scale_xyz="0.4 0.4 0.04" center_mass_xyz="${center_of_mass}" mass="${mass}"/>
 
-  <!-- <xacro:link_creator_i_foundation link_name="base_link" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="${hex_mesh}" scale_xyz="0.4 0.4 0.04" seperate_collider_xyzrpy="0 0 -0.3 0 0 0" center_mass_xyz="0 0 -0.5" mass="${mass}" ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}">
-    <extra_collision>
-      <surface>
-        <contact>
-          <ode>
-            <max_vel>100.0</max_vel>
-            <min_depth>0.001</min_depth>
-          </ode>
-        </contact>
-        <friction>
-          <ode>
-            <mu>100000.0</mu>
-            <mu2>100000.0</mu2>
-          </ode>
-        </friction>
-      </surface>
-    </extra_collision>
-    <seperate_collider><cylinder radius="0.45" length="0.62"/></seperate_collider>
-    <extra_visual/>
-    <extra_settings/>
-  </xacro:link_creator_i_foundation> -->
 
   <!-- <xacro:link_creator link_name="base_link" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="${hex_mesh}" scale_xyz="0.4 0.4 0.04"/> -->
 
@@ -235,7 +214,7 @@
     </physics>
   </gazebo>
 
-  <xacro:link_creator_i link_name="fire_trigger_servo_link" mesh_path="Box" pose_xyz="0 0 0" pose_rpy="0 0 0" scale_xyz="0.04 0.009 0.009" mass="0.001"/>
+  <xacro:link_creator_i link_name="fire_trigger_servo_link" mesh_path="Box" pose_xyz="0 0 0" pose_rpy="0 0 0" scale_xyz="0.04 0.009 0.009" mass="0.05" iner="0.001 0 0 0.001 0 0.001"/>  <!--it is neccessary to specify the value here because the inertia becomes too small if done automatically for the following link with such small mass and size!-->
   <gazebo reference="fire_trigger_servo_link">
     <material>Gazebo/Red</material>
     <self_collide>0</self_collide>
