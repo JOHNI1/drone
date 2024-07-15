@@ -3,7 +3,6 @@
 
     <xacro:include filename="inertial_macros.xacro"/>
 
-    <!-- <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle arm_mesh prop_mesh cw prop_size_multiplier cylinder_r cylinder_l amass aixx:='0.0001' aixy:='0' aixz:='0' aiyy:='0.0001' aiyz:='0' aizz:='0.0001' cla cp area rmass rixx rixy rixz riyy riyz rizz angle">  -->
     <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle arm_mesh prop_mesh cw prop_size_multiplier cylinder_d cylinder_l a_mass a_iner:='100000000 0 0 0 0 0' cla cp area r_mass r_iner angle"> 
         <xacro:property name="base_arm_joint" value="base_arm_joint_${num}" />
         <xacro:property name="arm_link" value="arm_link_${num}" />
@@ -18,7 +17,6 @@
             <origin xyz="0 0 0" rpy="0 0 ${angle + pi}"/>
         </joint>
 
-        <!-- <xacro:link_creator_i link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="${arm_mesh}" scale_xyz="${diameter} ${diameter} ${length}" mass="${amass}" ixx="${aixx}" ixy="${aixy}" ixz="${aixz}" iyy="${aiyy}" iyz="${aiyz}" izz="${aizz}"/> -->
         <xacro:link_creator_i link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="${arm_mesh}" scale_xyz="${diameter} ${diameter} ${length}" mass="${a_mass}" iner="${a_iner}"/>
 
 

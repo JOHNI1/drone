@@ -4,9 +4,8 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution, TextSubstitution
+from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution
 from launch_ros.actions import Node
-import xacro
 
 from launch_ros.substitutions import FindPackageShare
 
@@ -14,25 +13,6 @@ def generate_launch_description():
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
     model = LaunchConfiguration('model', default='copterPIX')
-
-
-    # pkg_name = 'drone'
-    # pkg_path = get_package_share_directory(pkg_name)
-
-    # # Path to the xacro file example: drone/models/copterPIX/robot.urdf.xacro
-    # xacro_file = PathJoinSubstitution([
-    #     TextSubstitution(text=pkg_path),
-    #     TextSubstitution(text='models'),
-    #     model,
-    #     TextSubstitution(text='robot.urdf.xacro')
-    # ])
-
-
-    # # Command to process xacro file
-    # robot_description_command = Command(['xacro ', xacro_file])
-
-
-    # params = {'robot_description': robot_description_command, 'use_sim_time': use_sim_time}
 
 
     pkg_name = 'drone'

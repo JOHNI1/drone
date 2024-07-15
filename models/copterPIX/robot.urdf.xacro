@@ -22,32 +22,21 @@
   -->
   <xacro:property name="center_of_mass" value="0 0 0"/>
 
-
-  <!-- <xacro:property name="ixx" value="${10000000000 / g_mms_to_kg_ms}"/> 
-  <xacro:property name="ixy" value="${0 / g_mms_to_kg_ms}"/>
-  <xacro:property name="ixz" value="${0 / g_mms_to_kg_ms}"/>
-  <xacro:property name="iyy" value="${10000000000 / g_mms_to_kg_ms}"/>
-  <xacro:property name="iyz" value="${0 / g_mms_to_kg_ms}"/>
-  <xacro:property name="izz" value="${16000000000 / g_mms_to_kg_ms}"/> -->
-
   
-  <!-- <xacro:link_creator_i link_name="base_link" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="${hex_mesh}" scale_xyz="0.4 0.4 0.04" center_mass_xyz="${center_of_mass}" mass="${mass}" ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}"/> -->
+  
   <xacro:link_creator_i link_name="base_link" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="${hex_mesh}" scale_xyz="0.4 0.4 0.04" center_mass_xyz="${center_of_mass}" mass="${mass}"/>
 
 
-  <!-- <xacro:link_creator link_name="base_link" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="${hex_mesh}" scale_xyz="0.4 0.4 0.04"/> -->
 
   <joint name="leg_0_link_joint" type="fixed">
     <parent link="base_link"/>
     <child link="leg_0_link"/>
   </joint>
-  <!-- <xacro:link_creator_i link_name="leg_0_link" pose_xyz="0 0.198 -0.305" pose_rpy="0.305 0 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.61" mass="0.2" ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/> -->
   <xacro:link_creator_i link_name="leg_0_link" pose_xyz="0 0.198 -0.305" pose_rpy="0.305 0 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.61" mass="0.5"/>
   <joint name="leg_1_link_joint" type="fixed">
     <parent link="base_link"/>
     <child link="leg_1_link"/>
   </joint>
-  <!-- <xacro:link_creator_i link_name="leg_1_link" pose_xyz="0 -0.198 -0.305" pose_rpy="-0.305 0 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.61" mass="0.2" ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/> -->
   <xacro:link_creator_i link_name="leg_1_link" pose_xyz="0 -0.198 -0.305" pose_rpy="-0.305 0 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.61" mass="0.5"/>
 
 
@@ -56,22 +45,18 @@
     <parent link="base_link"/>
     <child link="feet_0_link"/>
   </joint>
-  <!-- <xacro:link_creator_i link_name="feet_0_link" pose_xyz="0 0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.58" mass="0.2" ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/> -->
   <xacro:link_creator_i link_name="feet_0_link" pose_xyz="0 0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.58" mass="0.5"/>
 
   <joint name="feet_1_link_joint" type="fixed">
     <parent link="base_link"/>
     <child link="feet_1_link"/>
   </joint>
-  <!-- <xacro:link_creator_i link_name="feet_1_link" pose_xyz="0 -0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.58" mass="0.2" ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/> -->
   <xacro:link_creator_i link_name="feet_1_link" pose_xyz="0 -0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.58" mass="0.5"/>
 
 
 
 
   <!-- Define the drone arms using the macro -->
-
-
   <xacro:property name="deg_to_rad" value="0.0174533"/>
 
   <xacro:property name="dfc" value = "0.175"/>
@@ -100,65 +85,6 @@
   <xacro:drone_arm num="5" parent_link="base_link" dis_from_center="${dfc}" length="${leng}" diameter="${dia}" arm_incline_angle="${aia * deg_to_rad}" arm_mesh="${hex_mesh}" prop_mesh="${prop_cw_mesh}"  cw="true"  prop_size_multiplier="${psm}" cylinder_d="${cylinder_d}" cylinder_l="${cylinder_l}" a_mass="${a_mass}"  cla="${cla}" cp="${cp}" area="${area}" r_mass="${r_mass}" r_iner="${r_iner}" angle="${240 * deg_to_rad}"/>
   
 
-
-
-
-  <!-- <gazebo>
-    <link name='imu_link'>
-      <inertial>
-        <pose>0 0 0 0 0 0</pose>
-        <mass>0.15</mass>
-        <inertia>
-          <ixx>0.00001</ixx>
-          <ixy>0</ixy>
-          <ixz>0</ixz>
-          <iyy>0.00002</iyy>
-          <iyz>0</iyz>
-          <izz>0.00002</izz>
-        </inertia>
-      </inertial> -->
-      <!-- <visual name='imu_vis'>
-        <geometry>
-          <box>
-            <size>0.1 0.1 0.1</size>
-          </box>
-        </geometry>
-        <material>
-          <script>
-            <name>Gazebo/DarkGrey</name>
-          </script>
-        </material>
-      </visual> -->
-      <!-- <sensor name="imu_sensor" type="imu">
-        <pose>0 0 0 3.141593 0 0</pose>
-        <always_on>1</always_on>
-        <update_rate>1000.0</update_rate>
-      </sensor>
-    </link>
-
-    <joint name='imu_joint' type='revolute'>
-      <parent>base_link</parent>
-      <child>imu_link</child>
-      <axis>
-        <xyz>0 0 1</xyz>
-        <limit>
-          <lower>0</lower>
-          <upper>0</upper>
-          <effort>0</effort>
-          <velocity>0</velocity>
-        </limit>
-        <dynamics>
-          <damping>1.0</damping>
-        </dynamics>
-        <use_parent_model_frame>1</use_parent_model_frame>
-      </axis>
-      <physics>
-        <ode>
-          <implicit_spring_damper>1</implicit_spring_damper>
-        </ode>
-      </physics>
-    </joint>
-  </gazebo> -->
 
 
 
