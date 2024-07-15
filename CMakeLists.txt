@@ -42,7 +42,7 @@ endif()
 
 # Install xacro files
 ########      for every new folder in drone, it is a must to 
-install(DIRECTORY config launch models STLs xacros
+install(DIRECTORY config launch models meshes xacros
   DESTINATION share/${PROJECT_NAME}
 )
 

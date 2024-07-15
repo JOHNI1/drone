@@ -159,6 +159,13 @@ commands for the sitl:
     takeoff 30
     guided 30 30 30
 
+command to control the servo for firing!
+
+    servo set 7 1500
+
+*7 is the channel*
+*1500 is the pwm*
+
 
 
 ## making bash sript that can launch everything:

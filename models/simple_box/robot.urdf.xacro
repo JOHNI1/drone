@@ -1,23 +1,35 @@
 <?xml version="1.0"?>
 <robot name="simple_box" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <origin xyz="0 0 0" rpy="0 0 0"/>
 
-  <!-- Define the macro with an optional block parameter -->
+  <xacro:property name="prop_cw_mesh" value="$(find drone)/meshes/iris_prop_cw.dae"/>
+
+
+
+    <!-- Define the macro with an optional block parameter -->
   <xacro:macro name="my_link" params="name length:=1.0 radius:=0.5 **extra">
-    <!-- Define a default extra block -->
-    <xacro:property name="default_extra">
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-    </xacro:property>
 
     <!-- Use the parameters in the macro -->
     <link name="${name}">
       <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <cylinder length="${length}" radius="${radius}" />
+          <!-- <cylinder length="${length}" radius="${radius}" /> -->
+          <!-- <mesh filename="${prop_cw_mesh}" scale="1 1 1"/> -->
+          <!-- <mesh filename="/home/yoni/drone_ws/src/drone/meshes/iris_prop_ccw.dae" scale="1 1 1"/> -->
+          <!-- <mesh filename="/home/yoni/drone_ws/install/drone/share/drone/meshes/iris_prop_ccw.dae" scale="1 1 1"/> -->
         </geometry>
+        <material name="yellow">
+          <color rgba="1 1 0 1"/>
+        </material> 
       </visual>
       <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <cylinder length="${length}" radius="${radius}" />
+          <!-- <cylinder length="${length}" radius="${radius}" /> -->
+          <!-- <mesh filename="${prop_cw_mesh}" scale="1 1 1"/> -->
+          <!-- <mesh filename="/home/yoni/drone_ws/src/drone/meshes/iris_prop_ccw.dae" scale="1 1 1"/> -->
+          <!-- <mesh filename="/home/yoni/drone_ws/install/drone/share/drone/meshes/iris_prop_ccw.dae" scale="1 1 1"/> -->
         </geometry>
       </collision>
       <inertial>
@@ -30,8 +42,36 @@
     </link>
   </xacro:macro>
 
+
+  <link name="base_link">
+  </link>
+
+  <joint name="base_child_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="child_link"/>
+    <!-- <child link="basea_link"/>
+    <parent link="child_link"/> -->
+    <origin xyz="0 0 1"/>
+  </joint>
+
   <!-- Example usage without extra settings -->
-  <xacro:my_link name="link3">
+  <xacro:my_link name="child_link">
+    <extra>
+      <!-- This block is intentionally left empty to avoid errors -->
+    </extra>
+  </xacro:my_link>
+
+  <joint name="child_child_child_joint" type="fixed">
+    <parent link="child_link"/>
+    <child link="child_child_link"/>
+    <!-- <child link="basea_link"/>
+    <parent link="child_link"/> -->
+    <origin xyz="0 0 1"/>
+  </joint>
+
+
+    <!-- Example usage without extra settings -->
+  <xacro:my_link name="child_child_link">
     <extra>
       <!-- This block is intentionally left empty to avoid errors -->
     </extra>

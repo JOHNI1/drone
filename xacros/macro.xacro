@@ -3,7 +3,8 @@
 
     <xacro:include filename="inertial_macros.xacro"/>
 
-    <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle arm_mesh prop_mesh cw prop_size_multiplier cylinder_r cylinder_l amass aixx:='0.0001' aixy:='0' aixz:='0' aiyy:='0.0001' aiyz:='0' aizz:='0.0001' cla cp area rmass rixx rixy rixz riyy riyz rizz angle"> 
+    <!-- <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle arm_mesh prop_mesh cw prop_size_multiplier cylinder_r cylinder_l amass aixx:='0.0001' aixy:='0' aixz:='0' aiyy:='0.0001' aiyz:='0' aizz:='0.0001' cla cp area rmass rixx rixy rixz riyy riyz rizz angle">  -->
+    <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle arm_mesh prop_mesh cw prop_size_multiplier cylinder_d cylinder_l a_mass a_iner:='100000000 0 0 0 0 0' cla cp area r_mass r_iner angle"> 
         <xacro:property name="base_arm_joint" value="base_arm_joint_${num}" />
         <xacro:property name="arm_link" value="arm_link_${num}" />
         <xacro:property name="rotor_joint" value="rotor_joint_${num}" />
@@ -18,7 +19,7 @@
         </joint>
 
         <!-- <xacro:link_creator_i link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="${arm_mesh}" scale_xyz="${diameter} ${diameter} ${length}" mass="${amass}" ixx="${aixx}" ixy="${aixy}" ixz="${aixz}" iyy="${aiyy}" iyz="${aiyz}" izz="${aizz}"/> -->
-        <xacro:link_creator_i link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="${arm_mesh}" scale_xyz="${diameter} ${diameter} ${length}" mass="${amass}"/>
+        <xacro:link_creator_i link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="${arm_mesh}" scale_xyz="${diameter} ${diameter} ${length}" mass="${a_mass}" iner="${a_iner}"/>
 
 
         <joint name="${rotor_joint}" type="continuous">
@@ -35,8 +36,8 @@
                 </ode>
             </physics>
         </gazebo>
-
-        <xacro:prop_link_creator link_name="${prop_link}" pose_xyz="0 0 0.03" pose_rpy="0 -0 0" mesh_path="${prop_mesh}" scale_xyz="${prop_size_multiplier} ${prop_size_multiplier} ${prop_size_multiplier}" cylinder_r="${cylinder_r}" cylinder_l="${cylinder_l}"  mass="${rmass}" ixx="${rixx}" ixy="${rixy}" ixz="${rixz}" iyy="${riyy}" iyz="${riyz}" izz="${rizz}"/>
+        
+        <xacro:prop_link_creator link_name="${prop_link}" pose_xyz="0 0 0.03" pose_rpy="0 -0 0" mesh_path="${prop_mesh}" scale_xyz="${prop_size_multiplier} ${prop_size_multiplier} ${prop_size_multiplier}" col_scale_xyz="${cylinder_d} 0 ${cylinder_l}" mass="${r_mass}" iner="${r_iner}"/>
         
         <xacro:property name="cp_negative" value="${-1 * cp}"/>
 
@@ -112,23 +113,61 @@
                 </plugin>
             </gazebo>
         </xacro:unless>
+        <gazebo reference="${arm_link}">
+            <visual>
+                <material>
+                    <script>
+                        <name>Gazebo/DarkGrey</name>
+                    </script>
+                </material>
+            </visual>
+        </gazebo>
+        <gazebo reference="${prop_link}">
+            <visual>
+                <material>
+                    <script>
+                        <name>Gazebo/DarkGrey</name>
+                    </script>
+                </material>
+            </visual>
+        </gazebo>
     </xacro:macro>
 
 
 
 
-    <xacro:macro name="link_creator_foundation" params="link_name pose_xyz pose_rpy mesh_path:='None' scale_xyz **extra_visual **extra_settings">
+
+    <xacro:macro name="set_mesh" params="mesh scale">
+        <xacro:if value="${mesh == 'Box'}">
+            <box size="${scale}"/>
+        </xacro:if>
+        <xacro:if value="${mesh == 'Cylinder'}">
+            <xacro:property name="scale_list" value="${scale.split(' ')}" />
+            <cylinder radius="${float(scale_list[0]) / 2}" length="${scale_list[2]}"/>
+        </xacro:if>
+        <xacro:if value="${mesh == 'Sphere'}">
+            <xacro:property name="scale_list" value="${scale.split(' ')}" />
+            <sphere radius="${float(scale_list[0]) / 2}"/>
+        </xacro:if>
+        <xacro:if value="${mesh != 'Box'}">
+            <xacro:if value="${mesh != 'Cylinder'}">
+                <xacro:if value="${mesh != 'Sphere'}">
+                    <mesh filename="${mesh}" scale="${scale}"/>
+                </xacro:if>
+            </xacro:if>
+        </xacro:if>
+    </xacro:macro>
+
+
+
+
+    <xacro:macro name="link_creator_foundation" params="link_name pose_xyz pose_rpy mesh_path:='Box' scale_xyz **extra_visual **extra_settings">
 
 
         <link name="${link_name}">
             <visual>
                 <geometry>
-                    <xacro:if value="${mesh_path == 'None'}">
-                        <box size="${scale_xyz}"/>
-                    </xacro:if>
-                    <xacro:if value="${mesh_path != 'None'}">
-                        <mesh filename="${mesh_path}" scale="${scale_xyz}"/>
-                    </xacro:if>
+                    <xacro:set_mesh mesh="${mesh_path}" scale="${scale_xyz}" />
                 </geometry>
                 <origin xyz="${pose_xyz}" rpy="${pose_rpy}"/>
                 <xacro:insert_block name="extra_visual"/>
@@ -137,7 +176,7 @@
         </link>
     </xacro:macro>
 
-    <xacro:macro name="link_creator" params="link_name pose_xyz pose_rpy mesh_path:='None' scale_xyz">
+    <xacro:macro name="link_creator" params="link_name pose_xyz pose_rpy mesh_path:='Box' scale_xyz">
         <xacro:link_creator_foundation link_name="${link_name}" pose_xyz="${pose_xyz}" pose_rpy="${pose_rpy}" mesh_path="${mesh_path}" scale_xyz="${scale_xyz}">
             <extra_visual/>
             <extra_settings/>
@@ -146,14 +185,29 @@
 
 
 
-    <xacro:macro name="link_creator_i_foundation" params="link_name pose_xyz pose_rpy mesh_path:='None' scale_xyz seperate_collider_xyzrpy:='100000000 0 0 0 0 0' center_mass_xyz:='0 0 0' mass ixx:='100000000' ixy:='0' ixz:='0' iyy:='0' iyz:='0' izz:='0' **extra_collision **seperate_collider **extra_visual **extra_settings">
+    <xacro:macro name="link_creator_i_foundation" params="link_name pose_xyz pose_rpy mesh_path:='Box' col_mesh_path:='None' scale_xyz col_scale_xyz:='100000000 0 0' seperate_collider_xyzrpy:='100000000 0 0 0 0 0' center_mass_xyz:='0 0 0' mass iner:='100000000 0 0 0 0 0' **extra_collision **extra_visual **extra_settings">
         <xacro:link_creator_foundation link_name="${link_name}" pose_xyz="${pose_xyz}" pose_rpy="${pose_rpy}" mesh_path="${mesh_path}" scale_xyz="${scale_xyz}">
             
             <extra_visual><xacro:insert_block name="extra_visual"/></extra_visual>
             <extra_settings>
                 <collision>
                     <geometry>
-                        <xacro:insert_block name="seperate_collider"/>
+                        <xacro:if value="${col_scale_xyz == '100000000 0 0'}">
+                            <xacro:if value="${col_mesh_path == 'None'}">
+                                <xacro:set_mesh mesh="${mesh_path}" scale="${scale_xyz}" />
+                            </xacro:if>
+                            <xacro:if value="${col_mesh_path != 'None'}">
+                                <xacro:set_mesh mesh="${col_mesh_path}" scale="${scale_xyz}" />
+                            </xacro:if>
+                        </xacro:if>
+                        <xacro:if value="${col_scale_xyz != '100000000 0 0'}">
+                            <xacro:if value="${col_mesh_path == 'None'}">
+                                <xacro:set_mesh mesh="${mesh_path}" scale="${col_scale_xyz}" />
+                            </xacro:if>
+                            <xacro:if value="${col_mesh_path != 'None'}">
+                                <xacro:set_mesh mesh="${col_mesh_path}" scale="${col_scale_xyz}" />
+                            </xacro:if>
+                        </xacro:if>
                     </geometry>
                     <xacro:if value="${seperate_collider_xyzrpy == '100000000 0 0 0 0 0'}">
                         <origin xyz="${pose_xyz}" rpy="${pose_rpy}"/>
@@ -164,15 +218,34 @@
                     </xacro:if>
                     <xacro:insert_block name="extra_collision"/>
                 </collision>
-                <xacro:if value="${ixx == 100000000}">
+
+                <xacro:if value="${iner == '100000000 0 0 0 0 0'}">
                     <xacro:property name="scale_xyz_list" value="${scale_xyz.split(' ')}" />
-                    <xacro:inertial_box mass="${mass}" x="${scale_xyz_list[0]}" y="${scale_xyz_list[1]}" z="${scale_xyz_list[2]}" xyz="${center_mass_xyz}" rpy="0 0 0"/>
+                    <!-- <xacro:inertial_box mass="${mass}" x="${float(scale_xyz_list[0])}" y="${float(scale_xyz_list[1])}" z="${float(scale_xyz_list[2])}" xyz="${center_mass_xyz}" rpy="0 0 0"/> -->
+                    <inertial>
+                        <mass value="${mass}" />
+                        <!-- <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/> -->
+                        <!-- <inertia ixx="${float(mass) * (float(scale_xyz_list[1]) * float(scale_xyz_list[1]) + float(scale_xyz_list[2]) * float(scale_xyz_list[2])) / 12}" ixy="0" ixz="0" iyy="${float(mass) * (float(scale_xyz_list[0])*float(scale_xyz_list[0])+float(scale_xyz_list[2])*float(scale_xyz_list[2])) / 12}" iyz="0" izz="${float(mass) * (float(scale_xyz_list[1]) * float(scale_xyz_list[1]) + float(scale_xyz_list[0]) * float(scale_xyz_list[0])) / 12}" /> -->
+                        <origin xyz="${center_mass_xyz}" rpy="0 0 0"/>
+
+                        <!-- <xacro:property name="scale_x" value="${float(scale_xyz_list[0])}"/>
+                        <xacro:property name="scale_y" value="${float(scale_xyz_list[1])}"/>
+                        <xacro:property name="scale_z" value="${float(scale_xyz_list[2])}"/>
+
+                        <xacro:property name="ixx" value="${mass * (scale_y * scale_y + scale_z * scale_z) / 12}"/>
+                        <xacro:property name="iyy" value="${mass * (scale_x * scale_x + scale_z * scale_z) / 12}"/>
+                        <xacro:property name="izz" value="${mass * (scale_x * scale_x + scale_y * scale_y) / 12}"/>
+
+                        <inertia ixx="${ixx}" ixy="0" ixz="0" iyy="${iyy}" iyz="0" izz="${izz}"/> --> not working kusemek for some reason the line 238 in robot.urdf.xacro file of copterPIX doesn't allow defualt value of inertia cuz this part where we define inertia is broken cuz its a revolute joint...?????why???
+
+                    </inertial>
                 </xacro:if>
-                <xacro:if value="${ixx != 100000000}">
+                <xacro:if value="${iner != '100000000 0 0 0 0 0'}">
+                    <xacro:property name="iner_list" value="${iner.split(' ')}" />
                     <inertial>
                         <origin xyz="${center_mass_xyz}" rpy="0 0 0"/>
                         <mass value="${mass}"/>
-                        <inertia ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}"/>
+                        <inertia ixx="${iner_list[0]}" ixy="${iner_list[1]}" ixz="${iner_list[2]}" iyy="${iner_list[3]}" iyz="${iner_list[4]}" izz="${iner_list[5]}"/>
                     </inertial>
                 </xacro:if>
                 <xacro:insert_block name="extra_settings"/>
@@ -180,10 +253,9 @@
         </xacro:link_creator_foundation>
     </xacro:macro>
 
-    <xacro:macro name="link_creator_i" params="link_name pose_xyz pose_rpy mesh_path:='None' scale_xyz seperate_collider_xyzrpy:='100000000 0 0 0 0 0' center_mass_xyz:='0 0 0' mass ixx:='100000000' ixy:='0' ixz:='0' iyy:='0' iyz:='0' izz:='0'">
-        <xacro:link_creator_i_foundation link_name="${link_name}" pose_xyz="${pose_xyz}" pose_rpy="${pose_rpy}" mesh_path="${mesh_path}" scale_xyz="${scale_xyz}" seperate_collider_xyzrpy="${seperate_collider_xyzrpy}" center_mass_xyz="${center_mass_xyz}" mass="${mass}" ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}">
+    <xacro:macro name="link_creator_i" params="link_name pose_xyz pose_rpy mesh_path:='Box' col_mesh_path:='None' scale_xyz col_scale_xyz:='100000000 0 0' seperate_collider_xyzrpy:='100000000 0 0 0 0 0' center_mass_xyz:='0 0 0' mass iner:='100000000 0 0 0 0 0'">
+        <xacro:link_creator_i_foundation link_name="${link_name}" pose_xyz="${pose_xyz}" pose_rpy="${pose_rpy}" mesh_path="${mesh_path}" col_mesh_path="${col_mesh_path}" scale_xyz="${scale_xyz}" col_scale_xyz="${col_scale_xyz}" seperate_collider_xyzrpy="${seperate_collider_xyzrpy}" center_mass_xyz="${center_mass_xyz}" mass="${mass}" iner="${iner}">
             <extra_collision/>
-            <seperate_collider><mesh filename="${mesh_path}" scale="${scale_xyz}"/></seperate_collider>
             <extra_visual/>
             <extra_settings/>
         </xacro:link_creator_i_foundation>
@@ -191,9 +263,9 @@
 
 
 
-    <xacro:macro name="prop_link_creator" params="link_name pose_xyz pose_rpy mesh_path scale_xyz cylinder_r cylinder_l seperate_collider_xyzrpy:='100000000 0 0 0 0 0' center_mass_xyz:='0 0 0' mass ixx ixy ixz iyy iyz izz">
+    <xacro:macro name="prop_link_creator" params="link_name pose_xyz pose_rpy mesh_path scale_xyz col_scale_xyz seperate_collider_xyzrpy:='100000000 0 0 0 0 0' center_mass_xyz:='0 0 0' mass iner">
 
-        <xacro:link_creator_i_foundation link_name="${link_name}" pose_xyz="${pose_xyz}" pose_rpy="${pose_rpy}" mesh_path="${mesh_path}" scale_xyz="${scale_xyz}" seperate_collider_xyzrpy="${seperate_collider_xyzrpy}" center_mass_xyz="${center_mass_xyz}" mass="${mass}"  ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}">
+        <xacro:link_creator_i_foundation link_name="${link_name}" pose_xyz="${pose_xyz}" pose_rpy="${pose_rpy}" mesh_path="${mesh_path}" col_mesh_path="Cylinder" scale_xyz="${scale_xyz}" col_scale_xyz="${col_scale_xyz}" seperate_collider_xyzrpy="${seperate_collider_xyzrpy}" center_mass_xyz="${center_mass_xyz}" mass="${mass}"  iner="${iner}">
             <extra_collision>
                 <surface>
                     <contact>
@@ -203,18 +275,14 @@
                         <ode/>
                     </friction>
                 </surface>
-            </extra_collision> 
-            <seperate_collider>
-                <cylinder radius="${cylinder_r}" length="${cylinder_l}"/>
-            </seperate_collider>
+            </extra_collision>
             <extra_visual/>
             <extra_settings>
                 <velocity_decay/>
             </extra_settings>
         </xacro:link_creator_i_foundation>
         <gazebo reference="${link_name}">
-            <material>Gazebo/Red</material>
-            <gravity>1</gravity>
+            <!-- <material>Gazebo/Red</material> -->
             <self_collide>0</self_collide>
         </gazebo>
     </xacro:macro>
