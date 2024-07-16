@@ -14,7 +14,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <!-- <cylinder length="${length}" radius="${radius}" /> -->
+          <cylinder length="${length}" radius="${radius}" />
           <!-- <mesh filename="${prop_cw_mesh}" scale="1 1 1"/> -->
           <!-- <mesh filename="/home/yoni/drone_ws/src/drone/meshes/iris_prop_ccw.dae" scale="1 1 1"/> -->
           <!-- <mesh filename="/home/yoni/drone_ws/install/drone/share/drone/meshes/iris_prop_ccw.dae" scale="1 1 1"/> -->
@@ -26,7 +26,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <!-- <cylinder length="${length}" radius="${radius}" /> -->
+          <cylinder length="${length}" radius="${radius}" />
           <!-- <mesh filename="${prop_cw_mesh}" scale="1 1 1"/> -->
           <!-- <mesh filename="/home/yoni/drone_ws/src/drone/meshes/iris_prop_ccw.dae" scale="1 1 1"/> -->
           <!-- <mesh filename="/home/yoni/drone_ws/install/drone/share/drone/meshes/iris_prop_ccw.dae" scale="1 1 1"/> -->
@@ -41,6 +41,41 @@
       <xacro:insert_block name="extra" />
     </link>
   </xacro:macro>
+
+
+<xacro:macro name="aaa" params="">
+  <xacro:property name="b" value="base_link"/>
+
+
+
+  <!-- Recursive macro definition -->
+  <xacro:macro name="create_joints" params="i">
+    <xacro:if value="${i > 0}">
+      <joint name="base_child_joint_${i}" type="fixed">
+        <parent link="${b}"/>
+        <child link="box_${i}"/>
+        <origin xyz="0 0 ${i}"/>
+      </joint>
+      <link name="box_${i}">
+        <visual>
+          <geometry>
+            <box size="1 1 1"/>
+          </geometry>
+          <origin xyz="0 0 0"/>
+        </visual>
+      </link>
+
+      <!-- Recursively call the macro with a decremented count -->
+      <xacro:create_joints i="${i - 1}"/>
+    </xacro:if>
+  </xacro:macro>
+
+  <!-- Initial call to the macro with the desired number of joints -->
+  <xacro:create_joints i="5"/>
+
+  </xacro:macro>
+
+  <xacro:aaa />
 
 
   <link name="base_link">

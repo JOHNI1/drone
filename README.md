@@ -1,156 +1,400 @@
+# Setup dependencies:
 
-# setup:
+<div style="color: orange;">
 
-### Installation
-open terminal and enter
+### OS
+
+</div>
+<div style="margin-left: 40px;">
+Download Ubuntu 22.04
+</div>
+
+<div style="color: orange;">
+
+### Setup Ros2 humble 
+
+</div>
+
+<div style="margin-left: 40px;">
+
+https://ardupilot.org/dev/docs/building-setup-linux.html
+
+#### ros2 install:
+<div style="margin-left: 40px;">
+
+    sudo apt update
+
+    sudo apt upgrade
+
+    sudo apt update && sudo apt install locales
+
+    sudo locale-gen en_US en_US.UTF-8
+    
+    sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+
+    export LANG=en_US.UTF-8
+
+    sudo apt install software-properties-common
+    
+    sudo add-apt-repository universe
+
+    sudo apt update && sudo apt install curl -y
+
+    sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+    sudo apt update && sudo apt upgrade -y
+
+    sudo apt install ros-humble-desktop
+
+    sudo apt install ros-dev-tools
+    
+    sudo apt install ros-humble-gazebo-ros-pkgs
+
+    sudo apt install ros-humble-xacro
+
+    sudo apt install ros-humble-visualization-tools
+
+    sudo apt install ros-humble-ros2-control ros-humble-ros2-controllers
+
+    sudo apt install ros-humble-twist-mux
+
+    source /opt/ros/humble/setup.bash && echo "source /opt/ros/humble/setup.bash" >> .bashrc
+
+    pip install --user -U empy==3.3.4 pyros-genmsg setuptools
+</div>
+
+#### Go to .bashrc:
+<div style="margin-left: 40px;">
+
+    gedit ~/.bashrc
+</div>
+
+#### In ~/.bashrc end add this lines:
+<div style="margin-left: 40px;">
+
+    source /opt/ros/humble/setup.bash
+    source ~/ros2_ws/install/setup.bash
+    export ROS_DOMAIN_ID=1
+    export ROS_DISTRO="humble"
+</div>
+
+#### Test:
+<div style="margin-left: 40px;">
+
+    ros2 run turtlesim turtlesim_node
+</div>
+
+</div>
+
+<div style="color: orange;">
+
+### Setup ardupilot(for sitl)
+
+</div>
+
+<div style="margin-left: 40px;">
+
+
+#### ardupilot install:
+<div style="margin-left: 40px;">
+
+    sudo apt-get update
+
+    sudo apt-get install git
+
+    sudo apt-get install gitk git-gui
+
+    cd ~
+
+    git clone --recurse-submodules https://github.com/ArduPilot/ardupilot.git
+
+    cd ardupilot
+
+    Tools/environment_install/install-prereqs-ubuntu.sh -y
+    
+    . ~/.profile
+
+</div>
+
+*If there have been updates to some git submodules you may need to do a full clean build. To do that use:*
+<div style="margin-left: 40px;">
+
+    ~/ardupilot/waf clean
+</div>
+</div>
+
+
+<div style="color: orange;">
+
+### Setup ardupilot plugin(for gazebo)
+
+</div>
+
+<div style="margin-left: 40px;">
+
+https://ardupilot.org/dev/docs/sitl-with-gazebo-legacy.html
+
+#### ardupilot plugin install:
+<div style="margin-left: 40px;">
+
+    cd ~
+
+    sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
+
+    wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+
+    sudo apt update
+
+    git clone https://github.com/khancyr/ardupilot_gazebo
+
+    cd ardupilot_gazebo
+
+    mkdir build
+
+    cd build
+
+    cmake ..
+
+    make -j4
+
+    sudo make install
+
+</div>
+
+#### Go to .bashrc:
+<div style="margin-left: 40px;">
+
+    gedit ~/.bashrc
+</div>
+
+#### In ~/.bashrc end add this lines:
+<div style="margin-left: 40px;">
+
+    source /usr/share/gazebo/setup.sh
+    export GAZEBO_MODEL_PATH=~/ardupilot_gazebo/models:${GAZEBO_MODEL_PATH}
+    export GAZEBO_MODEL_PATH=~/ardupilot_gazebo/models_gazebo:${GAZEBO_MODEL_#PATH}
+    export GAZEBO_RESOURCE_PATH=~/ardupilot_gazebo/worlds:${GAZEBO_RESOURCE_PATH}
+    export GAZEBO_PLUGIN_PATH=~/ardupilot_gazebo/build:${GAZEBO_PLUGIN_PATH}
+</div>
+<div style="color: red;">
+
+**now RESTART UBUNTU!**
+
+</div>
+
+
+#### Test:
+<div style="margin-left: 40px;">
+<div style="color: lightblue;">
+<h4>On 1nd Terminal(Launch Gazebo with demo 3DR Iris model)</h4>
+</div>
+<div style="margin-left: 40px;">
+
+    gazebo --verbose worlds/iris_arducopter_runway.world
+</div>
+<div style="color: lightblue;">
+<h4>On 2st Terminal(Launch ArduCopter SITL)</h4>
+</div>
+<div style="margin-left: 40px;">
+
+    sim_vehicle.py -v ArduCopter -f gazebo-iris --map --console
+
+Wait untill you see:
+<div style="color: green;">AP: EKF3 IMU1 is using GPS</div>
+<div style="color: green;">AP: EKF3 IMU0 is using GPS</div>
+<div style="color: white;">Flight battery 100 percent</div>
+
+<br>
+
+Then enter:
+
+    mode guided
+    arm throttle
+    takeoff 30
+    guided 30 30 30
+</div>
+</div>
+</div>
+
+
+
+
+# Setup The Drone! <!--# Setup The Drone!# Setup The Drone!# Setup The Drone!# Setup The Drone!# Setup The Drone!# Setup The Drone!# Setup The Drone!-->
+
+
+<div style="color: orange;">
+
+### Getting the drone package
+
+</div>
+
+<div style="margin-left: 40px;">
+
+#### Create the work space and import the drone package from github and build:
+<div style="margin-left: 40px;">
 
     cd ~
     mkdir -p drone_ws/src
     cd drone_ws/src
     git clone https://github.com/JOHNI1/drone
-
-you must first go to work space folder where src is the sub directory which contains the drone folder.(like ros_ws or drone_ws)
-there enter the command:
-
     cd ~/drone_ws
     colcon build --symlink-install
+
+</div>
 <div style="color: red;">MAKE SURE TO ALWAYS redo the colcon build --symlink-install if you make changes to the src/drone folder like adding file</div>
 
-then make sure in ~/.bashrc you have(in this example, the work space is called drone_ws located in ~/):
+#### Go to .bashrc:
+<div style="margin-left: 40px;">
+
+    gedit ~/.bashrc
+</div>
+
+#### In ~/.bashrc end add this line:
+<div style="margin-left: 40px;">
 
     source ~/drone_ws/install/setup.bash
-<div style="color: red;">MAKE SURE TO ALWAYS source after doing colcon build --symlink-install</div>
+</div>
+<div style="color: red;">MAKE SURE TO ALWAYS source or open new terminal that redoes source, after doing colcon build --symlink-install</div>
+
+</div>
+
+<div style="color: orange;">
 
 ### Sitl configuration
 
-GO TO:
+</div>
+<div style="margin-left: 40px;">
 
-    cd ~/ardupilot/Tools/autotest/default_params
+#### Make a new sitl parm file for hexa(lets call it gazebo-hexa.parm):
+<div style="margin-left: 40px;">
 
-DO:
+    gedit ~/ardupilot/Tools/autotest/default_params/gazebo-hexa.parm
 
-    gedit gazebo-hexa.parm
+copy paste this into gazebo-hexa.parm:
 
-AND COPY PASTE:
+    # Hexa is X frame
+    FRAME_CLASS	2
+    FRAME_TYPE	1
 
-        # Hexa is X frame
-        FRAME_CLASS	2
-        FRAME_TYPE	1
+    # IRLOCK FEATURE
+    RC8_OPTION 39
+    PLND_ENABLED    1
+    PLND_TYPE       3
 
-        # IRLOCK FEATURE
-        RC8_OPTION 39
-        PLND_ENABLED    1
-        PLND_TYPE       3
+    # SONAR FOR IRLOCK
+    SIM_SONAR_SCALE 10
+    RNGFND1_TYPE 1
+    RNGFND1_SCALING 10
+    RNGFND1_PIN 0
+    RNGFND1_MAX_CM 5000
+    
+    # Servo configuration
+    SERVO7_FUNCTION 1  # Setting SERVO5 to RC passthrough <-- for the gun servo trigger!
+    SERVO7_MIN 1000
+    SERVO7_MAX 2000
+    SERVO7_TRIM 1500
+    SERVO7_REVERSED 0
+    #    ↑ use SERVO 7 for channel 6 cuz ardupilot channels count from 1 but ardupilot plugin for gazebo counts from 0!!!!
 
-        # SONAR FOR IRLOCK
-        SIM_SONAR_SCALE 10
-        RNGFND1_TYPE 1
-        RNGFND1_SCALING 10
-        RNGFND1_PIN 0
-        RNGFND1_MAX_CM 5000
-        
-        # Servo configuration
-        SERVO7_FUNCTION 1  # Setting SERVO5 to RC passthrough <-- for the gun servo trigger!
-        SERVO7_MIN 1000
-        SERVO7_MAX 2000
-        SERVO7_TRIM 1500
-        SERVO7_REVERSED 0
-        #    ↑ use SERVO 7 for channel 6 cuz ardupilot channels count from 1 but ardupilot plugin for gazebo counts from 0!!!!
+<div style="color: pink;">↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑THE FRAME_CLASS 2 IS FOR HEXA and FRAME_TYPE 1 IS FOR X FRAME!↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ </div>
 
-↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑THE FRAME_CLASS 2 IS FOR HEXA and FRAME_TYPE 1 IS FOR X FRAME!↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ 
-TO SAVE PRESS:
-    control+o
-    control+m
-    control+x
+To save press:
+<div style="color: white;">
+
+control+o   <br>
+control+m   <br>
+control+x
+</div>
+</div>
 
 
-OPEN in vscode:
 
-    code ~/ardupilot/Tools/autotest/pysim/vehicleinfo.py
 
-AND SEARCH: 
 
-    gazebo-iris
+
+
+
+
+#### Add the new gazebo-hexa.parm file to vehicleinfo:
+<div style="margin-left: 40px;">
+
+    gedit ~/ardupilot/Tools/autotest/pysim/vehicleinfo.py
+
+In the vehicleinfo.py search for:
+<div style="color: white;">
+<div style="margin-left: 40px;">
+gazebo-iris
+</div></div>
+<br>
 
 Find this:
+<div style="color: white;">
+<div style="margin-left: 40px;">
+<div style="margin-left: 0px;">"gazebo-iris": {</div>
+<div style="margin-left: 40px;">    "waf_target": "bin/arducopter",</div>
+<div style="margin-left: 40px;">    "default_params_filename": ["default_params/copter.parm",</div>
+<div style="margin-left: 225px;">                                "default_params/gazebo-iris.parm"],</div>
+<div style="margin-left: 40px;">    "external": True,</div>
+<div style="margin-left: px;">},</div>
+</div></div>
+<br>
 
-            "gazebo-iris": {
-                "waf_target": "bin/arducopter",
-                "default_params_filename": ["default_params/copter.parm",
-                                            "default_params/gazebo-iris.parm"],
-                "external": True,
-            },
-So under it add this:
+Under it add this:
 
-            "gazebo-hexa": {
-                "waf_target": "bin/arducopter",
-                "default_params_filename": ["default_params/copter.parm",
-                                            "default_params/gazebo-hexa.parm"],
-                "external": True,
-            },
+    "gazebo-hexa": {
+        "waf_target": "bin/arducopter",
+        "default_params_filename": ["default_params/copter.parm",
+                                    "default_params/gazebo-hexa.parm"],
+        "external": True,
+    },
 
-**SAVE IT!**
+To save press:
+<div style="color: white;">
 
-(basically the sitl parameters are defined by conbining the two files:
+control+o   <br>
+control+m   <br>
+control+x
+</div>
 
-*default_params/copter.parm* and *default_params/gazebo-hexa.parm* <- which is the file you created)
+<div style="color: pink;">
+basically the sitl parameters are defined by conbining the two files:
+
+*default_params/copter.parm* and *default_params/gazebo-hexa.parm* <- which is the file you created
+</div>
+</div>
+</div>
+</div>
 
 
 
 
-# to launch the simulation:
+<div style="color: orange;">
 
+### Launching the simulation:
 
-**in one terminal:**
-if you cloned drone to ~/drone_ws/src, do:
-    cd ~/drone_ws
+</div>
+<div style="margin-left: 40px;">
+
+**In one terminal:**
+<div style="margin-left: 40px;">
+
     ros2 launch drone sim.launch.py model:=simple_box world:=./src/drone/config/default.world 
+</div>
 
 
+**In another terminal:**
+<div style="margin-left: 40px;">
 
-**in another terminal:**
     sim_vehicle.py -v ArduCopter -f gazebo-hexa --console --map
 
+Wait untill you see:
+<div style="color: green;">AP: EKF3 IMU1 is using GPS</div>
+<div style="color: green;">AP: EKF3 IMU0 is using GPS</div>
+<div style="color: white;">Flight battery 100 percent</div>
 
-in the terminal, wait till it prints out all of the following logs:
-
-    online system 1
-    Mode STABILIZE
-    AP_IRLock_SITL::init()
-    AP: ArduCopter V4.6.0-dev (24250233)
-    AP: 29180a5b5ad9472691c27cb85cbd850a
-    AP: Frame: HEXA/X
-    AP: Barometer 1 calibration complete
-    AP: Barometer 2 calibration complete
-    Init Gyro*******
-    AP: ArduPilot Ready
-    AP: AHRS: DCM active
-    fence present
-    AP: RC7: SaveWaypoint LOW
-    Flight battery 100 percent
-    AP: RC8: PrecisionLoiter MIDDLE
-    AP: PreArm: Accels inconsistent
-    AP: PreArm: EKF attitude is bad
-    AP: PreArm: AHRS: not using configured AHRS type
-    AP: EKF3 IMU0 initialised
-    AP: EKF3 IMU1 initialised
-    AP: AHRS: EKF3 active
-    AP: EKF3 IMU0 tilt alignment complete
-    AP: EKF3 IMU1 tilt alignment complete
-    AP: EKF3 IMU0 MAG0 initial yaw alignment complete
-    AP: EKF3 IMU1 MAG0 initial yaw alignment complete
-    AP: GPS 1: probing for u-blox at 230400 baud
-    AP: GPS 1: detected u-blox
-    AP: EKF3 IMU1 origin set
-    AP: EKF3 IMU0 origin set
-    AP: Field Elevation Set: 584m
-    pre-arm good
-    AP: EKF3 IMU0 is using GPS
-    AP: EKF3 IMU1 is using GPS
-    Flight battery 100 percent
-
-**make sure you see the Flight battery 100 percent, only then you can send commands to the sitl to arm and takeoff.**
-
+<br>
 
 commands for the sitl:
 
@@ -163,17 +407,30 @@ command to control the servo for firing!
 
     servo set 7 1500
 
-*7 is the channel*
-*1500 is the pwm*
+<div style="color: pink;">
 
+*7 is the channel and 1500 is the pwm*
 
+</div>
 
-## making bash sript that can launch everything:
+</div>
+</div>
 
-make a file called:
-    run_sim.sh
+<div style="color: orange;">
+<h3>  Making bash sript that can launch everything (*extra*) </h3>
+</div>
 
-and copy this into it:
+<div style="margin-left: 40px;">
+
+#### Make a file called run_sim.sh:
+<div style="margin-left: 40px;">
+
+    mkdir ~/drone_ws/sim_lanch
+    gedit ~/drone_ws/sim_lanch/run_sim.sh
+</div>
+
+#### And copy paste this into run_sim.sh:
+<div style="margin-left: 40px;">
 
     #!/bin/bash
 
@@ -183,15 +440,14 @@ and copy this into it:
     # Open the second terminal for ArduPilot vehicle simulation
     gnome-terminal --tab --title="ArduPilot Vehicle Sim" -e "bash -c 'sim_vehicle.py -v ArduCopter -f gazebo-hexa --console --map; exec bash'" &
 
-    # Open the third terminal for MissionPlanner
-    gnome-terminal --tab --title="ArduPilot Vehicle Sim" -e "bash -c 'mono ~/Downloads/MissionPlanner-latest/MissionPlanner.exe; exec bash'" &
-
     # Wait for both terminals to close
     wait
+</div>
 
-to run it, go to its directory and just enter:
+#### To run it, go to its directory and just enter:
+<div style="margin-left: 40px;">
 
     ./run_sim.sh
+</div>
 
-
-
+</div>

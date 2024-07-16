@@ -1,151 +1,117 @@
 <?xml version="1.0" ?>
 <robot name="copterPIX" xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <origin xyz="0 0 0.6" rpy="0 0 0"/>
+
 
   <xacro:include filename="$(find drone)/xacros/macro.xacro"/>
+  <xacro:include filename="$(find drone)/xacros/drone_maker.xacro"/>
   <xacro:include filename="ardupilot_plugin.xacro"/>
 
 
-  <xacro:property name="hex_mesh" value="$(find drone)/meshes/hexagonal_prism_height_1_outer_diameter_1.stl"/>
   <xacro:property name="prop_cw_mesh" value="$(find drone)/meshes/iris_prop_cw.dae"/>
   <xacro:property name="prop_ccw_mesh" value="$(find drone)/meshes/iris_prop_ccw.dae"/>
+  <xacro:property name="prop_meshs" value="${prop_cw_mesh} ${prop_ccw_mesh} ${prop_cw_mesh} ${prop_ccw_mesh} ${prop_ccw_mesh} ${prop_cw_mesh}"/>
 
-  <xacro:property name="g_mms_to_kg_ms" value="1000000000"/>
-
-  <xacro:property name="mass" value="19" />
-  <!-- <xacro:property name="ixx" value="${373162267137.9 / g_mms_to_kg_ms}"/>  these values are not valid, they are stupid wrong
-    <xacro:property name="ixy" value="${19971359238.18 / g_mms_to_kg_ms}"/>
-    <xacro:property name="ixz" value="${-71155586006.28 / g_mms_to_kg_ms}"/>
-    <xacro:property name="iyy" value="${595713038514.03 / g_mms_to_kg_ms}"/>
-    <xacro:property name="iyz" value="${50504029566.32 / g_mms_to_kg_ms}"/>
-    <xacro:property name="izz" value="${574188826210.05 / g_mms_to_kg_ms}"/> 
-  -->
-  <xacro:property name="center_of_mass" value="0 0 0"/>
-
-  
-  
-  <xacro:link_creator_i link_name="base_link" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="${hex_mesh}" scale_xyz="0.4 0.4 0.04" center_mass_xyz="${center_of_mass}" mass="${mass}"/>
+  <xacro:property name="hex_mesh" value="$(find drone)/meshes/hexagonal_prism_height_1_outer_diameter_1.stl"/>
 
 
+<!-- 
+  <xacro:property name="ixx" value="${373162267137.9 / g_mms_to_kg_ms}"/>  these values are not valid, they are stupid wrong
+  <xacro:property name="ixy" value="${19971359238.18 / g_mms_to_kg_ms}"/>
+  <xacro:property name="ixz" value="${-71155586006.28 / g_mms_to_kg_ms}"/>
+  <xacro:property name="iyy" value="${595713038514.03 / g_mms_to_kg_ms}"/>
+  <xacro:property name="iyz" value="${50504029566.32 / g_mms_to_kg_ms}"/>
+  <xacro:property name="izz" value="${574188826210.05 / g_mms_to_kg_ms}"/> 
 
-  <joint name="leg_0_link_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="leg_0_link"/>
-  </joint>
-  <xacro:link_creator_i link_name="leg_0_link" pose_xyz="0 0.198 -0.305" pose_rpy="0.305 0 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.61" mass="0.5"/>
-  <joint name="leg_1_link_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="leg_1_link"/>
-  </joint>
-  <xacro:link_creator_i link_name="leg_1_link" pose_xyz="0 -0.198 -0.305" pose_rpy="-0.305 0 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.61" mass="0.5"/>
+  <xacro:property name="iner" value="${ixx} ${ixy} ${ixz} ${iyy} ${iyz} ${izz}" />
+-->
 
-
-
-  <joint name="feet_0_link_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="feet_0_link"/>
-  </joint>
-  <xacro:link_creator_i link_name="feet_0_link" pose_xyz="0 0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.58" mass="0.5"/>
-
-  <joint name="feet_1_link_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="feet_1_link"/>
-  </joint>
-  <xacro:link_creator_i link_name="feet_1_link" pose_xyz="0 -0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.58" mass="0.5"/>
-
-
-
-
-  <!-- Define the drone arms using the macro -->
-  <xacro:property name="deg_to_rad" value="0.0174533"/>
-
-  <xacro:property name="dfc" value = "0.175"/>
-  <xacro:property name="leng" value="0.56"/>
-  <xacro:property name="dia" value="0.025"/>
-  <xacro:property name="aia" value="5"/>
-
-  <xacro:property name="psm" value="2.34"/>
+  <xacro:property name="base_mesh" value="${hex_mesh}"/>
+  <xacro:property name="base_pose_xyz" value="0 0 0"/>
+  <xacro:property name="base_pose_rpy" value="0 0 0"/>
+  <xacro:property name="base_scale_xyz" value="0.4 0.4 0.04"/>
+  <xacro:property name="base_center_of_mass" value=""/>
+  <xacro:property name="base_mass" value="19" />
+  <xacro:property name="base_iner" value="None"/>
+  <xacro:property name="number_of_arms" value="6"/>
+  <xacro:property name="arm_angles" value="0 180 120 300 60 240"/>
+  <xacro:property name="cws" value="true false true false false true"/>
+  <xacro:property name="prop_meshs" value="${prop_cw_mesh} ${prop_ccw_mesh} ${prop_cw_mesh} ${prop_ccw_mesh} ${prop_ccw_mesh} ${prop_cw_mesh}"/>
+  <xacro:property name="dis_from_center" value="0.175"/>
+  <xacro:property name="length" value="0.56"/>
+  <xacro:property name="diameter" value="0.025"/>
+  <xacro:property name="arm_incline_angle" value="5"/>
+  <xacro:property name="arm_mesh" value="${hex_mesh}"/>
+  <xacro:property name="prop_size_multiplier" value="2.34"/>
   <xacro:property name="cylinder_d" value="0.55"/>
   <xacro:property name="cylinder_l" value="0.02"/>
-  
+  <xacro:property name="a_mass" value="0.5"/>
+  <xacro:property name="a_iner" value="None"/>
   <xacro:property name="cla" value="4.3"/>
   <xacro:property name="cp" value="0.2"/>
   <xacro:property name="area" value="0.01"/>
-
-  <xacro:property name="a_mass" value="0.5"/>
-
   <xacro:property name="r_mass" value="0.2"/>
   <xacro:property name="r_iner" value="0.000312 0 0 0.0053345 0 0.005363328"/>
 
-  <xacro:drone_arm num="0" parent_link="base_link" dis_from_center="${dfc}" length="${leng}" diameter="${dia}" arm_incline_angle="${aia * deg_to_rad}" arm_mesh="${hex_mesh}" prop_mesh="${prop_cw_mesh}"  cw="true"  prop_size_multiplier="${psm}" cylinder_d="${cylinder_d}" cylinder_l="${cylinder_l}" a_mass="${a_mass}"  cla="${cla}" cp="${cp}" area="${area}" r_mass="${r_mass}" r_iner="${r_iner}" angle="${0 * deg_to_rad}"/>
-  <xacro:drone_arm num="1" parent_link="base_link" dis_from_center="${dfc}" length="${leng}" diameter="${dia}" arm_incline_angle="${aia * deg_to_rad}" arm_mesh="${hex_mesh}" prop_mesh="${prop_ccw_mesh}" cw="false" prop_size_multiplier="${psm}" cylinder_d="${cylinder_d}" cylinder_l="${cylinder_l}" a_mass="${a_mass}"  cla="${cla}" cp="${cp}" area="${area}" r_mass="${r_mass}" r_iner="${r_iner}" angle="${180 * deg_to_rad}"/>
-  <xacro:drone_arm num="2" parent_link="base_link" dis_from_center="${dfc}" length="${leng}" diameter="${dia}" arm_incline_angle="${aia * deg_to_rad}" arm_mesh="${hex_mesh}" prop_mesh="${prop_cw_mesh}"  cw="true"  prop_size_multiplier="${psm}" cylinder_d="${cylinder_d}" cylinder_l="${cylinder_l}" a_mass="${a_mass}"  cla="${cla}" cp="${cp}" area="${area}" r_mass="${r_mass}" r_iner="${r_iner}" angle="${120 * deg_to_rad}"/>
-  <xacro:drone_arm num="3" parent_link="base_link" dis_from_center="${dfc}" length="${leng}" diameter="${dia}" arm_incline_angle="${aia * deg_to_rad}" arm_mesh="${hex_mesh}" prop_mesh="${prop_ccw_mesh}" cw="false" prop_size_multiplier="${psm}" cylinder_d="${cylinder_d}" cylinder_l="${cylinder_l}" a_mass="${a_mass}"  cla="${cla}" cp="${cp}" area="${area}" r_mass="${r_mass}" r_iner="${r_iner}" angle="${300 * deg_to_rad}"/>
-  <xacro:drone_arm num="4" parent_link="base_link" dis_from_center="${dfc}" length="${leng}" diameter="${dia}" arm_incline_angle="${aia * deg_to_rad}" arm_mesh="${hex_mesh}" prop_mesh="${prop_ccw_mesh}" cw="false" prop_size_multiplier="${psm}" cylinder_d="${cylinder_d}" cylinder_l="${cylinder_l}" a_mass="${a_mass}"  cla="${cla}" cp="${cp}" area="${area}" r_mass="${r_mass}" r_iner="${r_iner}" angle="${60 * deg_to_rad}"/>
-  <xacro:drone_arm num="5" parent_link="base_link" dis_from_center="${dfc}" length="${leng}" diameter="${dia}" arm_incline_angle="${aia * deg_to_rad}" arm_mesh="${hex_mesh}" prop_mesh="${prop_cw_mesh}"  cw="true"  prop_size_multiplier="${psm}" cylinder_d="${cylinder_d}" cylinder_l="${cylinder_l}" a_mass="${a_mass}"  cla="${cla}" cp="${cp}" area="${area}" r_mass="${r_mass}" r_iner="${r_iner}" angle="${240 * deg_to_rad}"/>
+
+  <xacro:drone_maker base_mesh="${base_mesh}" base_pose_xyz ="${base_pose_xyz}" base_pose_rpy="${base_pose_rpy}" base_scale_xyz="${base_scale_xyz}"
+                     base_center_of_mass="${base_center_of_mass}" base_mass="${base_mass}" base_iner="${base_iner}"
+                     number_of_arms="${number_of_arms}" arm_angles="${arm_angles}" cws="${cws}" prop_meshs="${prop_meshs}"
+                     dis_from_center="${dis_from_center}" length="${length}" diameter="${diameter}" 
+                     arm_incline_angle="${arm_incline_angle}" arm_mesh="${arm_mesh}" prop_size_multiplier="${prop_size_multiplier}" 
+                     cylinder_d="${cylinder_d}" cylinder_l="${cylinder_l}" a_mass="${a_mass}" a_iner="${a_iner}" 
+                     cla="${cla}" area="${area}" r_mass="${r_mass}"  r_iner="${r_iner}">
   
+    <extra_settings>
+
+      <joint name="leg_0_link_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="leg_0_link"/>
+      </joint>
+      <xacro:link_creator_i link_name="leg_0_link" pose_xyz="0 0.198 -0.305" pose_rpy="0.305 0 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.61" mass="0.5"/>
+      <joint name="leg_1_link_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="leg_1_link"/>
+      </joint>
+      <xacro:link_creator_i link_name="leg_1_link" pose_xyz="0 -0.198 -0.305" pose_rpy="-0.305 0 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.61" mass="0.5"/>
+
+      <joint name="feet_0_link_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="feet_0_link"/>
+      </joint>
+      <xacro:link_creator_i link_name="feet_0_link" pose_xyz="0 0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.58" mass="0.5"/>
+
+      <joint name="feet_1_link_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="feet_1_link"/>
+      </joint>
+      <xacro:link_creator_i link_name="feet_1_link" pose_xyz="0 -0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.58" mass="0.5"/>
 
 
 
+      <joint name="fire_trigger_servo_joint" type="revolute">
+        <parent link="base_link"/>
+        <child link="fire_trigger_servo_link"/>
+        <origin xyz="0 0 -0.45" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit effort="10000" velocity="4" lower="${pi * -0.5}" upper="${pi * 0.5}"/>
+        <dynamics damping="0.1" friction="0"/>
+      </joint>
+      <gazebo reference="fire_trigger_servo_joint">
+        <physics>
+          <ode>
+            <implicit_spring_damper>1.0</implicit_spring_damper>
+          </ode>
+        </physics>
+      </gazebo>
 
-  <joint name="imu_joint" type="revolute">
-    <parent link="base_link"/>
-    <child link="imu_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    <axis xyz="0 0 1"/>
-    <limit effort="0" velocity="0" lower="0" upper="0"/>
-    <dynamics damping="1" friction="0"/>
-    <!-- <use_parent_model_frame>1</use_parent_model_frame> ASDFASDFASDFAASDFHASDCXVZAS;Q34-9057ASOGHSDFAAAASDGCHANGE ME CHANGE ME CUZ i'M RISKY!!!!!!!!!!!!-->
-  </joint>
-  <gazebo reference="imu_joint">
-    <physics>
-      <ode>
-        <implicit_spring_damper>1</implicit_spring_damper>
-      </ode>
-    </physics>
-  </gazebo>
-
-  <link name="imu_link">
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="0.15"/>
-      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00002" iyz="0" izz="0.00002"/>
-    </inertial>
-  </link>
-  <gazebo reference="imu_link">
-    <sensor name="imu_sensor" type="imu">
-      <pose>0 0 0 3.141593 0 0</pose>
-      <always_on>1</always_on>
-      <update_rate>1000.0</update_rate>
-    </sensor>
-  </gazebo>
-
-
-
-
-  <joint name="fire_trigger_servo_joint" type="revolute">
-    <parent link="base_link"/>
-    <child link="fire_trigger_servo_link"/>
-    <origin xyz="0 0 -0.45" rpy="0 0 0"/>
-    <axis xyz="0 0 1"/>
-    <limit effort="10000" velocity="4" lower="${pi * -0.5}" upper="${pi * 0.5}"/>
-    <dynamics damping="0.1" friction="0"/>
-  </joint>
-  <gazebo reference="fire_trigger_servo_joint">
-    <physics>
-      <ode>
-        <implicit_spring_damper>1</implicit_spring_damper>
-      </ode>
-    </physics>
-  </gazebo>
-
-  <xacro:link_creator_i link_name="fire_trigger_servo_link" mesh_path="Box" pose_xyz="0 0 0" pose_rpy="0 0 0" scale_xyz="0.04 0.009 0.009" mass="0.05" iner="0.001 0 0 0.001 0 0.001"/>  <!--it is neccessary to specify the value here because the inertia becomes too small if done automatically for the following link with such small mass and size!-->
-  <gazebo reference="fire_trigger_servo_link">
-    <material>Gazebo/Red</material>
-    <self_collide>0</self_collide>
-  </gazebo>
-
+      <xacro:link_creator_i link_name="fire_trigger_servo_link" mesh_path="Box" pose_xyz="0 0 0" pose_rpy="0 0 0" scale_xyz="0.04 0.009 0.009" mass="0.05" iner="0.001 0 0 0.001 0 0.001"/>  <!--it is neccessary to specify the value here because the inertia becomes too small if done automatically for the following link with such small mass and size!-->
+      <gazebo reference="fire_trigger_servo_link">
+        <material>Gazebo/Red</material>
+        <self_collide>0</self_collide>
+      </gazebo>
+    </extra_settings>
+  </xacro:drone_maker>
+  
 </robot>
 
 
