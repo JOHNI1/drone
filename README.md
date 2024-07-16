@@ -1,19 +1,21 @@
 # Setup dependencies:
 
-<div style="color: orange;">
+<h3>
 
-### OS
+${\color{orange}OS}$
+
+</h3>
 
 </div>
 <div style="margin-left: 40px;">
 Download Ubuntu 22.04
 </div>
 
-<div style="color: orange;">
+<h3>
 
-### Setup Ros2 humble 
+${\color{orange}Setup \space Ros2 \space humble}$
 
-</div>
+</h3>
 
 <div style="margin-left: 40px;">
 
@@ -88,11 +90,35 @@ https://ardupilot.org/dev/docs/building-setup-linux.html
 
 </div>
 
-<div style="color: orange;">
+<h3>
 
-### Setup ardupilot(for sitl)
+${\color{orange}Setup \space Gazebo \space classic}$
+
+</h3>
+<div style="margin-left: 40px;">
+
+    sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
+    
+    cat /etc/apt/sources.list.d/gazebo-stable.list
+    
+    wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+    
+    sudo apt-get update
+    
+    sudo apt-get install gazebo
+    
+    sudo apt-get install libgazebo-dev
+
+#### To verify installation enter the command:
+
+    gazebo --verbose
 
 </div>
+<h3>
+
+${\color{orange}Setup \space ardupilot(for \space sitl)}$
+
+</h3>
 
 <div style="margin-left: 40px;">
 
@@ -126,11 +152,11 @@ https://ardupilot.org/dev/docs/building-setup-linux.html
 </div>
 
 
-<div style="color: orange;">
+<h3>
 
-### Setup ardupilot plugin(for gazebo)
+${\color{orange}Setup \space ardupilot \space plugin(for \space gazebo)}$
 
-</div>
+</h3>
 
 <div style="margin-left: 40px;">
 
@@ -174,7 +200,7 @@ https://ardupilot.org/dev/docs/sitl-with-gazebo-legacy.html
 
     source /usr/share/gazebo/setup.sh
     export GAZEBO_MODEL_PATH=~/ardupilot_gazebo/models:${GAZEBO_MODEL_PATH}
-    export GAZEBO_MODEL_PATH=~/ardupilot_gazebo/models_gazebo:${GAZEBO_MODEL_#PATH}
+    export GAZEBO_MODEL_PATH=~/ardupilot_gazebo/models_gazebo:${GAZEBO_MODEL_PATH}
     export GAZEBO_RESOURCE_PATH=~/ardupilot_gazebo/worlds:${GAZEBO_RESOURCE_PATH}
     export GAZEBO_PLUGIN_PATH=~/ardupilot_gazebo/build:${GAZEBO_PLUGIN_PATH}
 </div>
@@ -224,11 +250,11 @@ Then enter:
 # Setup The Drone! <!--# Setup The Drone!# Setup The Drone!# Setup The Drone!# Setup The Drone!# Setup The Drone!# Setup The Drone!# Setup The Drone!-->
 
 
-<div style="color: orange;">
+<h3>
 
-### Getting the drone package
+${\color{orange}Getting \space the \space drone \space package}$
 
-</div>
+</h3>
 
 <div style="margin-left: 40px;">
 
@@ -260,11 +286,13 @@ Then enter:
 
 </div>
 
-<div style="color: orange;">
+<h3>
 
-### Sitl configuration
+${\color{orange}Sitl \space configuration}$
 
-</div>
+</h3>
+
+
 <div style="margin-left: 40px;">
 
 #### Make a new sitl parm file for hexa(lets call it gazebo-hexa.parm):
@@ -370,11 +398,12 @@ basically the sitl parameters are defined by conbining the two files:
 
 
 
-<div style="color: orange;">
+<h3>
 
-### Launching the simulation:
+${\color{orange}Launching \space the \space simulation:}$
 
-</div>
+</h3>
+
 <div style="margin-left: 40px;">
 
 **In one terminal:**
@@ -416,9 +445,13 @@ command to control the servo for firing!
 </div>
 </div>
 
-<div style="color: orange;">
-<h3>  Making bash sript that can launch everything (*extra*) </h3>
-</div>
+
+<h3>
+
+${\color{orange}Making \space bash \space sript \space that \space can \space launch \space everything \space (*extra*)}$
+
+</h3>
+
 
 <div style="margin-left: 40px;">
 

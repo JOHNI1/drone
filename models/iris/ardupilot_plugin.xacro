@@ -1,0 +1,117 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:property name="multiplier" value="800"/>
+    <xacro:property name="multiplier_negative" value="${-1 * multiplier}"/>
+    <gazebo>
+        <plugin name="arducopter_plugin" filename="libArduPilotPlugin.so">
+            <fdm_addr>127.0.0.1</fdm_addr>
+            <fdm_port_in>9002</fdm_port_in>
+            <fdm_port_out>9003</fdm_port_out>
+            <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+            <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+            <imuName>imu_link::imu_sensor</imuName>
+            <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+
+            <!-- Control channels -->
+            <control channel="0">
+                <type>VELOCITY</type>
+                <offset>0</offset>
+                <p_gain>0.20</p_gain>
+                <i_gain>0</i_gain>
+                <d_gain>0</d_gain>
+                <i_max>0</i_max>
+                <i_min>0</i_min>
+                <cmd_max>2.5</cmd_max>
+                <cmd_min>-2.5</cmd_min>
+                <jointName>rotor_joint_0</jointName>
+                <multiplier>${multiplier_negative}</multiplier>
+                <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+            </control>
+            <control channel="1">
+                <type>VELOCITY</type>
+                <offset>0</offset>
+                <p_gain>0.20</p_gain>
+                <i_gain>0</i_gain>
+                <d_gain>0</d_gain>
+                <i_max>0</i_max>
+                <i_min>0</i_min>
+                <cmd_max>2.5</cmd_max>
+                <cmd_min>-2.5</cmd_min>
+                <jointName>rotor_joint_1</jointName>
+                <multiplier>${multiplier}</multiplier>
+                <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+            </control>
+            <control channel="2">
+                <type>VELOCITY</type>
+                <offset>0</offset>
+                <p_gain>0.20</p_gain>
+                <i_gain>0</i_gain>
+                <d_gain>0</d_gain>
+                <i_max>0</i_max>
+                <i_min>0</i_min>
+                <cmd_max>2.5</cmd_max>
+                <cmd_min>-2.5</cmd_min>
+                <jointName>rotor_joint_2</jointName>
+                <multiplier>${multiplier_negative}</multiplier>
+                <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+            </control>
+            <control channel="3">
+                <type>VELOCITY</type>
+                <offset>0</offset>
+                <p_gain>0.20</p_gain>
+                <i_gain>0</i_gain>
+                <d_gain>0</d_gain>
+                <i_max>0</i_max>
+                <i_min>0</i_min>
+                <cmd_max>2.5</cmd_max>
+                <cmd_min>-2.5</cmd_min>
+                <jointName>rotor_joint_3</jointName>
+                <multiplier>${multiplier}</multiplier>
+                <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+            </control>
+            <control channel="6">
+                <jointName>fire_trigger_servo_joint</jointName>
+                <multiplier>1</multiplier>
+                <offset>0</offset>
+                <type>POSITION</type>
+                <p_gain>1.0</p_gain>
+                <i_gain>0</i_gain>
+                <d_gain>0</d_gain>
+                <i_max>0</i_max>
+                <i_min>0</i_min>
+                <cmd_max>2.5</cmd_max>
+                <cmd_min>-2.5</cmd_min>
+                <!-- <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim> -->
+            </control>
+        </plugin>
+    </gazebo>
+</robot>
+
+
+
+  <!-- /// \brief Interface ArduPilot from ardupilot stack
+  /// modeled after SITL/SIM_*
+  ///
+  /// The plugin requires the following parameters:
+  /// <control>             control description block
+  ///    <!- inputs from Ardupilot ->
+  ///    channel            attribute, ardupilot control channel
+  ///    multiplier         command multiplier
+  ///    <!- output to Gazebo ->
+  ///    type               type of control, VELOCITY, POSITION or EFFORT
+  ///    <p_gain>           velocity pid p gain
+  ///    <i_gain>           velocity pid i gain
+  ///    <d_gain>           velocity pid d gain
+  ///    <i_max>            velocity pid max integral correction
+  ///    <i_min>            velocity pid min integral correction
+  ///    <cmd_max>          velocity pid max command torque
+  ///    <cmd_min>          velocity pid min command torque
+  ///    <jointName>        motor joint, torque applied here
+  ///    <turningDirection> rotor turning direction, 'cw' or 'ccw'
+  ///    frequencyCutoff    filter incoming joint state
+  ///    samplingRate       sampling rate for filtering incoming joint state
+  ///    <rotorVelocitySlowdownSim> for rotor aliasing problem, experimental
+  /// <imuName>     scoped name for the imu sensor
+  /// <connectionTimeoutMaxCount> timeout before giving up on
+  ///                             controller synchronization -->

@@ -1,27 +1,29 @@
 <?xml version="1.0" ?>
-<xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:include filename="macro.xacro"/>
+    
+    <xacro:property name="deg_to_rad" value="0.0174533"/>
 
     <xacro:macro name="drone_maker" params="base_mesh:='Box' base_pose_xyz:='0 0 0' base_pose_rpy:='0 0 0' base_scale_xyz:='0.4 0.4 0.04' base_center_of_mass:='0 0 0' base_mass base_iner:='None'
                                             number_of_arms arm_angles cws prop_meshs
                                             dis_from_center length diameter arm_incline_angle:='0' arm_mesh prop_size_multiplier 
-                                            cylinder_d cylinder_l a_mass a_iner:='None' cla cp area r_mass r_iner   
-                                            **extra_settings">
+                                            cylinder_d cylinder_l a_mass a_iner:='None' cla cp area r_mass r_iner">
 
+        <xacro:property name="base_pose_rpy_list" value="${base_pose_rpy.split(' ')}" />
+        <xacro:property name="base_pose_rpy_converted" value="${float(base_pose_rpy_list[0]) * deg_to_rad} ${float(base_pose_rpy_list[1]) * deg_to_rad} ${float(base_pose_rpy_list[2]) * deg_to_rad}" />
 
         <!-- Define base_link! -->
-        <xacro:link_creator_i link_name="base_link" pose_xyz="${base_pose_xyz}" pose_rpy="${base_pose_rpy}" mesh_path="${base_mesh}" 
+        <xacro:link_creator_i link_name="base_link" pose_xyz="${base_pose_xyz}" pose_rpy="${base_pose_rpy_converted}" mesh_path="${base_mesh}" 
                                 scale_xyz="${base_scale_xyz}" center_mass_xyz="${base_center_of_mass}" mass="${base_mass}" iner="${base_iner}"/>
 
 
 
         <!-- Define arms! -->
-        <xacro:property name="prop_mesh_list" value="${prop_meshs.split(' ')}" />
-        <xacro:property name="cw_list" value="${cws.split(' ')}" />
         <xacro:property name="arm_angle_list" value="${arm_angles.split(' ')}" />
+        <xacro:property name="cw_list" value="${cws.split(' ')}" />
+        <xacro:property name="prop_mesh_list" value="${prop_meshs.split(' ')}" />
 
-        <xacro:property name="deg_to_rad" value="0.0174533"/>
 
         <!-- Recursive macro definition -->
         <xacro:macro name="create_arms" params="i">
@@ -29,9 +31,9 @@
                 <!-- Here define the arm -->
                 <xacro:property name="counter" value="${number_of_arms - i}" />
                 <xacro:drone_arm num="${counter}" parent_link="base_link" dis_from_center="${dis_from_center}" length="${length}" diameter="${diameter}"
-                                arm_incline_angle="${arm_incline_angle * deg_to_rad}" arm_mesh="${arm_mesh}" prop_mesh="${prop_mesh_list[counter]}" cw="cw_list[counter]" 
+                                arm_incline_angle="${arm_incline_angle * deg_to_rad}" arm_mesh="${arm_mesh}" prop_mesh="${prop_mesh_list[counter]}" cw="${cw_list[counter]}" 
                                 prop_size_multiplier="${prop_size_multiplier}" cylinder_d="${cylinder_d}" cylinder_l="${cylinder_l}" a_mass="${a_mass}" a_iner="${a_iner}" cla="${cla}" cp="${cp}" 
-                                area="${area}" r_mass="${r_mass}" r_iner="${r_iner}" angle="${arm_angle_list[counter] * deg_to_rad}"/>
+                                area="${area}" r_mass="${r_mass}" r_iner="${r_iner}" angle="${float(arm_angle_list[counter]) * deg_to_rad}"/>
                 <!-- Recursively call the macro with a decremented count -->
                 <xacro:create_arms i="${i - 1}"/>
             </xacro:if>
@@ -45,7 +47,6 @@
 
 
         <!-- Define IMU! -->
-
         <joint name="imu_joint" type="revolute">
             <parent link="base_link"/>
             <child link="imu_link"/>
@@ -81,12 +82,10 @@
         </gazebo>
         <!-- end Define IMU! -->
 
-        <!-- Insert extra settings here!!! -->
-        <xacro:insert_block name="extra_settings"/>
 
+    </xacro:macro>
 
-
-    </robot>
+</robot>
 
 
 
@@ -96,6 +95,5 @@
     BASE_LINK
     ARMS
     IMU
-    and extra_settings tag is for adding extra settings to the model like legs, guns servos and more!
  -->
 

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:include filename="inertial_macros.xacro"/>
@@ -183,34 +183,34 @@
 
 
 
-    <xacro:macro name="link_creator_i_foundation" params="link_name pose_xyz pose_rpy mesh_path:='Box' col_mesh_path:='None' scale_xyz col_scale_xyz:='100000000 0 0' seperate_collider_xyzrpy:='None' center_mass_xyz:='0 0 0' mass iner:='None' **extra_collision **extra_visual **extra_settings">
+    <xacro:macro name="link_creator_i_foundation" params="link_name pose_xyz pose_rpy mesh_path:='Box' col_mesh_path:='None' scale_xyz col_scale_xyz:='None' seperate_collider_xyzrpy:='None' center_mass_xyz:='0 0 0' mass iner:='None' **extra_collision **extra_visual **extra_settings">
         <xacro:link_creator_foundation link_name="${link_name}" pose_xyz="${pose_xyz}" pose_rpy="${pose_rpy}" mesh_path="${mesh_path}" scale_xyz="${scale_xyz}">
             
             <extra_visual><xacro:insert_block name="extra_visual"/></extra_visual>
             <extra_settings>
                 <collision>
                     <geometry>
-                        <xacro:if value="${col_scale_xyz == '100000000 0 0'}">
-                            <xacro:if value="${col_mesh_path == 'None'}">
+                        <xacro:if value="${str(col_scale_xyz) == 'None'}">
+                            <xacro:if value="${str(col_mesh_path) == 'None'}">
                                 <xacro:set_mesh mesh="${mesh_path}" scale="${scale_xyz}" />
                             </xacro:if>
-                            <xacro:if value="${col_mesh_path != 'None'}">
+                            <xacro:if value="${str(col_mesh_path) != 'None'}">
                                 <xacro:set_mesh mesh="${col_mesh_path}" scale="${scale_xyz}" />
                             </xacro:if>
                         </xacro:if>
-                        <xacro:if value="${col_scale_xyz != '100000000 0 0'}">
-                            <xacro:if value="${col_mesh_path == 'None'}">
+                        <xacro:if value="${str(col_scale_xyz) != 'None'}">
+                            <xacro:if value="${str(col_mesh_path) == 'None'}">
                                 <xacro:set_mesh mesh="${mesh_path}" scale="${col_scale_xyz}" />
                             </xacro:if>
-                            <xacro:if value="${col_mesh_path != 'None'}">
+                            <xacro:if value="${str(col_mesh_path) != 'None'}">
                                 <xacro:set_mesh mesh="${col_mesh_path}" scale="${col_scale_xyz}" />
                             </xacro:if>
                         </xacro:if>
                     </geometry>
-                    <xacro:if value="${seperate_collider_xyzrpy == 'None'}">
+                    <xacro:if value="${str(seperate_collider_xyzrpy) == 'None'}">
                         <origin xyz="${pose_xyz}" rpy="${pose_rpy}"/>
                     </xacro:if>
-                    <xacro:if value="${seperate_collider_xyzrpy != 'None'}">
+                    <xacro:if value="${str(seperate_collider_xyzrpy) != 'None'}">
                         <xacro:property name="seperate_collider_xyzrpy_list" value="${seperate_collider_xyzrpy.split(' ')}" />
                         <origin xyz="${seperate_collider_xyzrpy_list[0]} ${seperate_collider_xyzrpy_list[1]} ${seperate_collider_xyzrpy_list[2]}" rpy="${seperate_collider_xyzrpy_list[3]} ${seperate_collider_xyzrpy_list[4]} ${seperate_collider_xyzrpy_list[5]}"/>
                     </xacro:if>
@@ -234,7 +234,7 @@
         </xacro:link_creator_foundation>
     </xacro:macro>
 
-    <xacro:macro name="link_creator_i" params="link_name pose_xyz pose_rpy mesh_path:='Box' col_mesh_path:='None' scale_xyz col_scale_xyz:='100000000 0 0' seperate_collider_xyzrpy:='None' center_mass_xyz:='0 0 0' mass iner:='None'">
+    <xacro:macro name="link_creator_i" params="link_name pose_xyz pose_rpy mesh_path:='Box' col_mesh_path:='None' scale_xyz col_scale_xyz:='None' seperate_collider_xyzrpy:='None' center_mass_xyz:='0 0 0' mass iner:='None'">
         <xacro:link_creator_i_foundation link_name="${link_name}" pose_xyz="${pose_xyz}" pose_rpy="${pose_rpy}" mesh_path="${mesh_path}" col_mesh_path="${col_mesh_path}" scale_xyz="${scale_xyz}" col_scale_xyz="${col_scale_xyz}" seperate_collider_xyzrpy="${seperate_collider_xyzrpy}" center_mass_xyz="${center_mass_xyz}" mass="${mass}" iner="${iner}">
             <extra_collision/>
             <extra_visual/>
