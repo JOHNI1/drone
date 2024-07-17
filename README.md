@@ -71,13 +71,16 @@ https://ardupilot.org/dev/docs/building-setup-linux.html
 <div style="margin-left: 40px;">
 
     gedit ~/.bashrc
+
+or
+
+    nano ~/.bashrc
 </div>
 
 #### In ~/.bashrc end add this lines:
 <div style="margin-left: 40px;">
 
     source /opt/ros/humble/setup.bash
-    source ~/ros2_ws/install/setup.bash
     export ROS_DOMAIN_ID=1
     export ROS_DISTRO="humble"
 </div>
@@ -191,8 +194,12 @@ https://ardupilot.org/dev/docs/sitl-with-gazebo-legacy.html
 
 #### Go to .bashrc:
 <div style="margin-left: 40px;">
-
+    
     gedit ~/.bashrc
+
+or
+
+    nano ~/.bashrc
 </div>
 
 #### In ~/.bashrc end add this lines:
@@ -275,6 +282,11 @@ ${\color{orange}Getting \space the \space drone \space package}$
 <div style="margin-left: 40px;">
 
     gedit ~/.bashrc
+
+or
+
+    nano ~/.bashrc
+    
 </div>
 
 #### In ~/.bashrc end add this line:
@@ -299,6 +311,10 @@ ${\color{orange}Sitl \space configuration}$
 <div style="margin-left: 40px;">
 
     gedit ~/ardupilot/Tools/autotest/default_params/gazebo-hexa.parm
+
+or
+
+    nano ~/ardupilot/Tools/autotest/default_params/gazebo-hexa.parm
 
 copy paste this into gazebo-hexa.parm:
 
@@ -349,6 +365,10 @@ control+x
 <div style="margin-left: 40px;">
 
     gedit ~/ardupilot/Tools/autotest/pysim/vehicleinfo.py
+
+or
+
+    nano ~/ardupilot/Tools/autotest/pysim/vehicleinfo.py
 
 In the vehicleinfo.py search for:
 <div style="color: white;">
@@ -460,6 +480,12 @@ ${\color{orange}Making \space bash \space sript \space that \space can \space la
 
     mkdir ~/drone_ws/sim_lanch
     gedit ~/drone_ws/sim_lanch/run_sim.sh
+
+or
+
+    nano ~/drone_ws/sim_lanch/run_sim.sh
+
+    
 </div>
 
 #### And copy paste this into run_sim.sh:
