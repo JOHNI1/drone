@@ -12,18 +12,6 @@
   <xacro:property name="prop_ccw_mesh" value="$(find drone)/meshes/iris_prop_ccw.dae"/>
 
 
-
-<!-- 
-  <xacro:property name="ixx" value="${373162267137.9 / g_mms_to_kg_ms}"/>  these values are not valid, they are stupid wrong
-  <xacro:property name="ixy" value="${19971359238.18 / g_mms_to_kg_ms}"/>
-  <xacro:property name="ixz" value="${-71155586006.28 / g_mms_to_kg_ms}"/>
-  <xacro:property name="iyy" value="${595713038514.03 / g_mms_to_kg_ms}"/>
-  <xacro:property name="iyz" value="${50504029566.32 / g_mms_to_kg_ms}"/>
-  <xacro:property name="izz" value="${574188826210.05 / g_mms_to_kg_ms}"/> 
-
-  <xacro:property name="iner" value="${ixx} ${ixy} ${ixz} ${iyy} ${iyz} ${izz}" />
--->
-
   <xacro:property name="base_mesh" value="Box"/>
   <xacro:property name="base_pose_xyz" value="0 0 0"/>
   <xacro:property name="base_pose_rpy" value="0 0 45"/>
@@ -60,56 +48,6 @@
                      cylinder_d="${cylinder_d}" cylinder_l="${cylinder_l}" a_mass="${a_mass}" a_iner="${a_iner}" 
                      cla="${cla}" cp="${cp}" area="${area}" r_mass="${r_mass}"  r_iner="${r_iner}">
   </xacro:drone_maker>
-
-
-  <!-- <joint name="leg_0_link_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="leg_0_link"/>
-  </joint>
-  <xacro:link_creator_i link_name="leg_0_link" pose_xyz="0 0.198 -0.305" pose_rpy="0.305 0 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.61" mass="0.5"/>
-  <joint name="leg_1_link_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="leg_1_link"/>
-  </joint>
-  <xacro:link_creator_i link_name="leg_1_link" pose_xyz="0 -0.198 -0.305" pose_rpy="-0.305 0 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.61" mass="0.5"/>
-
-  <joint name="feet_0_link_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="feet_0_link"/>
-  </joint>
-  <xacro:link_creator_i link_name="feet_0_link" pose_xyz="0 0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.58" mass="0.5"/>
-
-  <joint name="feet_1_link_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="feet_1_link"/>
-  </joint>
-  <xacro:link_creator_i link_name="feet_1_link" pose_xyz="0 -0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="${hex_mesh}" scale_xyz="0.024 0.024 0.58" mass="0.5"/>
- -->
-
-
-
-
-  <joint name="fire_trigger_servo_joint" type="revolute">
-    <parent link="base_link"/>
-    <child link="fire_trigger_servo_link"/>
-    <origin xyz="0 0 0.1" rpy="0 0 0"/>
-    <axis xyz="0 0 1"/>
-    <limit effort="10000" velocity="4" lower="${pi * -0.5}" upper="${pi * 0.5}"/>
-    <dynamics damping="0.1" friction="0"/>
-  </joint>
-  <gazebo reference="fire_trigger_servo_joint">
-    <physics>
-      <ode>
-        <implicit_spring_damper>1</implicit_spring_damper>
-      </ode>
-    </physics>
-  </gazebo>
-<!-- it is neccessary to specify the value here because the inertia becomes too small if done automatically for the following link with such small mass and size! -->
-  <xacro:link_creator_i link_name="fire_trigger_servo_link" mesh_path="Box" pose_xyz="0 0 0" pose_rpy="0 0 0" scale_xyz="0.04 0.009 0.009" mass="0.01" iner="0.001 0 0 0.001 0 0.001"/>
-  <gazebo reference="fire_trigger_servo_link">
-    <material>Gazebo/Red</material>
-    <self_collide>0</self_collide>
-  </gazebo>
   
 </robot>
 
