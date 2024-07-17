@@ -448,7 +448,7 @@ command to control the servo for firing!
 
 <h3>
 
-${\color{orange}Making \space bash \space sript \space that \space can \space launch \space everything \space (*extra*)}$
+${\color{orange}Making \space bash \space sript \space that \space can \space launch \space everything \space (extra)}$
 
 </h3>
 
