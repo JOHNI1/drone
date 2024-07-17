@@ -25,7 +25,7 @@
                 <cmd_max>2.5</cmd_max>
                 <cmd_min>-2.5</cmd_min>
                 <jointName>rotor_joint_0</jointName>
-                <multiplier>${multiplier_negative}</multiplier>
+                <multiplier>${multiplier}</multiplier>
                 <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
             </control>
             <control channel="1">
@@ -67,7 +67,7 @@
                 <cmd_max>2.5</cmd_max>
                 <cmd_min>-2.5</cmd_min>
                 <jointName>rotor_joint_3</jointName>
-                <multiplier>${multiplier}</multiplier>
+                <multiplier>${multiplier_negative}</multiplier>
                 <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
             </control>
             <control channel="6">
