@@ -43,15 +43,15 @@
         
 
 
-        <xacro:property name="direction" value="${(int(cw) * 2) - 1}"/>
+        <xacro:property name="direction" value="${(float(cw) * 2) - 1}"/>
         <xacro:macro name="create_blades" params="i">
             <xacro:if value="${i > 0}">
                 <!-- Here define the arm -->
                 <xacro:property name="counter" value="${number_of_blades - i}"/>
 
-                <xacro:property name="directed_multiplier" value="${multiplier * ((int(cw_list[counter]) * (-2)) + 1)}"/>
                 <xacro:property name="rotor_blade" value="rotor_${num}_blade_${counter}"/>
-                <xacro:property name="blade_angle" value="${(pi / number_of_blades) * counter}"/>
+                <xacro:property name="blade_angle" value="${((2 * pi) / float(number_of_blades)) * float(counter)}"/>
+                <!-- <xacro:property name="blade_angle" value="${(num * pi) / 12}"/> -->
 
                 <gazebo>
                     <plugin name="${rotor_blade}" filename="libLiftDragPlugin.so">               
@@ -65,9 +65,8 @@
                         <cma_stall>${lift_cma_stall}</cma_stall>
                         <area>${lift_area}</area>
                         <air_density>${lift_air_density}</air_density>
-                        <cp>${cos(blade_angle) * lift_cp} ${sin(blade_angle) * lift_cp} 0</cp>
-                        <!-- <forward>${sin(blade_angle * direction)} ${cos(blade_angle * direction * -1)} 0</forward> -->
-                        <forward>0 ${direction} 0</forward>
+                        <cp>${cos(float(blade_angle)) * float(lift_cp)} ${sin(float(blade_angle)) * float(lift_cp)} 0</cp>
+                        <forward>${cos(float(blade_angle) - ((pi / 2) * direction))} ${sin(float(blade_angle) - ((pi / 2) * direction))} 0</forward>
                         <upward>0 0 1</upward>
                         <link_name>${prop_link}</link_name>
                     </plugin>
@@ -79,82 +78,10 @@
         <!-- Initial call to the macro with the desired number of joints -->
         <xacro:create_blades i="${int(number_of_blades)}"/>
         <!-- end Define arms! -->
-        
 
-
-
-
-
-
-
-            <!-- <plugin name="${rotor_blade_0}" filename="libLiftDragPlugin.so">               
-                <a0>${lift_a0}</a0> lift_a0 lift_alpha_stall lift_cla lift_cda lift_cma lift_cla_stall lift_sda_stall lift_cma_stall lift_area lift_air_density
-                <alpha_stall>${lift_alpha_stall}</alpha_stall>
-                <cla>${lift_cla}</cla>
-                <cda>${lift_cda}</cda>
-                <cma>${lift_cma}</cma>
-                <cla_stall>${lift_cla_stall}</cla_stall>
-                <cda_stall>${lift_sda_stall}</cda_stall>
-                <cma_stall>${lift_cma_stall}</cma_stall>
-                <area>${lift_area}</area>
-                <air_density>${lift_air_density}</air_density>
-                <cp>${cp} 0 0</cp>
-                <forward>0 ${direction * -1} 0</forward>
-                <upward>0 0 1</upward>
-                <link_name>${prop_link}</link_name>
-            </plugin>
-            <plugin name="${rotor_blade_1}" filename="libLiftDragPlugin.so">
-                <a0>0.3</a0>
-                <alpha_stall>1.4</alpha_stall>
-                <cla>${cla}</cla>
-                <cda>0.10</cda>
-                <cma>0.00</cma>
-                <cla_stall>-0.025</cla_stall>
-                <cda_stall>0.0</cda_stall>
-                <cma_stall>0.0</cma_stall>
-                <area>${area}</area>
-                <air_density>1.2041</air_density>
-                <cp>${cp * -1} 0 0</cp>
-                <forward>0 ${direction} 0</forward>
-                <upward>0 0 1</upward>
-                <link_name>${prop_link}</link_name>
-            </plugin> -->
-            
-                <!-- <a0>0.3</a0>
-                <alpha_stall>1.4</alpha_stall>
-                <cla>${cla}</cla>
-                <cda>0.10</cda>
-                <cma>0.00</cma>
-                <cla_stall>-0.025</cla_stall>
-                <cda_stall>0.0</cda_stall>
-                <cma_stall>0.0</cma_stall>
-                <area>${area}</area>
-                <air_density>1.2041</air_density>
-                <cp>${cp} 0 0</cp>
-                <forward>0 ${direction * -1} 0</forward>
-                <upward>0 0 1</upward>
-                <link_name>${prop_link}</link_name>  -->
-
-
-        <gazebo reference="${arm_link}">
-            <visual>
-                <material>
-                    <script>
-                        <name>Gazebo/DarkGrey</name>
-                    </script>
-                </material>
-            </visual>
-        </gazebo>
-        <gazebo reference="${prop_link}">
-            <visual>
-                <material>
-                    <script>
-                        <name>Gazebo/DarkGrey</name>
-                    </script>
-                </material>
-            </visual>
-        </gazebo>
     </xacro:macro>
+
+
 
 
 
@@ -182,8 +109,6 @@
     </xacro:macro>
 
 
-
-
     <xacro:macro name="link_creator_foundation" params="link_name pose_xyz pose_rpy mesh_path:='Box' scale_xyz **extra_visual **extra_settings">
 
 
@@ -197,6 +122,15 @@
             </visual>
             <xacro:insert_block name="extra_settings"/>
         </link>
+        <gazebo reference="${link_name}">
+            <visual>
+                <material>
+                    <script>
+                        <name>Gazebo/DarkGrey</name>
+                    </script>
+                </material>
+            </visual>
+        </gazebo>
     </xacro:macro>
 
     <xacro:macro name="link_creator" params="link_name pose_xyz pose_rpy mesh_path:='Box' scale_xyz">
@@ -251,7 +185,7 @@
                     <inertial>
                         <origin xyz="${center_mass_xyz}" rpy="0 0 0"/>
                         <mass value="${mass}"/>
-                        <inertia ixx="${iner_list[0]}" ixy="${iner_list[1]}" ixz="${iner_list[2]}" iyy="${iner_list[3]}" iyz="${iner_list[4]}" izz="${iner_list[5]}"/>
+                        <inertia ixx="${float(iner_list[0])}" ixy="${float(iner_list[1])}" ixz="${float(iner_list[2])}" iyy="${iner_list[3]}" iyz="${float(iner_list[4])}" izz="${float(iner_list[5])}"/>
                     </inertial>
                 </xacro:if>
                 <xacro:insert_block name="extra_settings"/>

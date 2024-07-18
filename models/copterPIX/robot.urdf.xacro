@@ -67,7 +67,7 @@
   <xacro:property name="lift_cla_stall" value="-0.025"/>
   <xacro:property name="lift_sda_stall" value="0.0"/>
   <xacro:property name="lift_cma_stall" value="0.0"/>
-  <xacro:property name="lift_area" value="0.01"/>
+  <xacro:property name="lift_area" value="0.008"/>
   <xacro:property name="lift_air_density" value="1.2041"/>
   <xacro:property name="lift_cp" value="0.2"/>
 
