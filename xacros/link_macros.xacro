@@ -117,30 +117,6 @@
         </xacro:link_creator_i_foundation>
     </xacro:macro>
 
-
-
-    <xacro:macro name="prop_link_creator" params="link_name pose_xyz pose_rpy mesh_path scale_xyz col_scale_xyz seperate_collider_xyzrpy:='None' center_mass_xyz:='0 0 0' mass iner">
-
-        <xacro:link_creator_i_foundation link_name="${link_name}" pose_xyz="${pose_xyz}" pose_rpy="${pose_rpy}" mesh_path="${mesh_path}" col_mesh_path="Cylinder" scale_xyz="${scale_xyz}" col_scale_xyz="${col_scale_xyz}" seperate_collider_xyzrpy="${seperate_collider_xyzrpy}" center_mass_xyz="${center_mass_xyz}" mass="${mass}"  iner="${iner}">
-            <extra_collision>
-                <surface>
-                    <contact>
-                        <ode/>
-                    </contact>
-                    <friction>
-                        <ode/>
-                    </friction>
-                </surface>
-            </extra_collision>
-            <extra_visual/>
-            <extra_settings>
-                <velocity_decay/>
-            </extra_settings>
-        </xacro:link_creator_i_foundation>
-        <!-- <gazebo reference="${link_name}">
-            <self_collide>0</self_collide>
-        </gazebo> -->
-    </xacro:macro>
 </robot>
 
 

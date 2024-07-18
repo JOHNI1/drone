@@ -43,42 +43,40 @@
   </xacro:macro>
 
 
-<xacro:macro name="aaa" params="">
-  <xacro:property name="b" value="base_link"/>
-  <xacro:property name="aasdf" value="1 0 0"/>
-  <xacro:property name="scale_list" value="${aasdf.split(' ')}" />
+  <xacro:macro name="aaa" params="">
+    <xacro:property name="b" value="base_link"/>
+    <xacro:property name="aasdf" value="1 0 0"/>
+    <xacro:property name="scale_list" value="${aasdf.split(' ')}" />
 
 
 
-  <!-- Recursive macro definition -->
-  <xacro:macro name="create_joints" params="i">
-    <xacro:if value="${i > 0}">
-      <joint name="base_child_joint_${i}" type="fixed">
-        <parent link="${b}"/>
-        <child link="box_${i}"/>
-        <origin xyz="${int(scale_list[0]) * i * sin(90)} ${int(scale_list[0]) * i * sin(pi)} ${int(scale_list[2]) * i}"/>
-      </joint>
-      <link name="box_${i}">
-        <visual>
-          <geometry>
-            <box size="1 1 1"/>
-          </geometry>
-          <origin xyz="0 0 0"/>
-        </visual>
-      </link>
+    <xacro:macro name="create_joints" params="i">
+      <xacro:if value="${i > 0}">
+        <joint name="base_child_joint_${i}" type="fixed">
+          <parent link="${b}"/>
+          <child link="box_${i}"/>
+          <!-- <origin xyz="${int(scale_list[0]) * i * sin(90)} ${int(scale_list[0]) * i * sin(pi)} ${int(scale_list[2]) * i}"/> -->
+          <origin xyz="0 1 0" rpy="${((2 * pi) / 360) * 30} 0 ${((2 * pi) / 6) * (6 - i)}"/>
+          <!-- <origin xyz="0 1 0" rpy="0 0 0"/> -->
+        </joint>
+        <link name="box_${i}">
+          <visual>
+            <geometry>
+              <box size="1 1 1"/>
+            </geometry>
+            <origin xyz="0 0 0"/>
+          </visual>
+        </link>
 
-      <!-- Recursively call the macro with a decremented count -->
-      <xacro:create_joints i="${i - 1}"/>
-    </xacro:if>
-  </xacro:macro>
+        <xacro:create_joints i="${i - 1}"/>
+      </xacro:if>
+    </xacro:macro>
 
-  <!-- Initial call to the macro with the desired number of joints -->
-  <xacro:create_joints i="5"/>
+    <xacro:create_joints i="6"/>
 
-  </xacro:macro>
+    </xacro:macro>
 
   <xacro:aaa />
-
 
   <link name="base_link">
   </link>

@@ -435,13 +435,20 @@ ${\color{orange}Launching \space the \space simulation}$
 
 </h3>
 
+The **model:=** argument can allow you to choose the name of the folder of the model you want to launch, as it uses the robot.urdf.xaco file located inside that folder
+to create the urdf of the robot. This project already comes with copterPIX, iris, simple_box. <br>
+When model is not specified, **ros2 launch drone sim.launch.py** command is set to launch copterPIX drone as the default drone. <br>
+You can also add the **world:=** argument to specify the gazebo world in which you want your model to spawn. For this, you need to enter the path to the world file.  <br> 
+(do not start the path with ~/ because it won't work!)
+
 ### For copterPIX:
 <div style="margin-left: 40px;">
 
 #### In one terminal:
 <div style="margin-left: 40px;">
 
-    ros2 launch drone sim.launch.py model:=copterPIX world:=./src/drone/config/default.world 
+    cd ~
+    ros2 launch drone sim.launch.py model:=copterPIX world:=./drone_ws/install/drone/share/drone/worlds/default.world 
 </div>
 
 
@@ -483,8 +490,8 @@ command to control the servo for firing!
 
 #### In one terminal:
 <div style="margin-left: 40px;">
-
-    ros2 launch drone sim.launch.py model:=iris world:=./src/drone/config/default.world 
+    cd ~
+    ros2 launch drone sim.launch.py model:=iris world:=./drone_ws/install/drone/share/drone/worlds/default.world 
 </div>
 
 
@@ -540,20 +547,81 @@ or
 
     #!/bin/bash
 
+    # Default values for parameters
+    MODEL="iris"
+    FRAME="gazebo-hexa"
+    WORLD="./drone_ws/install/drone/share/drone/worlds/default.world"
+
+    # Parse command-line arguments
+    while getopts m:p:w: flag
+    do
+        case "${flag}" in
+            m) MODEL=${OPTARG};;
+            p) FRAME=${OPTARG};;
+            w) WORLD=${OPTARG};;
+        esac
+    done
+
+    # Construct the ROS simulation command
+    ROS_COMMAND="ros2 launch drone sim.launch.py model:=$MODEL"
+    if [ -n "$WORLD" ]; then
+        ROS_COMMAND="$ROS_COMMAND world:=$WORLD"
+    fi
+
     # Open the first terminal for ROS simulation
-    gnome-terminal --tab --title="ROS Simulation" -e "bash -c 'ros2 launch drone sim.launch.py model:=copterPIX; exec bash'" &
+    gnome-terminal --tab --title="ROS Simulation" -e "bash -c '$ROS_COMMAND; exec bash'" &
 
     # Open the second terminal for ArduPilot vehicle simulation
-    gnome-terminal --tab --title="ArduPilot Vehicle Sim" -e "bash -c 'sim_vehicle.py -v ArduCopter -f gazebo-hexa --console --map; exec bash'" &
+    gnome-terminal --tab --title="ArduPilot Vehicle Sim" -e "bash -c 'sim_vehicle.py -v ArduCopter -f $FRAME --console --map; exec bash'" &
 
     # Wait for both terminals to close
     wait
+
+
 </div>
 
-#### To run it, go to its directory and just enter:
+#### To run it, enter:
 <div style="margin-left: 40px;">
 
-    ./run_sim.sh
+    cd ~
+    drone_ws/sim_lanch./run_sim.sh -m coterPIX -p gazebo-hexa -w ./drone_ws/install/drone/share/drone/worlds/default.world 
+
 </div>
+
+</div>
+
+
+<h3>
+
+${\color{orange}Making \space your \space own \space model! \space \color{red} (advanced)}$
+
+</h3>
+
+
+<div style="margin-left: 40px;">
+
+#### package structure:
+
+This project is a ros project that integrates gazebo and ardupilot. It follows the standard ros2 package structure. The models(drones) are defined using **xacro** which is a xml language that allows to create macros(basically function, parameters, even logics like if statement!).
+the xacros folder contains the foundational xacro files that really simplify the creation of the drone.
+- The link_macros.xacro defines base macros for the link generation.
+- The arm_maker.xacro defines the arm, prop, liftdrag plugin
+- The drone_maker.xacro defines the drone. imu, ardupilot plugin and defines all the arms in loop.
+
+
+
+#### making new model directory:
+<div style="margin-left: 40px;">
+
+    mkdir ~/drone_ws/sim_lanch
+    gedit ~/drone_ws/sim_lanch/run_sim.sh
+
+or
+
+    nano ~/drone_ws/sim_lanch/run_sim.sh
+
+    
+</div>
+
 
 </div>

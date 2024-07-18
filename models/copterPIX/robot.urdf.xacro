@@ -37,6 +37,7 @@
   <xacro:property name="length" value="0.56"/>
   <xacro:property name="diameter" value="0.025"/>
   <xacro:property name="arm_incline_angle" value="5"/>
+  <xacro:property name="rotor_dis_from_arm" value="0.03"/>
   <xacro:property name="arm_mesh" value="${hex_mesh}"/>
   <xacro:property name="prop_size_multiplier" value="2.34"/>
   
@@ -75,7 +76,7 @@
                      base_center_of_mass="${base_center_of_mass}" base_mass="${base_mass}" base_iner="${base_iner}"
                      number_of_arms="${number_of_arms}" arm_angles="${arm_angles}" cws="${cws}" prop_meshs="${prop_meshs}"
                      dis_from_center="${dis_from_center}" length="${length}" diameter="${diameter}" 
-                     arm_incline_angle="${arm_incline_angle}" arm_mesh="${arm_mesh}" prop_size_multiplier="${prop_size_multiplier}" 
+                     arm_incline_angle="${arm_incline_angle}" rotor_dis_from_arm="${rotor_dis_from_arm}" arm_mesh="${arm_mesh}" prop_size_multiplier="${prop_size_multiplier}" 
                      cylinder_d="${cylinder_d}" cylinder_l="${cylinder_l}" a_mass="${a_mass}" a_iner="${a_iner}" 
                      r_mass="${r_mass}"  r_iner="${r_iner}"
                      ardu_multiplier="${ardu_multiplier}" ardu_offset="${ardu_offset}" 
