@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <xacro:include filename="macro.xacro"/>
+    <xacro:include filename="arm_macro.xacro"/>
     <xacro:include filename="ardupilot_plugin.xacro"/>
     
     <xacro:property name="deg_to_rad" value="0.0174532925"/>

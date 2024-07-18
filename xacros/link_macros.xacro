@@ -3,90 +3,6 @@
 
     <xacro:include filename="inertial_macros.xacro"/>
 
-    <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle arm_mesh prop_mesh cw 
-                                          prop_size_multiplier cylinder_d cylinder_l a_mass a_iner:='None' r_mass r_iner angle
-                                          number_of_blades lift_a0 lift_alpha_stall lift_cla lift_cda lift_cma lift_cla_stall lift_sda_stall lift_cma_stall 
-                                          lift_area lift_air_density lift_cp"> 
-
-        <xacro:property name="base_arm_joint" value="base_arm_joint_${num}" />
-        <xacro:property name="arm_link" value="arm_link_${num}" />
-        <xacro:property name="rotor_joint" value="rotor_joint_${num}" />
-        <xacro:property name="prop_link" value="prop_link_${num}" />
-
-        <joint name="${base_arm_joint}" type="fixed">
-            <parent link="${parent_link}"/>
-            <child link="${arm_link}"/>
-            <origin xyz="0 0 0" rpy="0 0 ${angle + pi}"/>
-        </joint>
-
-        <xacro:link_creator_i link_name="${arm_link}" pose_xyz="0 ${cos(arm_incline_angle) * (length / 2.0) + dis_from_center} ${sin(arm_incline_angle) * (length / 2.0)}" pose_rpy="${arm_incline_angle + 1.57079632679} 0 0" mesh_path="${arm_mesh}" scale_xyz="${diameter} ${diameter} ${length}" mass="${a_mass}" iner="${a_iner}"/>
-
-
-        <joint name="${rotor_joint}" type="continuous">
-            <parent link="${arm_link}"/>
-            <child link="${prop_link}"/>
-            <origin xyz="0 ${cos(arm_incline_angle) * length + dis_from_center} ${sin(arm_incline_angle) * length}" rpy="${arm_incline_angle} 0 0"/>
-            <axis xyz="0 0 1"/>
-            <dynamics damping="0.004"/>       
-        </joint>
-        <gazebo reference="${rotor_joint}">
-            <physics>
-                <ode>
-                    <implicit_spring_damper>1</implicit_spring_damper>
-                </ode>
-            </physics>
-        </gazebo>
-        
-        <xacro:prop_link_creator link_name="${prop_link}" pose_xyz="0 0 0.03" pose_rpy="0 -0 0" mesh_path="${prop_mesh}" 
-                                 scale_xyz="${prop_size_multiplier} ${prop_size_multiplier} ${prop_size_multiplier}" 
-                                 col_scale_xyz="${cylinder_d} 0 ${cylinder_l}" mass="${r_mass}" iner="${r_iner}"/>
-        
-
-
-        <xacro:property name="direction" value="${(float(cw) * 2) - 1}"/>
-        <xacro:macro name="create_blades" params="i">
-            <xacro:if value="${i > 0}">
-                <!-- Here define the arm -->
-                <xacro:property name="counter" value="${number_of_blades - i}"/>
-
-                <xacro:property name="rotor_blade" value="rotor_${num}_blade_${counter}"/>
-                <xacro:property name="blade_angle" value="${((2 * pi) / float(number_of_blades)) * float(counter)}"/>
-                <!-- <xacro:property name="blade_angle" value="${(num * pi) / 12}"/> -->
-
-                <gazebo>
-                    <plugin name="${rotor_blade}" filename="libLiftDragPlugin.so">               
-                        <a0>${lift_a0}</a0> 
-                        <alpha_stall>${lift_alpha_stall}</alpha_stall>
-                        <cla>${lift_cla}</cla>
-                        <cda>${lift_cda}</cda>
-                        <cma>${lift_cma}</cma>
-                        <cla_stall>${lift_cla_stall}</cla_stall>
-                        <cda_stall>${lift_sda_stall}</cda_stall>
-                        <cma_stall>${lift_cma_stall}</cma_stall>
-                        <area>${lift_area}</area>
-                        <air_density>${lift_air_density}</air_density>
-                        <cp>${cos(float(blade_angle)) * float(lift_cp)} ${sin(float(blade_angle)) * float(lift_cp)} 0</cp>
-                        <forward>${cos(float(blade_angle) - ((pi / 2) * direction))} ${sin(float(blade_angle) - ((pi / 2) * direction))} 0</forward>
-                        <upward>0 0 1</upward>
-                        <link_name>${prop_link}</link_name>
-                    </plugin>
-                </gazebo>
-                <!-- Recursively call the macro with a decremented count -->
-                <xacro:create_blades i="${i - 1}"/>
-            </xacro:if>
-        </xacro:macro>
-        <!-- Initial call to the macro with the desired number of joints -->
-        <xacro:create_blades i="${int(number_of_blades)}"/>
-        <!-- end Define arms! -->
-
-    </xacro:macro>
-
-
-
-
-
-
-
     <xacro:macro name="set_mesh" params="mesh scale">
         <xacro:if value="${mesh == 'Box'}">
             <box size="${scale}"/>
@@ -221,10 +137,9 @@
                 <velocity_decay/>
             </extra_settings>
         </xacro:link_creator_i_foundation>
-        <gazebo reference="${link_name}">
-            <!-- <material>Gazebo/Red</material> -->
+        <!-- <gazebo reference="${link_name}">
             <self_collide>0</self_collide>
-        </gazebo>
+        </gazebo> -->
     </xacro:macro>
 </robot>
 
