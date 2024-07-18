@@ -44,13 +44,11 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument(
             name='use_sim_time',
-            # 'use_sim_time',
             default_value='true',
             description='Use sim time if true'
         ),
         DeclareLaunchArgument(
             name='model',
-            # 'model',
             default_value='copterPIX',
             description='Model to launch'
         ),

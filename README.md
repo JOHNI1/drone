@@ -100,6 +100,8 @@ ${\color{orange}Setup \space Gazebo \space classic}$
 </h3>
 <div style="margin-left: 40px;">
 
+https://classic.gazebosim.org/tutorials?tut=install_ubuntu
+
     sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
     
     cat /etc/apt/sources.list.d/gazebo-stable.list
@@ -125,6 +127,7 @@ ${\color{orange}Setup \space ardupilot(for \space sitl)}$
 
 <div style="margin-left: 40px;">
 
+https://ardupilot.org/dev/docs/building-setup-linux.html
 
 #### ardupilot install:
 <div style="margin-left: 40px;">
@@ -264,6 +267,8 @@ ${\color{orange}Getting \space the \space drone \space package}$
 </h3>
 
 <div style="margin-left: 40px;">
+
+https://github.com/JOHNI1/drone
 
 #### Create the work space and import the drone package from github and build:
 <div style="margin-left: 40px;">
@@ -426,7 +431,7 @@ basically the sitl parameters are defined by conbining the two files:
 
 <h3>
 
-${\color{orange}Launching \space the \space simulation:}$
+${\color{orange}Launching \space the \space simulation}$
 
 </h3>
 
