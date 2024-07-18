@@ -3,7 +3,6 @@
 
 
   <xacro:include filename="$(find drone)/xacros/drone_maker.xacro"/>
-  <xacro:include filename="ardupilot_plugin.xacro"/>
 
   
 
@@ -21,7 +20,7 @@
   <xacro:property name="base_iner" value="0.1 0 0 0.1 0 0.14"/>
   <xacro:property name="number_of_arms" value="4"/>
   <xacro:property name="arm_angles" value="45 225 135 315"/>
-  <xacro:property name="cws" value="false false true true"/>
+  <xacro:property name="cws" value="0 0 1 1"/>
   <xacro:property name="prop_meshs" value="${prop_ccw_mesh} ${prop_ccw_mesh} ${prop_cw_mesh} ${prop_cw_mesh}"/>
   <xacro:property name="dis_from_center" value="0.08"/>
   <xacro:property name="length" value="0.18"/>
@@ -38,6 +37,15 @@
   <xacro:property name="area" value="0.002"/>
   <xacro:property name="r_mass" value="0.025"/>
   <xacro:property name="r_iner" value="9.75e-06 0 0 0.000166704 0 0.000167604"/>
+  <xacro:property name="ardu_multiplier" value="800"/>
+  <xacro:property name="ardu_offset" value="0"/>
+  <xacro:property name="ardu_p_gain" value="0.2"/>
+  <xacro:property name="ardu_i_gain" value="0"/>
+  <xacro:property name="ardu_d_gain" value="0"/>
+  <xacro:property name="ardu_i_max" value="0"/>
+  <xacro:property name="ardu_i_min" value="0"/>
+  <xacro:property name="ardu_cmd_max" value="2.5"/>
+  <xacro:property name="ardu_cmd_min" value="-2.5"/>
 
 
   <xacro:drone_maker base_mesh="${base_mesh}" base_pose_xyz ="${base_pose_xyz}" base_pose_rpy="${base_pose_rpy}" base_scale_xyz="${base_scale_xyz}"
@@ -46,7 +54,13 @@
                      dis_from_center="${dis_from_center}" length="${length}" diameter="${diameter}" 
                      arm_incline_angle="${arm_incline_angle}" arm_mesh="${arm_mesh}" prop_size_multiplier="${prop_size_multiplier}" 
                      cylinder_d="${cylinder_d}" cylinder_l="${cylinder_l}" a_mass="${a_mass}" a_iner="${a_iner}" 
-                     cla="${cla}" cp="${cp}" area="${area}" r_mass="${r_mass}"  r_iner="${r_iner}">
+                     cla="${cla}" cp="${cp}" area="${area}" r_mass="${r_mass}"  r_iner="${r_iner}"
+                     ardu_multiplier="${ardu_multiplier}" ardu_offset="${ardu_offset}" 
+                     ardu_p_gain="${ardu_p_gain}" ardu_i_gain="${ardu_i_gain}" ardu_d_gain="${ardu_d_gain}"
+                     ardu_i_max="${ardu_i_max}" ardu_i_min="${ardu_i_min}" ardu_cmd_max="${ardu_cmd_max}" ardu_cmd_min="${ardu_cmd_min}">
+
+    <extra_ardupilot_plugin_settings>
+    </extra_ardupilot_plugin_settings>
   </xacro:drone_maker>
   
 </robot>

@@ -3,14 +3,12 @@
 
 
   <xacro:include filename="$(find drone)/xacros/drone_maker.xacro"/>
-  <xacro:include filename="ardupilot_plugin.xacro"/>
 
   
 
   <xacro:property name="hex_mesh" value="$(find drone)/meshes/hexagonal_prism_height_1_outer_diameter_1.stl"/>
   <xacro:property name="prop_cw_mesh" value="$(find drone)/meshes/iris_prop_cw.dae"/>
   <xacro:property name="prop_ccw_mesh" value="$(find drone)/meshes/iris_prop_ccw.dae"/>
-
 
 
 <!-- 
@@ -50,6 +48,15 @@
   <xacro:property name="area" value="0.01"/>
   <xacro:property name="r_mass" value="0.2"/>
   <xacro:property name="r_iner" value="0.000312 0 0 0.0053345 0 0.005363328"/>
+  <xacro:property name="ardu_multiplier" value="800"/>
+  <xacro:property name="ardu_offset" value="0"/>
+  <xacro:property name="ardu_p_gain" value="0.2"/>
+  <xacro:property name="ardu_i_gain" value="0"/>
+  <xacro:property name="ardu_d_gain" value="0"/>
+  <xacro:property name="ardu_i_max" value="0"/>
+  <xacro:property name="ardu_i_min" value="0"/>
+  <xacro:property name="ardu_cmd_max" value="2.5"/>
+  <xacro:property name="ardu_cmd_min" value="-2.5"/>
 
 
   <xacro:drone_maker base_mesh="${base_mesh}" base_pose_xyz ="${base_pose_xyz}" base_pose_rpy="${base_pose_rpy}" base_scale_xyz="${base_scale_xyz}"
@@ -58,7 +65,16 @@
                      dis_from_center="${dis_from_center}" length="${length}" diameter="${diameter}" 
                      arm_incline_angle="${arm_incline_angle}" arm_mesh="${arm_mesh}" prop_size_multiplier="${prop_size_multiplier}" 
                      cylinder_d="${cylinder_d}" cylinder_l="${cylinder_l}" a_mass="${a_mass}" a_iner="${a_iner}" 
-                     cla="${cla}" cp="${cp}" area="${area}" r_mass="${r_mass}"  r_iner="${r_iner}">
+                     cla="${cla}" cp="${cp}" area="${area}" r_mass="${r_mass}"  r_iner="${r_iner}"
+                     ardu_multiplier="${ardu_multiplier}" ardu_offset="${ardu_offset}" 
+                     ardu_p_gain="${ardu_p_gain}" ardu_i_gain="${ardu_i_gain}" ardu_d_gain="${ardu_d_gain}"
+                     ardu_i_max="${ardu_i_max}" ardu_i_min="${ardu_i_min}" ardu_cmd_max="${ardu_cmd_max}" ardu_cmd_min="${ardu_cmd_min}">
+
+    <extra_ardupilot_plugin_settings>
+      <xacro:extra_channel channel="6" _type="POSITION" _multiplier="1" _jointName="fire_trigger_servo_joint"
+                                          _offset="0" _p_gain="1" _i_gain="0" _d_gain="0"
+                                          _i_max="0" _i_min="0" _cmd_max="2.5" _cmd_min="-2.5"/>
+    </extra_ardupilot_plugin_settings>
   </xacro:drone_maker>
 
 

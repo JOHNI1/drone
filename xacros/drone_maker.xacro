@@ -2,13 +2,17 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:include filename="macro.xacro"/>
+    <xacro:include filename="ardupilot_plugin.xacro"/>
     
     <xacro:property name="deg_to_rad" value="0.0174533"/>
 
     <xacro:macro name="drone_maker" params="base_mesh:='Box' base_pose_xyz:='0 0 0' base_pose_rpy:='0 0 0' base_scale_xyz:='0.4 0.4 0.04' base_center_of_mass:='0 0 0' base_mass base_iner:='None'
                                             number_of_arms arm_angles cws prop_meshs
                                             dis_from_center length diameter arm_incline_angle:='0' arm_mesh prop_size_multiplier 
-                                            cylinder_d cylinder_l a_mass a_iner:='None' cla cp area r_mass r_iner">
+                                            cylinder_d cylinder_l a_mass a_iner:='None' cla cp area r_mass r_iner
+                                            ardu_multiplier ardu_offset ardu_p_gain ardu_i_gain ardu_d_gain 
+                                            ardu_i_max ardu_i_min ardu_cmd_max ardu_cmd_min
+                                            **extra_ardupilot_plugin_settings">
 
         <xacro:property name="base_pose_rpy_list" value="${base_pose_rpy.split(' ')}" />
         <xacro:property name="base_pose_rpy_converted" value="${float(base_pose_rpy_list[0]) * deg_to_rad} ${float(base_pose_rpy_list[1]) * deg_to_rad} ${float(base_pose_rpy_list[2]) * deg_to_rad}" />
@@ -19,7 +23,6 @@
 
 
 
-        <!-- Define arms! -->
         <xacro:property name="arm_angle_list" value="${arm_angles.split(' ')}" />
         <xacro:property name="cw_list" value="${cws.split(' ')}" />
         <xacro:property name="prop_mesh_list" value="${prop_meshs.split(' ')}" />
@@ -38,12 +41,9 @@
                 <xacro:create_arms i="${i - 1}"/>
             </xacro:if>
         </xacro:macro>
-
         <!-- Initial call to the macro with the desired number of joints -->
         <xacro:create_arms i="${number_of_arms}"/>
         <!-- end Define arms! -->
-
-
 
 
         <!-- Define IMU! -->
@@ -83,8 +83,15 @@
         <!-- end Define IMU! -->
 
 
+        <!-- Define ardupilot_plugin! -->
+        <xacro:ardupilot_plugin number_of_arms="${number_of_arms}" multiplier="${ardu_multiplier}" cws="${cws}"
+                                offset="${ardu_offset}" p_gain="${ardu_p_gain}" i_gain="${ardu_i_gain}" d_gain="${ardu_d_gain}"
+                                i_max="${ardu_i_max}" i_min="${ardu_i_min}" cmd_max="${ardu_cmd_max}" cmd_min="${ardu_cmd_min}">
+            <extra_ardupilot_plugin_settings>
+                <xacro:insert_block name="extra_ardupilot_plugin_settings"/>
+            </extra_ardupilot_plugin_settings>
+        </xacro:ardupilot_plugin>
     </xacro:macro>
-
 </robot>
 
 

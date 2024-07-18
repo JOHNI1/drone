@@ -342,7 +342,13 @@ copy paste this into gazebo-hexa.parm:
     SERVO7_REVERSED 0
     #    ↑ use SERVO 7 for channel 6 cuz ardupilot channels count from 1 but ardupilot plugin for gazebo counts from 0!!!!
 
-<div style="color: pink;">↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑THE FRAME_CLASS 2 IS FOR HEXA and FRAME_TYPE 1 IS FOR X FRAME!↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ </div>
+
+
+<div style="color: pink;">↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑THE FRAME_CLASS 2 IS FOR HEXA and FRAME_TYPE 1 IS FOR X FRAME!↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</div><br>
+
+(If you want to define different frame and class type for the drone, follow these links and in general change the parameters.)
+- https://ardupilot.org/copter/docs/parameters.html#frame-class   <br>
+- https://ardupilot.org/copter/docs/parameters.html#frame-type    <br>
 
 To save press:
 <div style="color: white;">
@@ -424,16 +430,17 @@ ${\color{orange}Launching \space the \space simulation:}$
 
 </h3>
 
+### For copterPIX:
 <div style="margin-left: 40px;">
 
-**In one terminal:**
+#### In one terminal:
 <div style="margin-left: 40px;">
 
-    ros2 launch drone sim.launch.py model:=simple_box world:=./src/drone/config/default.world 
+    ros2 launch drone sim.launch.py model:=copterPIX world:=./src/drone/config/default.world 
 </div>
 
 
-**In another terminal:**
+#### In another terminal:
 <div style="margin-left: 40px;">
 
     sim_vehicle.py -v ArduCopter -f gazebo-hexa --console --map
@@ -464,6 +471,41 @@ command to control the servo for firing!
 
 </div>
 </div>
+
+
+### For iris:
+<div style="margin-left: 40px;">
+
+#### In one terminal:
+<div style="margin-left: 40px;">
+
+    ros2 launch drone sim.launch.py model:=iris world:=./src/drone/config/default.world 
+</div>
+
+
+#### In another terminal:
+<div style="margin-left: 40px;">
+
+    sim_vehicle.py -v ArduCopter -f gazebo-iris --console --map
+
+Wait untill you see:
+<div style="color: green;">AP: EKF3 IMU1 is using GPS</div>
+<div style="color: green;">AP: EKF3 IMU0 is using GPS</div>
+<div style="color: white;">Flight battery 100 percent</div>
+
+<br>
+
+commands for the sitl:
+
+    mode guided
+    arm throttle
+    takeoff 30
+    guided 30 30 30
+
+
+</div>
+</div>
+
 
 
 <h3>
