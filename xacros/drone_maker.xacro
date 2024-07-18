@@ -9,9 +9,12 @@
     <xacro:macro name="drone_maker" params="base_mesh:='Box' base_pose_xyz:='0 0 0' base_pose_rpy:='0 0 0' base_scale_xyz:='0.4 0.4 0.04' base_center_of_mass:='0 0 0' base_mass base_iner:='None'
                                             number_of_arms arm_angles cws prop_meshs
                                             dis_from_center length diameter arm_incline_angle:='0' arm_mesh prop_size_multiplier 
-                                            cylinder_d cylinder_l a_mass a_iner:='None' cla cp area r_mass r_iner
+                                            cylinder_d cylinder_l a_mass a_iner:='None' r_mass r_iner
                                             ardu_multiplier ardu_offset ardu_p_gain ardu_i_gain ardu_d_gain 
                                             ardu_i_max ardu_i_min ardu_cmd_max ardu_cmd_min
+                                            number_of_blades lift_a0 lift_alpha_stall 
+                                            lift_cla lift_cda lift_cma lift_cla_stall lift_sda_stall lift_cma_stall 
+                                            lift_area lift_air_density lift_cp
                                             **extra_ardupilot_plugin_settings">
 
         <xacro:property name="base_pose_rpy_list" value="${base_pose_rpy.split(' ')}" />
@@ -32,17 +35,22 @@
         <xacro:macro name="create_arms" params="i">
             <xacro:if value="${i > 0}">
                 <!-- Here define the arm -->
-                <xacro:property name="counter" value="${number_of_arms - i}" />
+                <xacro:property name="counter" value="${int(number_of_arms) - i}" />
                 <xacro:drone_arm num="${counter}" parent_link="base_link" dis_from_center="${dis_from_center}" length="${length}" diameter="${diameter}"
                                 arm_incline_angle="${arm_incline_angle * deg_to_rad}" arm_mesh="${arm_mesh}" prop_mesh="${prop_mesh_list[counter]}" cw="${cw_list[counter]}" 
-                                prop_size_multiplier="${prop_size_multiplier}" cylinder_d="${cylinder_d}" cylinder_l="${cylinder_l}" a_mass="${a_mass}" a_iner="${a_iner}" cla="${cla}" cp="${cp}" 
-                                area="${area}" r_mass="${r_mass}" r_iner="${r_iner}" angle="${float(arm_angle_list[counter]) * deg_to_rad}"/>
+                                prop_size_multiplier="${prop_size_multiplier}" cylinder_d="${cylinder_d}" cylinder_l="${cylinder_l}"
+                                a_mass="${a_mass}" a_iner="${a_iner}" r_mass="${r_mass}" r_iner="${r_iner}" angle="${float(arm_angle_list[counter]) * deg_to_rad}"
+                                number_of_blades="${number_of_blades}"
+                                lift_a0="${lift_a0}" lift_alpha_stall="${lift_alpha_stall}" lift_cla="${lift_cla}" lift_cda="${lift_cda}" 
+                                lift_cma="${lift_cma}" lift_cla_stall="${lift_cla_stall}" lift_sda_stall="${lift_sda_stall}" lift_cma_stall="${lift_cma_stall}" 
+                                lift_area="${lift_area}" lift_air_density="${lift_air_density}" lift_cp="${lift_cp}"/>
+
                 <!-- Recursively call the macro with a decremented count -->
                 <xacro:create_arms i="${i - 1}"/>
             </xacro:if>
         </xacro:macro>
         <!-- Initial call to the macro with the desired number of joints -->
-        <xacro:create_arms i="${number_of_arms}"/>
+        <xacro:create_arms i="${int(number_of_arms)}"/>
         <!-- end Define arms! -->
 
 

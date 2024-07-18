@@ -45,6 +45,8 @@
 
 <xacro:macro name="aaa" params="">
   <xacro:property name="b" value="base_link"/>
+  <xacro:property name="aasdf" value="1 0 0"/>
+  <xacro:property name="scale_list" value="${aasdf.split(' ')}" />
 
 
 
@@ -54,7 +56,7 @@
       <joint name="base_child_joint_${i}" type="fixed">
         <parent link="${b}"/>
         <child link="box_${i}"/>
-        <origin xyz="0 0 ${i}"/>
+        <origin xyz="${int(scale_list[0]) * i * sin(90)} ${int(scale_list[0]) * i * sin(pi)} ${int(scale_list[2]) * i}"/>
       </joint>
       <link name="box_${i}">
         <visual>
