@@ -23,10 +23,11 @@ endif()
 # Find dependencies
 find_package(ament_cmake REQUIRED)
 
-
+find_package(gazebo REQUIRED)
 find_package(gazebo_dev REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclpy REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 # find_package(ignition-math6 REQUIRED)
 
@@ -38,11 +39,15 @@ find_package(geometry_msgs REQUIRED)
 # Include directories
 # include_directories(${GAZEBO_INCLUDE_DIRS} ${rclcpp_INCLUDE_DIRS} ${geometry_msgs_INCLUDE_DIRS} ${ignition-math6_INCLUDE_DIRS})
 include_directories(${GAZEBO_INCLUDE_DIRS} ${rclcpp_INCLUDE_DIRS} ${geometry_msgs_INCLUDE_DIRS})
+include_directories(${std_msgs_INCLUDE_DIRS})
 link_directories(${GAZEBO_LIBRARY_DIRS})
 
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
+
+
 ###for gazebo plugin
-add_library(ApplyForcePlugin SHARED src/ApplyForcePlugin.cpp)
+add_library(ApplyForcePlugin SHARED src/ApplyForcePlugin.cc)
 # ament_target_dependencies(ApplyForcePlugin rclcpp geometry_msgs ignition-math6)
 ament_target_dependencies(ApplyForcePlugin rclcpp geometry_msgs)
 # target_link_libraries(ApplyForcePlugin ${GAZEBO_LIBRARIES} ${rclcpp_LIBRARIES} ${geometry_msgs_LIBRARIES} ${ignition-math6_LIBRARIES})

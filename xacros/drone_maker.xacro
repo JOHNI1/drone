@@ -19,6 +19,15 @@
 
         <xacro:property name="base_pose_rpy_list" value="${base_pose_rpy.split(' ')}" />
         <xacro:property name="base_pose_rpy_converted" value="${float(base_pose_rpy_list[0]) * deg_to_rad} ${float(base_pose_rpy_list[1]) * deg_to_rad} ${float(base_pose_rpy_list[2]) * deg_to_rad}" />
+        
+        <link name="root_link">
+        </link>
+
+        <joint name="root_joint" type="fixed">
+            <parent link="root_link"/>
+            <child link="base_link"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </joint>
 
         <!-- Define base_link! -->
         <xacro:link_creator_i link_name="base_link" pose_xyz="${base_pose_xyz}" pose_rpy="${base_pose_rpy_converted}" mesh_path="${base_mesh}" 
