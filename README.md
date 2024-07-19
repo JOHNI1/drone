@@ -532,12 +532,12 @@ ${\color{orange}Making \space bash \space sript \space that \space can \space la
 #### Make a file called run_sim.sh:
 <div style="margin-left: 40px;">
 
-    mkdir ~/drone_ws/sim_lanch
-    gedit ~/drone_ws/sim_lanch/run_sim.sh
+    mkdir ~/drone_ws/sim_launch
+    gedit ~/drone_ws/sim_launch/run_sim.sh
 
 or
 
-    nano ~/drone_ws/sim_lanch/run_sim.sh
+    nano ~/drone_ws/sim_launch/run_sim.sh
 
     
 </div>
@@ -584,7 +584,7 @@ or
 <div style="margin-left: 40px;">
 
     cd ~
-    drone_ws/sim_lanch./run_sim.sh -m coterPIX -p gazebo-hexa -w ./drone_ws/install/drone/share/drone/worlds/default.world 
+    drone_ws/sim_launch./run_sim.sh -m coterPIX -p gazebo-hexa -w ./drone_ws/install/drone/share/drone/worlds/default.world 
 
 </div>
 
