@@ -6,9 +6,8 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution, TextSubstitution
 from launch_ros.actions import Node
-import xacro
-
 from launch_ros.substitutions import FindPackageShare
+import xacro
 
 def generate_launch_description():
 
@@ -59,7 +58,8 @@ def generate_launch_description():
             output='screen'
         ),
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')])
+            PythonLaunchDescriptionSource([os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')]),
+            launch_arguments={'verbose': 'true'}.items(),
         ),
         Node(
             package='gazebo_ros',
@@ -67,12 +67,12 @@ def generate_launch_description():
             arguments=['-topic', 'robot_description', '-entity', model],
             output='screen'
         ),
-        # Node(
-        #     package='apply_force_pkg',  # Replace with the actual package name
-        #     executable='apply_force',  # Replace with the actual executable name
-        #     name='apply_force_node',
-        #     output='screen'
-        # ),
+        Node(
+            package='drone',
+            executable='apply_force_node', 
+            name='apply_force_node',
+            output='screen'
+        ),
     ])
 
 

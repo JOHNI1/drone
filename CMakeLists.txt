@@ -22,10 +22,36 @@ endif()
 
 # Find dependencies
 find_package(ament_cmake REQUIRED)
+
+
+find_package(gazebo_dev REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclpy REQUIRED)
+find_package(geometry_msgs REQUIRED)
+# find_package(ignition-math6 REQUIRED)
+
 # find_package(xacro REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+
+# Include directories
+# include_directories(${GAZEBO_INCLUDE_DIRS} ${rclcpp_INCLUDE_DIRS} ${geometry_msgs_INCLUDE_DIRS} ${ignition-math6_INCLUDE_DIRS})
+include_directories(${GAZEBO_INCLUDE_DIRS} ${rclcpp_INCLUDE_DIRS} ${geometry_msgs_INCLUDE_DIRS})
+link_directories(${GAZEBO_LIBRARY_DIRS})
+
+
+###for gazebo plugin
+add_library(ApplyForcePlugin SHARED src/ApplyForcePlugin.cpp)
+# ament_target_dependencies(ApplyForcePlugin rclcpp geometry_msgs ignition-math6)
+ament_target_dependencies(ApplyForcePlugin rclcpp geometry_msgs)
+# target_link_libraries(ApplyForcePlugin ${GAZEBO_LIBRARIES} ${rclcpp_LIBRARIES} ${geometry_msgs_LIBRARIES} ${ignition-math6_LIBRARIES})
+target_link_libraries(ApplyForcePlugin ${GAZEBO_LIBRARIES})
+
+
+###for ros node
+add_executable(apply_force_node src/apply_force_node.cpp)           #https://docs.ros.org/en/humble/Tutorials/Beginner-Client-Libraries/Custom-ROS2-Interfaces.html
+ament_target_dependencies(apply_force_node rclcpp geometry_msgs)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -40,8 +66,18 @@ if(BUILD_TESTING)
 endif()
 
 
-# Install xacro files
-########      for every new folder in drone, it is a must to 
+###for gazebo plugin
+# install(TARGETS ApplyForcePlugin DESTINATION lib/${PROJECT_NAME})
+# install(TARGETS ApplyForcePlugin DESTINATION ${GAZEBO_LIBRARIES})
+install(TARGETS ApplyForcePlugin apply_force_node
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+###for ros node
+install(TARGETS apply_force_node DESTINATION lib/${PROJECT_NAME})
+
 install(DIRECTORY worlds launch models meshes xacros
   DESTINATION share/${PROJECT_NAME}
 )
