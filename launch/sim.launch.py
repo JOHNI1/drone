@@ -15,24 +15,6 @@ def generate_launch_description():
     model = LaunchConfiguration('model', default='copterPIX')
 
 
-    # pkg_name = 'drone'
-    # pkg_path = get_package_share_directory(pkg_name)
-
-    # # Path to the xacro file example: drone/models/copterPIX/robot.urdf.xacro
-    # xacro_file = PathJoinSubstitution([
-    #     TextSubstitution(text=pkg_path),
-    #     TextSubstitution(text='models'),
-    #     model,
-    #     TextSubstitution(text='robot.urdf.xacro')
-    # ])
-
-
-    # # Command to process xacro file
-    # robot_description_command = Command(['xacro ', xacro_file])
-
-
-    # params = {'robot_description': robot_description_command, 'use_sim_time': use_sim_time}
-
 
     pkg_name = 'drone'
     pkg_path = FindPackageShare(pkg_name)
@@ -59,7 +41,7 @@ def generate_launch_description():
         ),
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')]),
-            launch_arguments={'verbose': 'true'}.items(),
+            launch_arguments={'verbose': 'true', 'server_args': '-s libgazebo_ros_force_system.so'}.items(),
         ),
         Node(
             package='gazebo_ros',
@@ -67,16 +49,13 @@ def generate_launch_description():
             arguments=['-topic', 'robot_description', '-entity', model],
             output='screen'
         ),
-        Node(
-            package='drone',
-            executable='apply_force_node', 
-            name='apply_force_node',
-            output='screen'
-        ),
+        # Node(
+        #     package='drone',
+        #     executable='apply_force_node', 
+        #     name='apply_force_node',
+        #     output='screen'
+        # ),
     ])
-
-
-
 
 
 # import os

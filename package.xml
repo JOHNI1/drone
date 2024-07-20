@@ -13,8 +13,11 @@
 
 
   <!-- Build dependencies -->
-  <depend>gazebo_ros</depend>
-  <depend>xacro</depend> 
+  <!-- <depend>gazebo_ros</depend> -->
+  <!-- <depend>xacro</depend> -->
+  <depend>rclcpp</depend>
+  <!-- <depend>geometry_msgs</depend> -->
+  <depend>gazebo_msgs</depend>
   <!-- comment if causes problems -->
 
   <!-- Test dependencies -->

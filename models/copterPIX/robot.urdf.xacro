@@ -155,8 +155,9 @@
   <xacro:link_creator_i link_name="m16_link" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="${m16_mesh}" scale_xyz="1 1 1" mass="1.9" center_mass_xyz="0 0 -0.025" iner_box_scale_xyz="0.75 0.055 0.14"/>
 
   <!-- <gazebo>
-    <plugin name="apply_force_plugin" filename="libApplyForcePlugin.so">
-      <link_name>base_link</link_name>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <robotNamespace>/robot_namespace</robotNamespace>
+        <robotParam>/robot_description</robotParam>
     </plugin>
   </gazebo> -->
 
