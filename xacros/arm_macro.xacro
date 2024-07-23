@@ -4,7 +4,7 @@
     <xacro:include filename="link_macros.xacro"/>
 
     <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle rotor_dis_from_arm arm_mesh prop_mesh cw 
-                                          prop_size_multiplier cylinder_d cylinder_l a_mass a_iner:='None' r_mass r_iner angle
+                                          prop_size_multiplier prop_col_scale_xyz a_mass a_iner:='None' r_mass r_iner angle
                                           number_of_blades lift_a0 lift_alpha_stall lift_cla lift_cda lift_cma lift_cla_stall lift_sda_stall lift_cma_stall 
                                           lift_area lift_air_density lift_cp"> 
 
@@ -38,8 +38,8 @@
             </physics>
         </gazebo>
         
-        <xacro:link_creator_i_foundation link_name="${prop_link}" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="${prop_mesh}" col_mesh_path="Cylinder"
-                                         scale_xyz="${prop_size_multiplier} ${prop_size_multiplier} ${prop_size_multiplier}" col_scale_xyz="${cylinder_d} 0 ${cylinder_l}" 
+        <xacro:link_creator_i_foundation link_name="${prop_link}" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="${prop_mesh}" col_mesh_path="Box"
+                                         scale_xyz="${prop_size_multiplier} ${prop_size_multiplier} ${prop_size_multiplier}" col_scale_xyz="${prop_col_scale_xyz}" 
                                          seperate_collider_xyzrpy="None" 
                                          center_mass_xyz="0 0 0" mass="${r_mass}"  iner="${r_iner}">
             <extra_collision>

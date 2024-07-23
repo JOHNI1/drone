@@ -81,7 +81,6 @@ or
 <div style="margin-left: 40px;">
 
     source /opt/ros/humble/setup.bash
-    export ROS_DOMAIN_ID=1
     export ROS_DISTRO="humble"
 </div>
 
@@ -254,8 +253,35 @@ Then enter:
 </div>
 </div>
 
+<h3>
+
+${\color{orange}drone \space gazebo \space plugin \space (libForcePlugin.cpp) \space for \space gun \space fire \space kick \space back \space simulation}$
+
+</h3>
 
 
+<div style="margin-left: 40px;">
+
+https://github.com/JOHNI1/drone_gazebo_plugin
+
+#### Setup:
+<div style="margin-left: 40px;">
+
+    cd ~
+
+    git clone https://github.com/JOHNI1/drone_gazebo_plugin
+    
+    cd drone-gazebo-plugin/build
+
+    cmake ..
+
+    make
+    
+    echo 'export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/gazebo_plugin/build' >> ~/.bashrc
+</div>
+
+
+</div>
 
 # Setup The Drone! <!--# Setup The Drone!# Setup The Drone!# Setup The Drone!# Setup The Drone!# Setup The Drone!# Setup The Drone!# Setup The Drone!-->
 
@@ -273,12 +299,7 @@ https://github.com/JOHNI1/drone
 #### Create the work space and import the drone package from github and build:
 <div style="margin-left: 40px;">
 
-    cd ~
-    mkdir -p drone_ws/src
-    cd drone_ws/src
-    git clone https://github.com/JOHNI1/drone
-    cd ~/drone_ws
-    colcon build --symlink-install
+    
 
 </div>
 <div style="color: red;">MAKE SURE TO ALWAYS redo the colcon build --symlink-install if you make changes to the src/drone folder like adding file</div>
@@ -302,6 +323,9 @@ or
 <div style="color: red;">MAKE SURE TO ALWAYS source or open new terminal that redoes source, after doing colcon build --symlink-install</div>
 
 </div>
+
+
+
 
 <h3>
 

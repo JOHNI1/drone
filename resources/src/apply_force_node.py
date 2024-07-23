@@ -23,15 +23,15 @@ class ApplyForceNode(Node):
         request.reference_point.x = 0.0
         request.reference_point.y = 0.0
         request.reference_point.z = -0.35  # Set the position relative to root_joint
-        request.wrench.force.x = -2684.0  # Change with the actual kickback force of the gun
+        request.wrench.force.x = -2000.0  # Change with the actual kickback force of the gun
         request.wrench.force.y = 0.0
         request.wrench.force.z = 0.0
-        request.wrench.torque.x = 0.0
+        request.wrench.torque.x = 1111.1
         request.wrench.torque.y = 0.0
         request.wrench.torque.z = 0.0
         request.start_time.sec = 0
         request.start_time.nanosec = 0
-        request.duration.sec = -1  # Negative duration means apply indefinitely
+        request.duration.sec = 0.1  # Negative duration means apply indefinitely
         request.duration.nanosec = 0
 
         future = self.client.call_async(request)
@@ -53,3 +53,8 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
+
+
+
+
+

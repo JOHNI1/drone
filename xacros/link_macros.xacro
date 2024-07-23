@@ -113,6 +113,12 @@
                 <xacro:insert_block name="extra_settings"/>
             </extra_settings>
         </xacro:link_creator_foundation>
+        <!-- <gazebo reference="${link_name}">
+            <ode>
+                <mu1 value="1000000"/>
+                <mu2 value="1000000"/>
+            </ode>
+        </gazebo> -->
     </xacro:macro>
 
     <xacro:macro name="link_creator_i" params="link_name pose_xyz pose_rpy mesh_path:='Box' col_mesh_path:='None' scale_xyz col_scale_xyz:='None' seperate_collider_xyzrpy:='None' center_mass_xyz:='0 0 0' mass iner:='None' iner_box_scale_xyz:='None'">
