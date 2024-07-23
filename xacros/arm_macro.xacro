@@ -41,7 +41,7 @@
         <xacro:link_creator_i_foundation link_name="${prop_link}" pose_xyz="0 0 0" pose_rpy="0 0 0" mesh_path="${prop_mesh}" col_mesh_path="Box"
                                          scale_xyz="${prop_size_multiplier} ${prop_size_multiplier} ${prop_size_multiplier}" col_scale_xyz="${prop_col_scale_xyz}" 
                                          seperate_collider_xyzrpy="None" 
-                                         center_mass_xyz="0 0 0" mass="${r_mass}"  iner="${r_iner}">
+                                         center_mass_xyz="0 0 0" mass="${r_mass}" iner="${r_iner}">
             <extra_collision>
                 <surface>
                     <contact>
