@@ -6,10 +6,14 @@
 
   
 
-  <xacro:property name="hex_mesh" value="$(find drone)/meshes/hexagonal_prism_height_1_outer_diameter_1.stl"/>
+  <!-- <xacro:property name="hex_mesh" value="$(find drone)/meshes/hexagonal_prism_height_1_outer_diameter_1.stl"/>
   <xacro:property name="prop_cw_mesh" value="$(find drone)/meshes/iris_prop_cw.dae"/>
   <xacro:property name="prop_ccw_mesh" value="$(find drone)/meshes/iris_prop_ccw.dae"/>
-  <xacro:property name="m16_mesh" value="$(find drone)/meshes/M16.stl"/>
+  <xacro:property name="m16_mesh" value="$(find drone)/meshes/M16.stl"/> -->
+  <xacro:property name="hex_mesh" value="package://drone/meshes/hexagonal_prism_height_1_outer_diameter_1.stl"/>
+  <xacro:property name="prop_cw_mesh" value="package://drone/meshes/iris_prop_cw.dae"/>
+  <xacro:property name="prop_ccw_mesh" value="package://drone/meshes/iris_prop_ccw.dae"/>
+  <xacro:property name="m16_mesh" value="package://drone/meshes/M16.stl"/>
 
 <!-- 
   <xacro:property name="ixx" value="${373162267137.9 / g_mms_to_kg_ms}"/>  these values are not valid, they are stupid wrong
