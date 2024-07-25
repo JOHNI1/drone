@@ -8,22 +8,20 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-
 from launch.actions import OpaqueFunction
-
 import xacro
 
 
 
 def initializer(context):
-    print("hi2")
+
     model = LaunchConfiguration('model').perform(context)
-    print("model: " + model)
+    print("model: " + model.perform(context))
     pkg_name = 'drone'
     pkg_path = get_package_share_directory(pkg_name)
-    xacro_file_path = os.path.join(pkg_path, 'models', model, 'robot.urdf.xacro')
+    xacro_file_path = os.path.join(pkg_path, 'models', model.perform(context), 'robot.urdf.xacro')
 
-    print("hi3")
+
     # Step 1: Read the contents of the xacro_file into a list of lines
     search_string = '<xacro:property name="using_gazebo_classic"'
     with open(xacro_file_path, 'r') as xacro_file:
@@ -37,12 +35,9 @@ def initializer(context):
     with open(xacro_file_path, 'w') as xacro_file:
         xacro_file.writelines(lines)
     
-    print("hi4")
     robot_description = (xacro.process_file(xacro_file_path)).toxml()
     
     params = {'robot_description': robot_description}
-    print("hi5")
-
 
     return [
         Node(
@@ -80,7 +75,6 @@ def initializer(context):
     ]
 
 def declare_arguments():
-    print("hi1")
     return [
         DeclareLaunchArgument(
             name='model',
@@ -90,7 +84,6 @@ def declare_arguments():
     ]
 
 def generate_launch_description():
-    print("hi0")
     return LaunchDescription(
         declare_arguments() + [OpaqueFunction(function=initializer)]
     )

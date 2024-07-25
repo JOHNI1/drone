@@ -95,6 +95,9 @@
                     <xacro:unless value="${using_gazebo_classic}">
                         <!--for gazebo harmonic-->
                         <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher"/>
+                        <plugin filename="gz-sim-apply-joint-force-system" name="gz::sim::systems::ApplyJointForce">
+                            <joint_name>${rotor_joint}</joint_name>
+                        </plugin>
                         <plugin filename="gz-sim-lift-drag-system" name="gz::sim::systems::LiftDrag">
                             <a0>${lift_a0}</a0> 
                             <alpha_stall>${lift_alpha_stall}</alpha_stall>
