@@ -3,7 +3,7 @@
 
     <xacro:include filename="link_macros.xacro"/>
 
-    <xacro:macro name="drone_arm" params="num parent_link dis_from_center length diameter arm_incline_angle rotor_dis_from_arm arm_mesh prop_mesh cw 
+    <xacro:macro name="drone_arm" params="using_gazebo_classic num parent_link dis_from_center length diameter arm_incline_angle rotor_dis_from_arm arm_mesh prop_mesh cw 
                                           prop_size_multiplier prop_col_scale_xyz a_mass a_iner:='None' r_mass r_iner angle
                                           number_of_blades lift_a0 lift_alpha_stall lift_cla lift_cda lift_cma lift_cla_stall lift_sda_stall lift_cma_stall 
                                           lift_area lift_air_density lift_cp"> 
@@ -55,6 +55,8 @@
             <extra_visual/>
             <extra_settings>
                 <velocity_decay/>
+                <gravity>1</gravity>
+                <self_collide>0</self_collide>
             </extra_settings>
         </xacro:link_creator_i_foundation>
         
@@ -71,22 +73,45 @@
                 <!-- <xacro:property name="blade_angle" value="${(num * pi) / 12}"/> -->
 
                 <gazebo>
-                    <plugin name="${rotor_blade}" filename="libLiftDragPlugin.so">               
-                        <a0>${lift_a0}</a0> 
-                        <alpha_stall>${lift_alpha_stall}</alpha_stall>
-                        <cla>${lift_cla}</cla>
-                        <cda>${lift_cda}</cda>
-                        <cma>${lift_cma}</cma>
-                        <cla_stall>${lift_cla_stall}</cla_stall>
-                        <cda_stall>${lift_sda_stall}</cda_stall>
-                        <cma_stall>${lift_cma_stall}</cma_stall>
-                        <area>${lift_area}</area>
-                        <air_density>${lift_air_density}</air_density>
-                        <cp>${cos(float(blade_angle)) * float(lift_cp)} ${sin(float(blade_angle)) * float(lift_cp)} 0</cp>
-                        <forward>${cos(float(blade_angle) - ((pi / 2) * direction))} ${sin(float(blade_angle) - ((pi / 2) * direction))} 0</forward>
-                        <upward>0 0 1</upward>
-                        <link_name>${prop_link}</link_name>
-                    </plugin>
+                    <xacro:if value="${using_gazebo_classic}">
+                        <!--for gazebo classic-->
+                        <plugin name="${rotor_blade}" filename="libLiftDragPlugin.so">               
+                            <a0>${lift_a0}</a0> 
+                            <alpha_stall>${lift_alpha_stall}</alpha_stall>
+                            <cla>${lift_cla}</cla>
+                            <cda>${lift_cda}</cda>
+                            <cma>${lift_cma}</cma>
+                            <cla_stall>${lift_cla_stall}</cla_stall>
+                            <cda_stall>${lift_sda_stall}</cda_stall>
+                            <cma_stall>${lift_cma_stall}</cma_stall>
+                            <area>${lift_area}</area>
+                            <air_density>${lift_air_density}</air_density>
+                            <cp>${cos(float(blade_angle)) * float(lift_cp)} ${sin(float(blade_angle)) * float(lift_cp)} 0</cp>
+                            <forward>${cos(float(blade_angle) - ((pi / 2) * direction))} ${sin(float(blade_angle) - ((pi / 2) * direction))} 0</forward>
+                            <upward>0 0 1</upward>
+                            <link_name>${prop_link}</link_name>
+                        </plugin>
+                    </xacro:if>
+                    <xacro:unless value="${using_gazebo_classic}">
+                        <!--for gazebo harmonic-->
+                        <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher"/>
+                        <plugin filename="gz-sim-lift-drag-system" name="gz::sim::systems::LiftDrag">
+                            <a0>${lift_a0}</a0> 
+                            <alpha_stall>${lift_alpha_stall}</alpha_stall>
+                            <cla>${lift_cla}</cla>
+                            <cda>${lift_cda}</cda>
+                            <cma>${lift_cma}</cma>
+                            <cla_stall>${lift_cla_stall}</cla_stall>
+                            <cda_stall>${lift_sda_stall}</cda_stall>
+                            <cma_stall>${lift_cma_stall}</cma_stall>
+                            <area>${lift_area}</area>
+                            <air_density>${lift_air_density}</air_density>
+                            <cp>${cos(float(blade_angle)) * float(lift_cp)} ${sin(float(blade_angle)) * float(lift_cp)} 0</cp>
+                            <forward>${cos(float(blade_angle) - ((pi / 2) * direction))} ${sin(float(blade_angle) - ((pi / 2) * direction))} 0</forward>
+                            <upward>0 0 1</upward>
+                            <link_name>${prop_link}</link_name>
+                        </plugin>
+                    </xacro:unless>
                 </gazebo>
                 <!-- Recursively call the macro with a decremented count -->
                 <xacro:create_blades i="${i - 1}"/>

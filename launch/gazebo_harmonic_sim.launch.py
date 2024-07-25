@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, ExecuteProcess
@@ -15,10 +14,23 @@ def generate_launch_description():
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='True')
     model = LaunchConfiguration('model', default='copterPIX')
-
     pkg_name = 'drone'
     pkg_path = FindPackageShare(pkg_name)
     xacro_file = PathJoinSubstitution([pkg_path, 'models', model, 'robot.urdf.xacro'])
+
+    # Step 1: Read the contents of the xacro_file into a list of lines
+    search_string = '<xacro:property name="using_gazebo_classic"'
+    with open(xacro_file, 'r') as file:
+        lines = file.readlines()
+    # Step 2: Search for the target line and replace it
+    for i, line in enumerate(lines):
+        if search_string in line:
+            lines[i] = '<xacro:property name="using_gazebo_classic" value="0"/>' + '\n'
+            break
+    # Step 3: Write the modified list of lines back to the file
+    with open(xacro_file, 'w') as file:
+        file.writelines(lines)
+
     robot_description = Command(['xacro ', xacro_file])
     params = {'robot_description': robot_description}
 

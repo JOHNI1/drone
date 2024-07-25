@@ -41,9 +41,7 @@
         <gazebo reference="${link_name}">
             <visual>
                 <material>
-                    <script>
-                        <name>Gazebo/DarkGrey</name>
-                    </script>
+                    <name>Gazebo/DarkGrey</name>
                 </material>
             </visual>
         </gazebo>

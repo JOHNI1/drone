@@ -2,70 +2,195 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 
-    <xacro:macro name="extra_channel" params="channel _type _multiplier _jointName _offset _p_gain _i_gain _d_gain 
+    <xacro:macro name="extra_channel" params="using_gazebo_classic channel _type _multiplier _jointName _useForce_offset _servo_max='1900' _servo_min='1100' _p_gain _i_gain _d_gain 
                                                           _i_max _i_min _cmd_max _cmd_min">
-        <control channel="${channel}">
-            <type>${_type}</type>
-            <multiplier>${_multiplier}</multiplier>
-            <jointName>${_jointName}</jointName>
-            <offset>${_offset}</offset>
-            <p_gain>${_p_gain}</p_gain>
-            <i_gain>${_i_gain}</i_gain>
-            <d_gain>${_d_gain}</d_gain>
-            <i_max>${_i_max}</i_max>
-            <i_min>${_i_min}</i_min>
-            <cmd_max>${_cmd_max}</cmd_max>
-            <cmd_min>${_cmd_min}</cmd_min>
-            <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
-        </control>
+        <xacro:if value="${using_gazebo_classic}" />
+            <control channel="${channel}">
+                <type>${_type}</type>
+                <multiplier>${_multiplier}</multiplier>
+                <jointName>${_jointName}</jointName>
+                <offset>${_offset}</offset>
+                <p_gain>${_p_gain}</p_gain>
+                <i_gain>${_i_gain}</i_gain>
+                <d_gain>${_d_gain}</d_gain>
+                <i_max>${_i_max}</i_max>
+                <i_min>${_i_min}</i_min>
+                <cmd_max>${_cmd_max}</cmd_max>
+                <cmd_min>${_cmd_min}</cmd_min>
+                <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+            </control>
+        </xacro:if>
+        <xacro:unless value="${using_gazebo_classic}" />
+            <control channel="${channel}">
+                <!--
+                    incoming control command [0, 1]
+                    so offset it by 0 to get [0, 1]
+                    and divide max target by 1.
+                    offset = 0
+                    multiplier = 838 max rpm / 1 = 838
+                -->
+                <!--
+                    SERVO<N>_FUNCTION   ->      70 (Throttle)
+                    SERVO<N>_MAX        ->      _servo_max
+                    SERVO<N>_MIN        ->      _servo_min
+                    SERVO<N>_REVERSED   ->      absolute value of _multiplier
+                    SERVO<N>_TRIM       ->      
+                -->
+                <!-- 
+                    The <useForce> tag determines how control commands are applied to the joint.
+                    When set to 1, the control commands are applied as forces (effort), 
+                    resulting in more realistic physical interactions; when set to 0, 
+                    the commands are applied directly as velocities or positions.
+                -->
+                <type>${_type}</type>
+                <multiplier>${_multiplier}</multiplier>
+                <jointName>${_jointName}</jointName>
+                <useForce>${_useForce}</useForce>
+                <offset>${_offset}</offset>
+                <servo_max>${_servo_max}</servo_max>
+                <servo_min>${_servo_min}</servo_min>
+                <p_gain>${_p_gain}</p_gain>
+                <i_gain>${_i_gain}</i_gain>
+                <d_gain>${_d_gain}</d_gain>
+                <i_max>${_i_max}</i_max>
+                <i_min>${_i_min}</i_min>
+                <cmd_max>${_cmd_max}</cmd_max>
+                <cmd_min>${_cmd_min}</cmd_min>
+                <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+            
+            </control>
+        </xacro:unless>
     </xacro:macro>
 
     
-    <xacro:macro name="ardupilot_plugin" params="number_of_arms multiplier cws offset p_gain i_gain d_gain i_max i_min cmd_max cmd_min **extra_ardupilot_plugin_settings">
+    <xacro:macro name="ardupilot_plugin" params="using_gazebo_classic number_of_arms multiplier cws offset p_gain i_gain d_gain i_max i_min cmd_max cmd_min **extra_ardupilot_plugin_settings servo_max='1900' servo_min='1100'">
 
         <xacro:property name="cw_list" value="${cws.split(' ')}" />
         <gazebo>
-            <plugin name="arducopter_plugin" filename="libArduPilotPlugin.so">
-                <fdm_addr>127.0.0.1</fdm_addr>
-                <fdm_port_in>9002</fdm_port_in>
-                <fdm_port_out>9003</fdm_port_out>
-                <modelXYZToAirplaneXForwardZDown>0 0 0 ${pi} 0 0</modelXYZToAirplaneXForwardZDown>
-                <gazeboXYZToNED>0 0 0 ${pi} 0 0</gazeboXYZToNED>
-                <imuName>imu_link::imu_sensor</imuName>
-                <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+            <xacro:if value="${using_gazebo_classic}" />
+                <plugin name="arducopter_plugin" filename="libArduPilotPlugin.so">
+                    <fdm_addr>127.0.0.1</fdm_addr>
+                    <fdm_port_in>9002</fdm_port_in>
+                    <fdm_port_out>9003</fdm_port_out>
+                    <modelXYZToAirplaneXForwardZDown>0 0 0 ${pi} 0 0</modelXYZToAirplaneXForwardZDown>
+                    <gazeboXYZToNED>0 0 0 ${pi} 0 0</gazeboXYZToNED>
+                    <imuName>imu_link::imu_sensor</imuName>
+                    <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+                    <xacro:macro name="create_arms" params="i">
+                        <xacro:if value="${i > 0}">
+                            <!-- Here define the arm -->
+                            <xacro:property name="counter" value="${number_of_arms - i}" />
+                            <xacro:property name="jointName" value="rotor_joint_${str(counter)}" />
+                            <xacro:property name="directed_multiplier" value="${multiplier * ((int(cw_list[counter]) * (-2)) + 1)}" />
+                            <control channel="${counter}">
+                                <type>VELOCITY</type>
+                                <multiplier>${directed_multiplier}</multiplier>
+                                <jointName>${jointName}</jointName>
+                                <offset>${offset}</offset>
+                                <p_gain>${p_gain}</p_gain>
+                                <i_gain>${i_gain}</i_gain>
+                                <d_gain>${d_gain}</d_gain>
+                                <i_max>${i_max}</i_max>
+                                <i_min>${i_min}</i_min>
+                                <cmd_max>${cmd_max}</cmd_max>
+                                <cmd_min>${cmd_min}</cmd_min>
+                                <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
+                            </control>
+                            <!-- Recursively call the macro with a decremented count -->
+                            <xacro:create_arms i="${i - 1}"/>
+                        </xacro:if>
+                    </xacro:macro>
+                    <!-- Initial call to the macro with the desired number of joints -->
+                    <xacro:create_arms i="${int(number_of_arms)}"/>
+                    <!-- end Define arms! -->
+                    <xacro:insert_block name="extra_ardupilot_plugin_settings"/>
+                </plugin>
+            </xacro:if>
+            <xacro:unless value="${using_gazebo_classic}" />
+                <plugin name="ArduPilotPlugin" filename="ArduPilotPlugin">
+                    <fdm_addr>127.0.0.1</fdm_addr>
+                    <fdm_port_in>9002</fdm_port_in>
+                    <!-- <fdm_port_out>9003</fdm_port_out> Param <fdm_port_out> is deprecated, connection is auto detected-->
+                    <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+                    
+                    <!--lock_step: whether or not to wait for the ardupilot sitl's packets and stop the frame till the packet is recieved. 
+                    If the sitl laggs, simulation will pause till it resumes. I do not want that so I set it to 0.-->
+                    <lock_step>0</lock_step>
 
-                <xacro:macro name="create_arms" params="i">
-                    <xacro:if value="${i > 0}">
-                        <!-- Here define the arm -->
-                        <xacro:property name="counter" value="${number_of_arms - i}" />
-                        <xacro:property name="jointName" value="rotor_joint_${str(counter)}" />
-                        <xacro:property name="directed_multiplier" value="${multiplier * ((int(cw_list[counter]) * (-2)) + 1)}" />
-                        <control channel="${counter}">
-                            <type>VELOCITY</type>
-                            <multiplier>${directed_multiplier}</multiplier>
-                            <jointName>${jointName}</jointName>
-                            <offset>${offset}</offset>
-                            <p_gain>${p_gain}</p_gain>
-                            <i_gain>${i_gain}</i_gain>
-                            <d_gain>${d_gain}</d_gain>
-                            <i_max>${i_max}</i_max>
-                            <i_min>${i_min}</i_min>
-                            <cmd_max>${cmd_max}</cmd_max>
-                            <cmd_min>${cmd_min}</cmd_min>
-                            <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
-                        </control>
-                        <!-- Recursively call the macro with a decremented count -->
-                        <xacro:create_arms i="${i - 1}"/>
-                    </xacro:if>
-                </xacro:macro>
-                <!-- Initial call to the macro with the desired number of joints -->
-                <xacro:create_arms i="${int(number_of_arms)}"/>
-                <!-- end Define arms! -->
-                
+                    <!-- Frame conventions
+                        modelXYZToAirplaneXForwardZDown:
+                        - transforms body frame from orientation in Gazebo to NED
+
+                        gazeboXYZToNED
+                        - transforms world from Gazebo convention xyz = N -E -D
+                            to ArduPilot convention xyz = NED
+
+                        Zephyr is oriented x-left, y-back, z-up
+                    -->
+                    <!-- <modelXYZToAirplaneXForwardZDown degrees="true">0 0 0 180 0 -90</modelXYZToAirplaneXForwardZDown>
+                    <gazeboXYZToNED degrees="true">0 0 0 180 0 90</gazeboXYZToNED> -->
+                    <modelXYZToAirplaneXForwardZDown degrees="true">0 0 0 180 0 0</modelXYZToAirplaneXForwardZDown>
+                    <gazeboXYZToNED degrees="true">0 0 0 180 0 0</gazeboXYZToNED>
+
+                    <imuName>imu_link::imu_sensor</imuName>
+
+                    <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+
+                    <xacro:macro name="create_arms" params="i">
+                        <xacro:if value="${i > 0}">
+                            <!-- Here define the arm -->
+                            <xacro:property name="counter" value="${number_of_arms - i}" />
+                            <xacro:property name="jointName" value="rotor_joint_${str(counter)}" />
+                            <xacro:property name="directed_multiplier" value="${multiplier * ((int(cw_list[counter]) * (-2)) + 1)}" />
+                            <control channel="${counter}">
+                                <!--
+                                    incoming control command [0, 1]
+                                    so offset it by 0 to get [0, 1]
+                                    and divide max target by 1.
+                                    offset = 0
+                                    multiplier = 838 max rpm / 1 = 838
+                                -->
+                                <!--
+                                    SERVO<N>_FUNCTION   ->      70 (Throttle)
+                                    SERVO<N>_MAX        ->      servo_max
+                                    SERVO<N>_MIN        ->      servo_min
+                                    SERVO<N>_REVERSED   ->      cw_list[counter]
+                                    SERVO<N>_TRIM       ->      
+                                -->
+                                <!-- 
+                                    The <useForce> tag determines how control commands are applied to the joint.
+                                    When set to 1, the control commands are applied as forces (effort), 
+                                    resulting in more realistic physical interactions; when set to 0, 
+                                    the commands are applied directly as velocities or positions.
+                                -->
+                                <type>VELOCITY</type>
+                                <multiplier>${directed_multiplier}</multiplier>
+                                <jointName>${jointName}</jointName>
+                                <useForce>1</useForce>
+                                <offset>${offset}</offset>
+                                <servo_max>${servo_max}</servo_max>deddedd
+                                <servo_min>${servo_min}</servo_min>adeeedededd
+                                <p_gain>${p_gain}</p_gain>
+                                <i_gain>${i_gain}</i_gain>
+                                <d_gain>${d_gain}</d_gain>
+                                <i_max>${i_max}</i_max>
+                                <i_min>${i_min}</i_min>
+                                <cmd_max>${cmd_max}</cmd_max>
+                                <cmd_min>${cmd_min}</cmd_min>
+                            </control>
+                            <!-- Recursively call the macro with a decremented count -->
+                            <xacro:create_arms i="${i - 1}"/>
+                        </xacro:if>
+                    </xacro:macro>
+                    <!-- Initial call to the macro with the desired number of joints -->
+                    <xacro:create_arms i="${int(number_of_arms)}"/>
+                    <!-- end Define arms! -->
+                    
 
 
-                <xacro:insert_block name="extra_ardupilot_plugin_settings"/>
-            </plugin>
+                    <xacro:insert_block name="extra_ardupilot_plugin_settings"/>
+                </plugin>
+            </xacro:unless>
         </gazebo>
     </xacro:macro>
 </robot>

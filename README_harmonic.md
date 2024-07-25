@@ -48,40 +48,17 @@ https://ardupilot.org/dev/docs/building-setup-linux.html
 
     sudo apt update && sudo apt upgrade -y
 
-    sudo apt install ros-humble-desktop
+    sudo apt install ros-humble-desktop #change later with core-base and add under this line all the dependencies to make it light weight
 
     sudo apt install ros-dev-tools
-    
-    sudo apt install ros-humble-gazebo-ros-pkgs
-
-    sudo apt install ros-humble-xacro
-
-    sudo apt install ros-humble-visualization-tools
-
-    sudo apt install ros-humble-ros2-control ros-humble-ros2-controllers
-
-    sudo apt install ros-humble-twist-mux
 
     source /opt/ros/humble/setup.bash && echo "source /opt/ros/humble/setup.bash" >> .bashrc
 
     pip install --user -U empy==3.3.4 pyros-genmsg setuptools
-</div>
 
-#### Go to .bashrc:
-<div style="margin-left: 40px;">
-
-    gedit ~/.bashrc
-
-or
-
-    nano ~/.bashrc
-</div>
-
-#### In ~/.bashrc end add this lines:
-<div style="margin-left: 40px;">
-
-    source /opt/ros/humble/setup.bash
-    export ROS_DISTRO="humble"
+    echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc
+    
+    echo 'export ROS_DISTRO="humble"' >> ~/.bashrc
 </div>
 
 #### Test:
@@ -94,28 +71,32 @@ or
 
 <h3>
 
-${\color{orange}Setup \space Gazebo \space classic}$
+${\color{orange}Setup \space Gazebo \space harmonic}$
 
 </h3>
 <div style="margin-left: 40px;">
 
-https://classic.gazebosim.org/tutorials?tut=install_ubuntu
+https://gazebosim.org/docs/latest/install_ubuntu/
 
-    sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
-    
-    cat /etc/apt/sources.list.d/gazebo-stable.list
-    
-    wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+    sudo apt-get update
+
+    sudo apt-get install lsb-release gnupg
+
+    sudo curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+
+    sudo echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
     
     sudo apt-get update
-    
-    sudo apt-get install gazebo
-    
-    sudo apt-get install libgazebo-dev
+
+    sudo apt-get install gz-harmonic
+
+Then Install the Default Gazebo/ROS Pairing:
+
+    sudo apt-get install ros-${ROS_DISTRO}-ros-gz
 
 #### To verify installation enter the command:
 
-    gazebo --verbose
+    gz sim -v4 -r shapes.sdf
 
 </div>
 <h3>
@@ -159,7 +140,7 @@ https://ardupilot.org/dev/docs/building-setup-linux.html
 
 <h3>
 
-${\color{orange}Setup \space ardupilot \space plugin(for \space gazebo)}$
+${\color{orange}Setup \space ardupilot \space plugin(for \space gazebo \space harmonic)}$
 
 </h3>
 
@@ -172,46 +153,30 @@ https://ardupilot.org/dev/docs/sitl-with-gazebo-legacy.html
 
     cd ~
 
-    sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
-
-    wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
-
     sudo apt update
 
-    git clone https://github.com/khancyr/ardupilot_gazebo
+    sudo apt install libgz-sim8-dev rapidjson-dev
+
+    sudo apt install libopencv-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl
+
+    git clone https://github.com/ArduPilot/ardupilot_gazebo
+
+    export GZ_VERSION=harmonic
 
     cd ardupilot_gazebo
 
-    mkdir build
+    mkdir build && cd build
 
-    cd build
-
-    cmake ..
+    cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
 
     make -j4
 
-    sudo make install
+    echo 'export GZ_VERSION=harmonic' >> ~/.bashrc
 
-</div>
+    echo 'export GZ_SIM_SYSTEM_PLUGIN_PATH=$HOME/ardupilot_gazebo/build:${GZ_SIM_SYSTEM_PLUGIN_PATH}' >> ~/.bashrc
 
-#### Go to .bashrc:
-<div style="margin-left: 40px;">
-    
-    gedit ~/.bashrc
+    echo 'export GZ_SIM_RESOURCE_PATH=$HOME/ardupilot_gazebo/models:$HOME/ardupilot_gazebo/worlds:${GZ_SIM_RESOURCE_PATH}' >> ~/.bashrc
 
-or
-
-    nano ~/.bashrc
-</div>
-
-#### In ~/.bashrc end add this lines:
-<div style="margin-left: 40px;">
-
-    source /usr/share/gazebo/setup.sh
-    export GAZEBO_MODEL_PATH=~/ardupilot_gazebo/models:${GAZEBO_MODEL_PATH}
-    export GAZEBO_MODEL_PATH=~/ardupilot_gazebo/models_gazebo:${GAZEBO_MODEL_PATH}
-    export GAZEBO_RESOURCE_PATH=~/ardupilot_gazebo/worlds:${GAZEBO_RESOURCE_PATH}
-    export GAZEBO_PLUGIN_PATH=~/ardupilot_gazebo/build:${GAZEBO_PLUGIN_PATH}
 </div>
 <div style="color: red;">
 
@@ -247,8 +212,8 @@ Then enter:
 
     mode guided
     arm throttle
-    takeoff 30
-    guided 30 30 30
+    takeoff 5
+    guided 5 5 5
 </div>
 </div>
 </div>
@@ -270,6 +235,8 @@ https://github.com/JOHNI1/drone_gazebo_plugin
     cd ~
 
     git clone https://github.com/JOHNI1/drone_gazebo_plugin
+
+    mkdir drone_gazebo_plugin/build
     
     cd drone-gazebo-plugin/build
 
@@ -277,7 +244,7 @@ https://github.com/JOHNI1/drone_gazebo_plugin
 
     make
     
-    echo 'export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/gazebo_plugin/build' >> ~/.bashrc
+    echo 'export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/drone_gazebo_plugin/build' >> ~/.bashrc
 </div>
 
 
@@ -379,13 +346,7 @@ copy paste this into gazebo-hexa.parm:
 - https://ardupilot.org/copter/docs/parameters.html#frame-class   <br>
 - https://ardupilot.org/copter/docs/parameters.html#frame-type    <br>
 
-To save press:
-<div style="color: white;">
 
-control+o   <br>
-control+m   <br>
-control+x
-</div>
 </div>
 
 
@@ -433,13 +394,7 @@ Under it add this:
         "external": True,
     },
 
-To save press:
-<div style="color: white;">
 
-control+o   <br>
-control+m   <br>
-control+x
-</div>
 
 <div style="color: pink;">
 basically the sitl parameters are defined by conbining the two files:
@@ -472,6 +427,7 @@ You can also add the **world:=** argument to specify the gazebo world in which y
 <div style="margin-left: 40px;">
 
     cd ~
+
     ros2 launch drone sim.launch.py model:=copterPIX world:=./drone_ws/install/drone/share/drone/worlds/default.world 
 </div>
 
@@ -514,7 +470,9 @@ command to control the servo for firing!
 
 #### In one terminal:
 <div style="margin-left: 40px;">
+
     cd ~
+
     ros2 launch drone sim.launch.py model:=iris world:=./drone_ws/install/drone/share/drone/worlds/default.world 
 </div>
 

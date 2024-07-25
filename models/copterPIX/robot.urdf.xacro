@@ -1,19 +1,18 @@
 <?xml version="1.0" ?>
 <robot name="copterPIX" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+  <!--this value is changed by the launch script.-->
+  <xacro:property name="using_gazebo_classic" value="0"/>
+
 
   <xacro:include filename="$(find drone)/xacros/drone_maker.xacro"/>
 
   
 
-  <!-- <xacro:property name="hex_mesh" value="$(find drone)/meshes/hexagonal_prism_height_1_outer_diameter_1.stl"/>
+  <xacro:property name="hex_mesh" value="$(find drone)/meshes/hexagonal_prism_height_1_outer_diameter_1.stl"/>
   <xacro:property name="prop_cw_mesh" value="$(find drone)/meshes/iris_prop_cw.dae"/>
   <xacro:property name="prop_ccw_mesh" value="$(find drone)/meshes/iris_prop_ccw.dae"/>
-  <xacro:property name="m16_mesh" value="$(find drone)/meshes/M16.stl"/> -->
-  <xacro:property name="hex_mesh" value="package://drone/meshes/hexagonal_prism_height_1_outer_diameter_1.stl"/>
-  <xacro:property name="prop_cw_mesh" value="package://drone/meshes/iris_prop_cw.dae"/>
-  <xacro:property name="prop_ccw_mesh" value="package://drone/meshes/iris_prop_ccw.dae"/>
-  <xacro:property name="m16_mesh" value="package://drone/meshes/M16.stl"/>
+  <xacro:property name="m16_mesh" value="$(find drone)/meshes/M16.stl"/>
 
 <!-- 
   <xacro:property name="ixx" value="${373162267137.9 / g_mms_to_kg_ms}"/>  these values are not valid, they are stupid wrong
@@ -75,7 +74,7 @@
   <xacro:property name="lift_air_density" value="1.2041"/>
   <xacro:property name="lift_cp" value="0.2"/>
 
-  <xacro:drone_maker base_mesh="${base_mesh}" base_pose_xyz ="${base_pose_xyz}" base_pose_rpy="${base_pose_rpy}" base_scale_xyz="${base_scale_xyz}"
+  <xacro:drone_maker using_gazebo_classic="${using_gazebo_classic}" base_mesh="${base_mesh}" base_pose_xyz ="${base_pose_xyz}" base_pose_rpy="${base_pose_rpy}" base_scale_xyz="${base_scale_xyz}"
                      base_center_of_mass="${base_center_of_mass}" base_mass="${base_mass}" base_iner="${base_iner}"
                      number_of_arms="${number_of_arms}" arm_angles="${arm_angles}" cws="${cws}" prop_meshs="${prop_meshs}"
                      dis_from_center="${dis_from_center}" length="${length}" diameter="${diameter}" 
@@ -89,7 +88,7 @@
                      lift_area="${lift_area}" lift_air_density="${lift_air_density}" lift_cp="${lift_cp}">
 
     <extra_ardupilot_plugin_settings>
-      <xacro:extra_channel channel="6" _type="POSITION" _multiplier="-200" _jointName="fire_trigger_servo_joint"
+      <xacro:extra_channel using_gazebo_classic="${using_gazebo_classic}" channel="6" _type="POSITION" _multiplier="-200" _jointName="fire_trigger_servo_joint"
                                           _offset="0" _p_gain="1" _i_gain="0" _d_gain="0"
                                           _i_max="0" _i_min="0" _cmd_max="2.5" _cmd_min="-2.5"/>
     </extra_ardupilot_plugin_settings>
@@ -167,18 +166,36 @@
   <xacro:property name="m16_position_z" value="${m16_position_list[2]}" />
 
   <gazebo>
-    <plugin name="ForcePlugin" filename="libForcePlugin.so">
-      <trigger_joint>fire_trigger_servo_joint</trigger_joint>
-      <link_to_apply_force>root_link</link_to_apply_force> <!--change later to the m16_link when gimbal will be ready.-->
-      <apply_force_duration>0.03</apply_force_duration> <!--apply froce for 30ms-->
-      <trigger_angle_deg>15</trigger_angle_deg>
-      <force_x>-2000</force_x>
-      <force_y>0</force_y>
-      <force_z>0</force_z>
-      <position_x>${m16_position_x}</position_x>
-      <position_y>${m16_position_y}</position_y>
-      <position_z>${m16_position_z}</position_z>
-    </plugin>
+    <xacro:if value="${using_gazebo_classic}">
+      <!--for gazebo classic-->
+      <plugin name="ForcePlugin" filename="libForcePlugin.so">
+        <trigger_joint>fire_trigger_servo_joint</trigger_joint>
+        <link_to_apply_force>root_link</link_to_apply_force> change later to the m16_link when gimbal will be ready.
+        <apply_force_duration>0.03</apply_force_duration> apply froce for 30ms
+        <trigger_angle_deg>15</trigger_angle_deg>
+        <force_x>-2000</force_x>
+        <force_y>0</force_y>
+        <force_z>0</force_z>
+        <position_x>${m16_position_x}</position_x>
+        <position_y>${m16_position_y}</position_y>
+        <position_z>${m16_position_z}</position_z>
+      </plugin>
+    </xacro:if>
+    <xacro:unless value="${using_gazebo_classic}">
+      <!--for gazebo harmonic-->
+      <plugin name="ForcePlugin" filename="ForcePlugin">
+        <trigger_joint>fire_trigger_servo_joint</trigger_joint>
+        <link_to_apply_force>root_link</link_to_apply_force> change later to the m16_link when gimbal will be ready.
+        <apply_force_duration>0.03</apply_force_duration> apply froce for 30ms
+        <trigger_angle_deg>15</trigger_angle_deg>
+        <force_x>-2000</force_x>
+        <force_y>0</force_y>
+        <force_z>0</force_z>
+        <position_x>${m16_position_x}</position_x>
+        <position_y>${m16_position_y}</position_y>
+        <position_z>${m16_position_z}</position_z>
+      </plugin>
+    </xacro:unless>
   </gazebo>
 </robot>
 
