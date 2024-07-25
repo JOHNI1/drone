@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
 <robot name="copterPIX" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+  <xacro:include filename="$(find drone)/xacros/drone_maker.xacro"/>
+
+
   <!--this value is changed by the launch script.-->
   <xacro:property name="using_gazebo_classic" value="0"/>
-
-
-  <xacro:include filename="$(find drone)/xacros/drone_maker.xacro"/>
 
   
 
@@ -63,7 +63,7 @@
   <xacro:property name="lift_air_density" value="1.2041"/>
   <xacro:property name="lift_cp" value="0.084"/>
 
- <xacro:drone_maker using_gazebo_classic="${using_gazebo_classic}" base_mesh="${base_mesh}" base_pose_xyz ="${base_pose_xyz}" base_pose_rpy="${base_pose_rpy}" base_scale_xyz="${base_scale_xyz}"
+  <xacro:drone_maker using_gazebo_classic="${using_gazebo_classic}" base_mesh="${base_mesh}" base_pose_xyz ="${base_pose_xyz}" base_pose_rpy="${base_pose_rpy}" base_scale_xyz="${base_scale_xyz}"
                      base_center_of_mass="${base_center_of_mass}" base_mass="${base_mass}" base_iner="${base_iner}"
                      number_of_arms="${number_of_arms}" arm_angles="${arm_angles}" cws="${cws}" prop_meshs="${prop_meshs}"
                      dis_from_center="${dis_from_center}" length="${length}" diameter="${diameter}" 

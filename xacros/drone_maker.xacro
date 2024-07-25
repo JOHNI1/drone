@@ -6,7 +6,7 @@
     
     <xacro:property name="deg_to_rad" value="0.0174532925"/>
 
-    <xacro:macro name="drone_maker" params="using_gazebo_classic base_mesh:='Box' base_pose_xyz:='0 0 0' base_pose_rpy:='0 0 0' base_scale_xyz:='0.4 0.4 0.04' base_center_of_mass:='0 0 0' base_mass base_iner:='None'
+    <xacro:macro name="drone_maker" params="using_gazebo_classic base_root_offset:='0' base_mesh:='Box' base_pose_xyz:='0 0 0' base_pose_rpy:='0 0 0' base_scale_xyz:='0.4 0.4 0.04' base_center_of_mass:='0 0 0' base_mass base_iner:='None'
                                             number_of_arms arm_angles cws prop_meshs
                                             dis_from_center length diameter arm_incline_angle:='0' rotor_dis_from_arm arm_mesh prop_size_multiplier 
                                             prop_col_scale_xyz a_mass a_iner:='None' r_mass r_iner
@@ -26,7 +26,7 @@
         <joint name="root_joint" type="fixed">
             <parent link="root_link"/>
             <child link="base_link"/>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <origin xyz="0 0 ${base_root_offset}" rpy="0 0 0"/>
         </joint>
 
         <!-- Define base_link! -->

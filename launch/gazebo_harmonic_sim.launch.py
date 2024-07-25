@@ -15,7 +15,7 @@ import xacro
 
 def initializer(context):
 
-    model = LaunchConfiguration('model').perform(context)
+    model = LaunchConfiguration('model')
     print("model: " + model.perform(context))
     pkg_name = 'drone'
     pkg_path = get_package_share_directory(pkg_name)
