@@ -5,69 +5,46 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, Exec
 from launch.actions import RegisterEventHandler, SetEnvironmentVariable
 from launch.event_handlers import OnProcessExit  # harmonic specific
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
+from launch.actions import OpaqueFunction
 
-def generate_launch_description():
+import xacro
 
-    use_sim_time = LaunchConfiguration('use_sim_time', default='True')
-    model = LaunchConfiguration('model', default='copterPIX')
+
+
+def initializer(context):
+    print("hi2")
+    model = LaunchConfiguration('model').perform(context)
+    print("model: " + model)
     pkg_name = 'drone'
-    pkg_path = FindPackageShare(pkg_name)
-    xacro_file = PathJoinSubstitution([pkg_path, 'models', model, 'robot.urdf.xacro'])
+    pkg_path = get_package_share_directory(pkg_name)
+    xacro_file_path = os.path.join(pkg_path, 'models', model, 'robot.urdf.xacro')
 
+    print("hi3")
     # Step 1: Read the contents of the xacro_file into a list of lines
     search_string = '<xacro:property name="using_gazebo_classic"'
-    with open(xacro_file, 'r') as file:
-        lines = file.readlines()
+    with open(xacro_file_path, 'r') as xacro_file:
+        lines = xacro_file.readlines()
     # Step 2: Search for the target line and replace it
     for i, line in enumerate(lines):
         if search_string in line:
-            lines[i] = '<xacro:property name="using_gazebo_classic" value="0"/>' + '\n'
+            lines[i] = '  <xacro:property name="using_gazebo_classic" value="0"/>' + '\n'
             break
     # Step 3: Write the modified list of lines back to the file
-    with open(xacro_file, 'w') as file:
-        file.writelines(lines)
-
-    robot_description = Command(['xacro ', xacro_file])
+    with open(xacro_file_path, 'w') as xacro_file:
+        xacro_file.writelines(lines)
+    
+    print("hi4")
+    robot_description = (xacro.process_file(xacro_file_path)).toxml()
+    
     params = {'robot_description': robot_description}
+    print("hi5")
 
-    gz_spawn_entity = Node(
-        package='ros_gz_sim',
-        executable='create',
-        arguments=['-string', robot_description,
-                   '-x', '0.0',
-                   '-y', '0.0',
-                   '-z', '0.0',
-                   '-R', '0.0',
-                   '-P', '0.0',
-                   '-Y', '0.0',
-                   '-name', model,
-                   '-allow_renaming', 'false'
-                   ],
-        output='screen'
-    )
 
-    gazebo_resource_path = SetEnvironmentVariable(
-        name='GZ_SIM_RESOURCE_PATH',
-        value=[
-            PathJoinSubstitution([pkg_path, 'worlds'])
-        ]
-    )
-
-    return LaunchDescription([
-        DeclareLaunchArgument(
-            name='use_sim_time',
-            default_value='true',
-            description='Use sim time if true'
-        ),
-        DeclareLaunchArgument(
-            name='model',
-            default_value='copterPIX',
-            description='Model to launch'
-        ),
+    return [
         Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
@@ -79,6 +56,43 @@ def generate_launch_description():
                 [PathJoinSubstitution([FindPackageShare('ros_gz_sim'), 'launch', 'gz_sim.launch.py'])]
             ),
         ),
-        gz_spawn_entity,
-        gazebo_resource_path,
-    ])
+        Node(
+            package='ros_gz_sim',
+            executable='create',
+            arguments=['-string', robot_description,
+                    '-x', '0.0',
+                    '-y', '0.0',
+                    '-z', '0.0',
+                    '-R', '0.0',
+                    '-P', '0.0',
+                    '-Y', '0.0',
+                    '-name', model,
+                    '-allow_renaming', 'false'
+                    ],
+            output='screen'
+        ),
+        SetEnvironmentVariable(
+            name='GZ_SIM_RESOURCE_PATH',
+            value=[
+                PathJoinSubstitution([pkg_path, 'worlds'])
+            ]
+        ),
+    ]
+
+def declare_arguments():
+    print("hi1")
+    return [
+        DeclareLaunchArgument(
+            name='model',
+            default_value='copterPIX',
+            description='Model to launch'
+        )
+    ]
+
+def generate_launch_description():
+    print("hi0")
+    return LaunchDescription(
+        declare_arguments() + [OpaqueFunction(function=initializer)]
+    )
+
+

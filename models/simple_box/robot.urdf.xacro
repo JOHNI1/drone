@@ -2,6 +2,9 @@
 <robot name="simple_box" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <origin xyz="0 0 0" rpy="0 0 0"/>
 
+  <xacro:include filename="$(find drone)/xacros/drone_maker.xacro"/>
+
+
   <xacro:property name="prop_cw_mesh" value="$(find drone)/meshes/iris_prop_cw.dae"/>
 
 
@@ -80,6 +83,12 @@
 
   <link name="base_link">
   </link>
+  <joint name="feet_1_link_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="feet_1_link"/>
+  </joint>
+  <xacro:link_creator_i link_name="feet_1_link" pose_xyz="0 -0.29 -0.6" pose_rpy="0 1.57079633 0" mesh_path="Box" scale_xyz="0.024 0.024 0.58" mass="0.5"/>
+
 
   <joint name="base_child_joint" type="fixed">
     <parent link="base_link"/>

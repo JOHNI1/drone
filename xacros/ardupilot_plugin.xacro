@@ -2,10 +2,10 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 
-    <xacro:macro name="extra_channel" params="using_gazebo_classic channel _type _multiplier _jointName _useForce_offset _servo_max='1900' _servo_min='1100' _p_gain _i_gain _d_gain 
+    <xacro:macro name="extra_channel" params="using_gazebo_classic _channel _type _multiplier _jointName _useForce:='1' _offset _servo_max:='1900' _servo_min:='1100' _p_gain _i_gain _d_gain 
                                                           _i_max _i_min _cmd_max _cmd_min">
-        <xacro:if value="${using_gazebo_classic}" />
-            <control channel="${channel}">
+        <xacro:if value="${using_gazebo_classic}">
+            <control channel="${_channel}">
                 <type>${_type}</type>
                 <multiplier>${_multiplier}</multiplier>
                 <jointName>${_jointName}</jointName>
@@ -17,11 +17,10 @@
                 <i_min>${_i_min}</i_min>
                 <cmd_max>${_cmd_max}</cmd_max>
                 <cmd_min>${_cmd_min}</cmd_min>
-                <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
             </control>
         </xacro:if>
-        <xacro:unless value="${using_gazebo_classic}" />
-            <control channel="${channel}">
+        <xacro:unless value="${using_gazebo_classic}">
+            <control channel="${_channel}">
                 <!--
                     incoming control command [0, 1]
                     so offset it by 0 to get [0, 1]
@@ -56,18 +55,17 @@
                 <i_min>${_i_min}</i_min>
                 <cmd_max>${_cmd_max}</cmd_max>
                 <cmd_min>${_cmd_min}</cmd_min>
-                <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
             
             </control>
         </xacro:unless>
     </xacro:macro>
 
     
-    <xacro:macro name="ardupilot_plugin" params="using_gazebo_classic number_of_arms multiplier cws offset p_gain i_gain d_gain i_max i_min cmd_max cmd_min **extra_ardupilot_plugin_settings servo_max='1900' servo_min='1100'">
+    <xacro:macro name="ardupilot_plugin" params="using_gazebo_classic number_of_arms multiplier cws offset p_gain i_gain d_gain i_max i_min cmd_max cmd_min **extra_ardupilot_plugin_settings servo_max:='1900' servo_min:='1100'">
 
         <xacro:property name="cw_list" value="${cws.split(' ')}" />
         <gazebo>
-            <xacro:if value="${using_gazebo_classic}" />
+            <xacro:if value="${using_gazebo_classic}">
                 <plugin name="arducopter_plugin" filename="libArduPilotPlugin.so">
                     <fdm_addr>127.0.0.1</fdm_addr>
                     <fdm_port_in>9002</fdm_port_in>
@@ -94,7 +92,6 @@
                                 <i_min>${i_min}</i_min>
                                 <cmd_max>${cmd_max}</cmd_max>
                                 <cmd_min>${cmd_min}</cmd_min>
-                                <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim>
                             </control>
                             <!-- Recursively call the macro with a decremented count -->
                             <xacro:create_arms i="${i - 1}"/>
@@ -106,7 +103,7 @@
                     <xacro:insert_block name="extra_ardupilot_plugin_settings"/>
                 </plugin>
             </xacro:if>
-            <xacro:unless value="${using_gazebo_classic}" />
+            <xacro:unless value="${using_gazebo_classic}">
                 <plugin name="ArduPilotPlugin" filename="ArduPilotPlugin">
                     <fdm_addr>127.0.0.1</fdm_addr>
                     <fdm_port_in>9002</fdm_port_in>

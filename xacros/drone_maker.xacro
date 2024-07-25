@@ -11,7 +11,7 @@
                                             dis_from_center length diameter arm_incline_angle:='0' rotor_dis_from_arm arm_mesh prop_size_multiplier 
                                             prop_col_scale_xyz a_mass a_iner:='None' r_mass r_iner
                                             ardu_multiplier ardu_offset ardu_p_gain ardu_i_gain ardu_d_gain 
-                                            ardu_i_max ardu_i_min ardu_cmd_max ardu_cmd_min servo_max='1900' servo_min='1100'
+                                            ardu_i_max ardu_i_min ardu_cmd_max ardu_cmd_min servo_max:='1900' servo_min:='1100'
                                             number_of_blades lift_a0 lift_alpha_stall 
                                             lift_cla lift_cda lift_cma lift_cla_stall lift_sda_stall lift_cma_stall 
                                             lift_area lift_air_density lift_cp
@@ -93,10 +93,10 @@
         </link>
         <gazebo reference="imu_link">
             <sensor name="imu_sensor" type="imu">
-                <xacro:if value="${using_gazebo_classic}"/>
+                <xacro:if value="${using_gazebo_classic}">
                     <pose>0 0 0 3.141593 0 0</pose>
                 </xacro:if>
-                <xacro:unless value="${using_gazebo_classic}"/>
+                <xacro:unless value="${using_gazebo_classic}">
                     <pose degrees="true">0 0 0 180 0 0</pose>
                 </xacro:unless>
                 <always_on>1</always_on>

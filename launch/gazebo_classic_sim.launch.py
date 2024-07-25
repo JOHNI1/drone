@@ -22,7 +22,7 @@ def generate_launch_description():
         lines = file.readlines()
     for i, line in enumerate(lines):
         if search_string in line:
-            lines[i] = '<xacro:property name="using_gazebo_classic" value="1"/>' + '\n'
+            lines[i] = '      <xacro:property name="using_gazebo_classic" value="1"/>' + '\n'
             break
     with open(xacro_file, 'w') as file:
         file.writelines(lines)
