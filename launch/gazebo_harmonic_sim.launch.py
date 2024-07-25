@@ -50,6 +50,9 @@ def initializer(context):
             PythonLaunchDescriptionSource(
                 [PathJoinSubstitution([FindPackageShare('ros_gz_sim'), 'launch', 'gz_sim.launch.py'])]
             ),
+            launch_arguments=[
+                ('gz_args', [' -v 4', ' -r'])
+            ]
         ),
         Node(
             package='ros_gz_sim',
