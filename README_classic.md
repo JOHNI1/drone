@@ -255,7 +255,7 @@ https://github.com/JOHNI1/drone_gazebo_plugin
 
     make
     
-    echo 'export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/drone_gazebo_plugin/build' >> ~/.bashrc
+    echo 'export GAZEBO_PLUGIN_PATH=~/drone_gazebo_plugin/build:${GAZEBO_PLUGIN_PATH}' >> ~/.bashrc
 </div>
 
 
@@ -421,11 +421,16 @@ ${\color{orange}Launching \space the \space simulation}$
 <div style="margin-left: 40px;">
 
 The **model:=** argument can allow you to choose the name of the folder of the model you want to launch, as it uses the robot.urdf.xaco file located inside that folder
-to create the urdf of the robot. This project already comes with copterPIX, iris, simple_box. <br>
+to create the urdf of the robot. This project already comes with copterPIX, iris, simple_box.
+<br>
 When model is not specified, **ros2 launch drone gazebo_classic_sim.launch.py** command is set to launch copterPIX drone as the default drone.
 <br>
-You can also add the **world:=** argument to specify the gazebo world in which you want your model to spawn. For this, you need to enter the path to the world file.  <br> 
+You can also add the **world:=** argument to specify the gazebo world in which you want your model to spawn. For this, you need to enter the path to the world file. 
+<br> 
 (do not start the path with ~/ because it won't work!)
+
+
+${\color{red}Open \space new \space terminals \space so \space it \space will \space reload \space bashrc \space configurations!}$
 
 ### For copterPIX:
 <div style="margin-left: 40px;">
