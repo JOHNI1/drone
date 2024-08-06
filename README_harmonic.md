@@ -48,57 +48,22 @@ https://ardupilot.org/dev/docs/building-setup-linux.html
 
     sudo apt update && sudo apt upgrade -y
 
-    sudo apt install ros-humble-desktop #change later with core-base and add under this line all the dependencies to make it light weight
+    sudo apt install ros-humble-ros-core
 
     sudo apt install ros-dev-tools
+    
+    sudo apt install ros-humble-xacro
 
     source /opt/ros/humble/setup.bash && echo "source /opt/ros/humble/setup.bash" >> .bashrc
 
     pip install --user -U empy==3.3.4 pyros-genmsg setuptools
-
-    echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc
     
     echo 'export ROS_DISTRO="humble"' >> ~/.bashrc
 </div>
 
-#### Test:
-<div style="margin-left: 40px;">
-
-    ros2 run turtlesim turtlesim_node
 </div>
 
-</div>
 
-<h3>
-
-${\color{orange}Setup \space Gazebo \space harmonic}$
-
-</h3>
-<div style="margin-left: 40px;">
-
-https://gazebosim.org/docs/latest/install_ubuntu/
-
-    sudo apt-get update
-
-    sudo apt-get install lsb-release gnupg
-
-    sudo curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
-
-    sudo echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
-    
-    sudo apt-get update
-
-    sudo apt-get install gz-harmonic
-
-Then Install the Default Gazebo/ROS Pairing:
-
-    sudo apt-get install ros-${ROS_DISTRO}-ros-gz
-
-#### To verify installation enter the command:
-
-    gz sim -v4 -r shapes.sdf
-
-</div>
 <h3>
 
 ${\color{orange}Setup \space ardupilot(for \space sitl)}$
@@ -137,6 +102,36 @@ https://ardupilot.org/dev/docs/building-setup-linux.html
 </div>
 </div>
 
+<h3>
+
+${\color{orange}Setup \space Gazebo \space harmonic}$
+
+</h3>
+<div style="margin-left: 40px;">
+
+https://gazebosim.org/docs/latest/install_ubuntu/
+
+    sudo apt-get update
+
+    sudo apt-get install lsb-release gnupg
+
+    sudo curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+
+    sudo echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
+    
+    sudo apt-get update
+
+    sudo apt-get install gz-harmonic
+
+Then Install the Default Gazebo/ROS Pairing:
+
+    sudo apt-get install ros-${ROS_DISTRO}-ros-gz
+
+#### To verify installation enter the command:
+
+    gz sim -v4 -r shapes.sdf
+
+</div>
 
 <h3>
 
@@ -146,7 +141,9 @@ ${\color{orange}Setup \space ardupilot \space plugin(for \space gazebo \space ha
 
 <div style="margin-left: 40px;">
 
-https://ardupilot.org/dev/docs/sitl-with-gazebo-legacy.html
+https://ardupilot.org/dev/docs/sitl-with-gazebo.html
+<br>
+https://github.com/ArduPilot/ardupilot_gazebo
 
 #### ardupilot plugin install:
 <div style="margin-left: 40px;">
@@ -176,13 +173,14 @@ https://ardupilot.org/dev/docs/sitl-with-gazebo-legacy.html
     echo 'export GZ_SIM_SYSTEM_PLUGIN_PATH=$HOME/ardupilot_gazebo/build:${GZ_SIM_SYSTEM_PLUGIN_PATH}' >> ~/.bashrc
 
     echo 'export GZ_SIM_RESOURCE_PATH=$HOME/ardupilot_gazebo/models:$HOME/ardupilot_gazebo/worlds:${GZ_SIM_RESOURCE_PATH}' >> ~/.bashrc
+    
+    echo 'export GAZEBO_MODEL_DATABASE_URI=""' >> ~/.bashrc
 
 </div>
-<div style="color: red;">
+<h3>
 
-**now RESTART UBUNTU!**
-
-</div>
+${\color{red}now \space restart \space Ubuntu!!!!}$
+</h3>
 
 
 #### Test:
@@ -192,14 +190,14 @@ https://ardupilot.org/dev/docs/sitl-with-gazebo-legacy.html
 </div>
 <div style="margin-left: 40px;">
 
-    gazebo --verbose worlds/iris_arducopter_runway.world
+    gz sim -v4 -r iris_runway.sdf
 </div>
 <div style="color: lightblue;">
 <h4>On 2st Terminal(Launch ArduCopter SITL)</h4>
 </div>
 <div style="margin-left: 40px;">
 
-    sim_vehicle.py -v ArduCopter -f gazebo-iris --map --console
+    sim_vehicle.py -v ArduCopter -f gazebo-iris --model JSON --map --console
 
 Wait untill you see:
 <div style="color: green;">AP: EKF3 IMU1 is using GPS</div>
@@ -238,7 +236,7 @@ https://github.com/JOHNI1/drone_gazebo_plugin
 
     mkdir drone_gazebo_plugin/build
     
-    cd drone-gazebo-plugin/build
+    cd drone_gazebo_plugin/build
 
     cmake ..
 
@@ -266,32 +264,26 @@ https://github.com/JOHNI1/drone
 #### Create the work space and import the drone package from github and build:
 <div style="margin-left: 40px;">
 
-    
+    cd ~
+
+    mkdir -p drone_ws/src
+
+    cd drone_ws/src
+
+    git clone https://github.com/JOHNI1/drone
+
+    cd ~/drone_ws
+
+    colcon build --symlink-install
+
+    echo 'source ~/drone_ws/install/setup.bash' >> ~/.bashrc
 
 </div>
-<div style="color: red;">MAKE SURE TO ALWAYS redo the colcon build --symlink-install if you make changes to the src/drone folder like adding file</div>
-
-#### Go to .bashrc:
-<div style="margin-left: 40px;">
-
-    gedit ~/.bashrc
-
-or
-
-    nano ~/.bashrc
-    
+<div style="color: red;">MAKE SURE TO ALWAYS redo the colcon build --symlink-install if you make changes to the src/drone folder like adding file
 </div>
 
-#### In ~/.bashrc end add this line:
-<div style="margin-left: 40px;">
-
-    source ~/drone_ws/install/setup.bash
-</div>
 <div style="color: red;">MAKE SURE TO ALWAYS source or open new terminal that redoes source, after doing colcon build --symlink-install</div>
-
 </div>
-
-
 
 
 <h3>
@@ -413,10 +405,12 @@ basically the sitl parameters are defined by conbining the two files:
 ${\color{orange}Launching \space the \space simulation}$
 
 </h3>
+<div style="margin-left: 40px;">
 
 The **model:=** argument can allow you to choose the name of the folder of the model you want to launch, as it uses the robot.urdf.xaco file located inside that folder
-to create the urdf of the robot. This project already comes with copterPIX, iris, simple_box. <br>
-When model is not specified, **ros2 launch drone sim.launch.py** command is set to launch copterPIX drone as the default drone. <br>
+to create the urdf of the robot. This project already comes with copterPIX, iris, simple_box.
+<br>
+When model is not specified, **ros2 launch drone gazebo_harmonic_sim.launch.py** command is set to launch copterPIX drone as the default drone. <br>
 You can also add the **world:=** argument to specify the gazebo world in which you want your model to spawn. For this, you need to enter the path to the world file.  <br> 
 (do not start the path with ~/ because it won't work!)
 
@@ -428,7 +422,7 @@ You can also add the **world:=** argument to specify the gazebo world in which y
 
     cd ~
 
-    ros2 launch drone sim.launch.py model:=copterPIX world:=./drone_ws/install/drone/share/drone/worlds/default.world 
+    ros2 launch drone gazebo_harmonic_sim.launch.py model:=copterPIX world:=./drone_ws/install/drone/share/drone/worlds/default.world 
 </div>
 
 
@@ -473,7 +467,7 @@ command to control the servo for firing!
 
     cd ~
 
-    ros2 launch drone sim.launch.py model:=iris world:=./drone_ws/install/drone/share/drone/worlds/default.world 
+    ros2 launch drone gazebo_harmonic_sim.launch.py model:=iris world:=./drone_ws/install/drone/share/drone/worlds/default.world 
 </div>
 
 
@@ -497,6 +491,7 @@ commands for the sitl:
     guided 30 30 30
 
 
+</div>
 </div>
 </div>
 
@@ -545,7 +540,7 @@ or
     done
 
     # Construct the ROS simulation command
-    ROS_COMMAND="ros2 launch drone sim.launch.py model:=$MODEL"
+    ROS_COMMAND="ros2 launch drone gazebo_harmonic_sim.launch.py model:=$MODEL"
     if [ -n "$WORLD" ]; then
         ROS_COMMAND="$ROS_COMMAND world:=$WORLD"
     fi
