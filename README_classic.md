@@ -436,9 +436,7 @@ ${\color{red}Open \space new \space terminals \space so \space it \space will \s
 #### In one terminal:
 <div style="margin-left: 40px;">
 
-    cd ~
-
-    ros2 launch drone gazebo_classic_sim.launch.py model:=copterPIX world:=./drone_ws/install/drone/share/drone/worlds/default.world 
+    ros2 launch drone gazebo_classic_sim.launch.py model:=copterPIX world:=/home/$USER/drone_ws/install/drone/share/drone/worlds/default.world
 </div>
 
 
