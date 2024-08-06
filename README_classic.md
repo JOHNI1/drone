@@ -48,7 +48,7 @@ https://ardupilot.org/dev/docs/building-setup-linux.html
 
     sudo apt update && sudo apt upgrade -y
 
-    sudo apt install ros-humble-desktop
+    sudo apt install ros-humble-ros-core
 
     sudo apt install ros-dev-tools
     
@@ -56,13 +56,7 @@ https://ardupilot.org/dev/docs/building-setup-linux.html
 
     sudo apt install ros-humble-xacro
 
-    sudo apt install ros-humble-visualization-tools
-
-    sudo apt install ros-humble-ros2-control ros-humble-ros2-controllers
-
-    sudo apt install ros-humble-twist-mux
-
-    source /opt/ros/humble/setup.bash && echo "source /opt/ros/humble/setup.bash" >> .bashrc
+    source /opt/ros/humble/setup.bash
 
     pip install --user -U empy==3.3.4 pyros-genmsg setuptools
 
@@ -79,32 +73,7 @@ https://ardupilot.org/dev/docs/building-setup-linux.html
 
 </div>
 
-<h3>
 
-${\color{orange}Setup \space Gazebo \space classic}$
-
-</h3>
-<div style="margin-left: 40px;">
-
-https://classic.gazebosim.org/tutorials?tut=install_ubuntu
-
-    sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
-    
-    cat /etc/apt/sources.list.d/gazebo-stable.list
-    
-    wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
-    
-    sudo apt-get update
-    
-    sudo apt-get install gazebo
-    
-    sudo apt-get install libgazebo-dev
-
-#### To verify installation enter the command:
-
-    gazebo --verbose
-
-</div>
 <h3>
 
 ${\color{orange}Setup \space ardupilot(for \space sitl)}$
@@ -143,6 +112,39 @@ https://ardupilot.org/dev/docs/building-setup-linux.html
 </div>
 </div>
 
+
+<h3>
+
+${\color{orange}Setup \space Gazebo \space classic}$
+
+</h3>
+<br>
+
+**DO THIS ONLY IF YOU DO NOT HAVE GAZEBO ALREADY INSTALLED!**
+<br>
+the command sudo apt install ros-humble-gazebo-ros-pkgs when you installed ros humble should automatically install gazebo classic too!
+<br>
+<div style="margin-left: 40px;">
+
+https://classic.gazebosim.org/tutorials?tut=install_ubuntu
+
+    sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
+    
+    cat /etc/apt/sources.list.d/gazebo-stable.list
+    
+    wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+    
+    sudo apt-get update
+    
+    sudo apt-get install gazebo
+    
+    sudo apt-get install libgazebo-dev
+
+#### To verify installation enter the command:
+
+    gazebo --verbose
+
+</div>
 
 <h3>
 
@@ -189,14 +191,18 @@ https://ardupilot.org/dev/docs/sitl-with-gazebo-legacy.html
 
     echo 'export GAZEBO_PLUGIN_PATH=~/ardupilot_gazebo/build:${GAZEBO_PLUGIN_PATH}' >> ~/.bashrc
 
+    echo 'export GAZEBO_PLUGIN_PATH=~/ardupilot_gazebo/build:${GAZEBO_PLUGIN_PATH}' >> ~/.bashrc
+
+    echo 'export GAZEBO_MODEL_DATABASE_URI=""' >> ~/.bashrc
+    
+
 </div>
 
-<div style="color: red;">
 
-**now RESTART UBUNTU!**
+<h3>
 
-</div>
-
+${\color{red}now \space restart \space Ubuntu!!!!}$
+</h3>
 
 #### Test:
 <div style="margin-left: 40px;">
@@ -205,14 +211,14 @@ https://ardupilot.org/dev/docs/sitl-with-gazebo-legacy.html
 </div>
 <div style="margin-left: 40px;">
 
-    gz sim -v4 -r iris_runway.sdf
+    gazebo --verbose worlds/iris_arducopter_runway.world
 </div>
 <div style="color: lightblue;">
 <h4>On 2st Terminal(Launch ArduCopter SITL)</h4>
 </div>
 <div style="margin-left: 40px;">
 
-    sim_vehicle.py -v ArduCopter -f gazebo-iris --model JSON --map --console
+    sim_vehicle.py -v ArduCopter -f gazebo-iris --map --console
 
 Wait untill you see:
 <div style="color: green;">AP: EKF3 IMU1 is using GPS</div>
@@ -251,7 +257,7 @@ https://github.com/JOHNI1/drone_gazebo_plugin
 
     mkdir drone_gazebo_plugin/build
     
-    cd drone-gazebo-plugin/build
+    cd drone_gazebo_plugin/build
 
     cmake ..
 
@@ -279,32 +285,26 @@ https://github.com/JOHNI1/drone
 #### Create the work space and import the drone package from github and build:
 <div style="margin-left: 40px;">
 
-    
+    cd ~
+
+    mkdir -p drone_ws/src
+
+    cd drone_ws/src
+
+    git clone https://github.com/JOHNI1/drone
+
+    cd ~/drone_ws
+
+    colcon build --symlink-install
+
+    echo 'source ~/drone_ws/install/setup.bash' >> ~/.bashrc
 
 </div>
 <div style="color: red;">MAKE SURE TO ALWAYS redo the colcon build --symlink-install if you make changes to the src/drone folder like adding file</div>
 
-#### Go to .bashrc:
-<div style="margin-left: 40px;">
-
-    gedit ~/.bashrc
-
-or
-
-    nano ~/.bashrc
-    
-</div>
-
-#### In ~/.bashrc end add this line:
-<div style="margin-left: 40px;">
-
-    source ~/drone_ws/install/setup.bash
-</div>
 <div style="color: red;">MAKE SURE TO ALWAYS source or open new terminal that redoes source, after doing colcon build --symlink-install</div>
 
 </div>
-
-
 
 
 <h3>
