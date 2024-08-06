@@ -183,8 +183,6 @@ https://ardupilot.org/dev/docs/sitl-with-gazebo-legacy.html
 
     echo 'export GAZEBO_PLUGIN_PATH=~/ardupilot_gazebo/build:${GAZEBO_PLUGIN_PATH}' >> ~/.bashrc
 
-    echo 'export GAZEBO_PLUGIN_PATH=~/ardupilot_gazebo/build:${GAZEBO_PLUGIN_PATH}' >> ~/.bashrc
-
     echo 'export GAZEBO_MODEL_DATABASE_URI=""' >> ~/.bashrc
 
 
