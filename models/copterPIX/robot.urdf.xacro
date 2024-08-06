@@ -170,8 +170,8 @@
     <xacro:if value="${using_gazebo_classic}">
       <plugin name="ForcePlugin" filename="libForcePlugin.so">
         <trigger_joint>fire_trigger_servo_joint</trigger_joint>
-        <link_to_apply_force>root_link</link_to_apply_force> change later to the m16_link when gimbal will be ready.
-        <apply_force_duration>0.03</apply_force_duration> apply froce for 30ms
+        <link_to_apply_force>root_link</link_to_apply_force> <!--change later to the m16_link when gimbal will be ready.-->
+        <apply_force_duration>0.03</apply_force_duration> <!--apply froce for 30ms-->
         <trigger_angle_deg>15</trigger_angle_deg>
         <force_x>-2000</force_x>
         <force_y>0</force_y>
