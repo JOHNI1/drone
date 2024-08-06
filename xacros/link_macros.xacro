@@ -39,11 +39,12 @@
             <xacro:insert_block name="extra_settings"/>
         </link>
         <gazebo reference="${link_name}">
-            <visual>
+            <material>Gazebo/DarkGrey</material><!--for classic-->
+            <!-- <visual>
                 <material>
                     <name>Gazebo/DarkGrey</name>
                 </material>
-            </visual>
+            </visual> -->
         </gazebo>
     </xacro:macro>
 

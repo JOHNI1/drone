@@ -5,7 +5,7 @@
 
 
   <!--this value is changed by the launch script.-->
-  <xacro:property name="using_gazebo_classic" value="0"/>
+  <xacro:property name="using_gazebo_classic" value="1"/>
 
 
 
